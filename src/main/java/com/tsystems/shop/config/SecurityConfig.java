@@ -39,7 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().formLogin().loginPage("/login").usernameParameter("email").passwordParameter("password");
         http.logout()
                 .permitAll()
-                .invalidateHttpSession(true);
+                //.logoutSuccessUrl("/logout")
+                //.logoutUrl("/logout");
+                .clearAuthentication(true)
+                .invalidateHttpSession(false);
 
 
 

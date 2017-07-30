@@ -1,5 +1,7 @@
 package com.tsystems.shop.model;
 
+import com.tsystems.shop.model.enums.UserRoleEnum;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -12,7 +14,7 @@ public class User implements Serializable {
     @Column(name = "user_id")
     private long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
@@ -47,6 +49,14 @@ public class User implements Serializable {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    public User(String email, String name, String surname, String password) {
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.password = password;
+        this.role = UserRoleEnum.ROLE_USER.name();
     }
 
     public long getId() {
