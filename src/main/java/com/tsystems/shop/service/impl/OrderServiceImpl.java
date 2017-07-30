@@ -10,6 +10,7 @@ import com.tsystems.shop.service.api.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -29,5 +30,36 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findOrdersByEmail(String email) {
         return orderDao.findOrdersByEmail(email);
+    }
+
+    @Override
+    public List<String> findOrderStatusTypes() {
+        List<String> types = new ArrayList<>();
+        types.add(OrderStatusEnum.AWAITING_PAYMENT.name());
+        types.add(OrderStatusEnum.AWAITING_SHIPMENT.name());
+        types.add(OrderStatusEnum.SHIPPED.name());
+        types.add(OrderStatusEnum.DELIVERED.name());
+
+        return types;
+    }
+
+    @Override
+    public List<Order> findOrderByStatusType(String status) {
+        return orderDao.findOrdersByStatusType(status);
+    }
+
+    @Override
+    public List<Order> findAllOrders() {
+        return orderDao.findAllOrders();
+    }
+
+    @Override
+    public Order findOrderById(String id) {
+        return orderDao.findOrderById(Long.parseLong(id));
+    }
+
+    @Override
+    public Order saveOrder(Order order) {
+        return orderDao.saveOrder(order);
     }
 }

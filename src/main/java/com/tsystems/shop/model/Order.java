@@ -63,8 +63,8 @@ public class Order implements Serializable {
         return orderStatus;
     }
 
-    public void setOrderStatus(String order_status) {
-        this.orderStatus = order_status;
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public User getUser() {

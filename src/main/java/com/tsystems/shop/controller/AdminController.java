@@ -1,9 +1,13 @@
 package com.tsystems.shop.controller;
 
 import com.tsystems.shop.model.Attribute;
+import com.tsystems.shop.model.Order;
 import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.Size;
+import com.tsystems.shop.model.enums.OrderStatusEnum;
+import com.tsystems.shop.model.enums.PaymentStatusEnum;
 import com.tsystems.shop.service.api.CategoryService;
+import com.tsystems.shop.service.api.OrderService;
 import com.tsystems.shop.service.api.ProductService;
 import com.tsystems.shop.service.api.SizeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,9 @@ public class AdminController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private OrderService orderService;
+
     @RequestMapping(value = "/products/add")
     public ModelAndView showAddProductPage() {
         ModelAndView modelAndView = new ModelAndView("addProductTest");
@@ -50,6 +57,27 @@ public class AdminController {
         Product product = new Product(name, price, "smth", categoryService.findCategoryById(category), attributes);
         productService.saveProduct(product);
         return "redirect:/home";
+    }
+
+    @RequestMapping(value = "/orders")
+    public ModelAndView showOrdersPage(@RequestParam(name = "orderStatus", required = false) String status) {
+        ModelAndView modelAndView = new ModelAndView("ordersHistoryTest");
+        if (status == null) status = "all";
+        modelAndView.addObject("types", orderService.findOrderStatusTypes());
+        if (status.equals("all")) modelAndView.addObject("orders", orderService.findAllOrders());
+        else modelAndView.addObject("orders", orderService.findOrderByStatusType(status));
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/orders", method = RequestMethod.POST)
+    public String changeOrderStatus(@RequestParam(name = "id") String id,
+                                    @RequestParam(name = "status") String status) {
+        Order order = orderService.findOrderById(id);
+        order.setOrderStatus(status);
+        if (!status.equals(OrderStatusEnum.AWAITING_PAYMENT.name())) order.getPayment().setPaymentStatus(PaymentStatusEnum.PAID.name());
+        orderService.saveOrder(order);
+        return "redirect:/admin/orders";
     }
 
 

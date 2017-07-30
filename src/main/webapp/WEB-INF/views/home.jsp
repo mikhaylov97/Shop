@@ -11,14 +11,17 @@
 <body>
 <sec:authorize access="hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')">
     <a href="/logout">Logout</a>
+</sec:authorize>
+<sec:authorize access="hasRole('ROLE_USER')">
     <a href="/user/settings">Edit profile</a>
+    <a href="/user/history">See your history</a>
 </sec:authorize>
 <sec:authorize access="hasRole('ROLE_USER') or hasRole('ROLE_ANONYMOUS')">
     <a href="/bag">Go to bag</a>
-    <a href="/user/history">See your history</a>
 </sec:authorize>
 <sec:authorize access="hasRole('ROLE_ADMIN')">
     <a href="/admin/products/add">New item</a>
+    <a href="/admin/orders">Check orders</a>
 </sec:authorize>
 <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
     <a href="/login">Log in</a> or <a href="/signUp">Sign Up</a>

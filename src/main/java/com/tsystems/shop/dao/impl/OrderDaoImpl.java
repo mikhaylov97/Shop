@@ -30,4 +30,35 @@ public class OrderDaoImpl implements OrderDao {
         List<Order> orders = (List<Order>) query.getResultList();
         return orders;
     }
+
+    @Override
+    public List<Order> findOrdersByStatusType(String status) {
+        Query query = em.createQuery("SELECT o FROM Order o WHERE orderStatus = :status");
+        query.setParameter("status", status);
+        List<Order> orders = (List<Order>) query.getResultList();
+        return orders;
+    }
+
+    @Override
+    public List<Order> findAllOrders() {
+        Query query = em.createQuery("SELECT o FROM Order o");
+        List<Order> orders = (List<Order>) query.getResultList();
+        return orders;
+    }
+
+    @Override
+    public Order findOrderById(long id) {
+        Query query = em.createQuery("SELECT o FROM Order o WHERE id = :id");
+        query.setParameter("id", id);
+        Order order = (Order) query.getSingleResult();
+        return order;
+    }
+
+    @Override
+    @Transactional
+    public Order saveOrder(Order order) {
+        em.merge(order);
+        em.flush();
+        return order;
+    }
 }
