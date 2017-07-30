@@ -10,7 +10,7 @@ public class Size implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "size_id")
-    private int id;
+    private long id;
 
     @Column(name = "size", nullable = false)
     private String size;
@@ -30,11 +30,11 @@ public class Size implements Serializable{
         this.costDependency = costDependency;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -1,0 +1,30 @@
+package com.tsystems.shop.dao.impl;
+
+
+import com.tsystems.shop.dao.api.CategoryDao;
+import com.tsystems.shop.model.Category;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
+
+@Repository
+public class CategoryDaoImpl implements CategoryDao{
+
+    @PersistenceContext
+    EntityManager em;
+    @Override
+    public List<Category> findCategories() {
+        Query query = em.createQuery("SELECT c FROM Category c");
+        return (List<Category>) query.getResultList();
+    }
+
+    @Override
+    public Category findCategoryById(String id) {
+        Query query = em.createQuery("SELECT c FROM Category c WHERE id = :id");
+        query.setParameter("id", Long.parseLong(id));
+        return (Category) query.getSingleResult();
+    }
+}

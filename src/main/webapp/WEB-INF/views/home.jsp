@@ -13,10 +13,16 @@
     <a href="/logout">Logout</a>
     <a href="/user/settings">Edit profile</a>
 </sec:authorize>
+<sec:authorize access="hasRole('ROLE_USER') or hasRole('ROLE_ANONYMOUS')">
+    <a href="/bag">Go to bag</a>
+    <a href="/user/history">See your history</a>
+</sec:authorize>
+<sec:authorize access="hasRole('ROLE_ADMIN')">
+    <a href="/admin/products/add">New item</a>
+</sec:authorize>
 <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
     <a href="/login">Log in</a> or <a href="/signUp">Sign Up</a>
 </sec:authorize>
-<a href="/bag">Go to bag</a>
 <div class="container">
     <div class="row">
         <c:forEach var="product" items="${products}" varStatus="vs">
@@ -26,7 +32,9 @@
                     <div class="hidden-info">
                         <p>${product.name}</p>
                         <p>${product.price}</p>
-                        <a href="/addToBag/${product.id}">В корзину</a>
+                        <sec:authorize access="hasRole('ROLE_USER')">
+                            <a href="/addToBag/${product.id}">В корзину</a>
+                        </sec:authorize>
                     </div>
                 </div>
             </div>

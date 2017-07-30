@@ -11,7 +11,7 @@ public class Attribute implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "attribute_id")
-    private int id;
+    private long id;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "attributes_sizes",
@@ -37,11 +37,11 @@ public class Attribute implements Serializable {
         this.model = model;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

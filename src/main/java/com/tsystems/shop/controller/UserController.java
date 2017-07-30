@@ -1,9 +1,10 @@
 package com.tsystems.shop.controller;
 
 import com.tsystems.shop.model.Address;
+import com.tsystems.shop.model.Payment;
+import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.User;
-import com.tsystems.shop.service.api.ProductService;
-import com.tsystems.shop.service.api.UserService;
+import com.tsystems.shop.service.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -21,6 +25,15 @@ public class UserController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private BagService bagService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @RequestMapping(value = "/settings")
     public ModelAndView showSettingsPage() {
@@ -68,6 +81,38 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView("settingsTest");
         modelAndView.addObject("msg2", "Settings successfully changed.");
         modelAndView.addObject("user", user);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/ordering")
+    public ModelAndView showOrderingPage(HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView("orderingTest");
+        Set<Product> products = (Set<Product>) request.getSession().getAttribute("bag");
+        modelAndView.addObject("bag", products);
+        modelAndView.addObject("paymentTypes", paymentService.getPaymentTypes());
+        modelAndView.addObject("totalPrice", bagService.figureOutTotalPrice(products));
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/ordering", method = RequestMethod.POST)
+    public String addNewOrder(@RequestParam(name = "type") String type, HttpServletRequest request) {
+        Set<Product> products = (Set<Product>) request.getSession().getAttribute("bag");
+        String totalPrice = bagService.figureOutTotalPrice(products);
+        Payment payment = paymentService.createNewPayment(type, totalPrice);
+        User user = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        orderService.addNewOrder("COURIER", user, payment, products);
+        products.clear();
+        return "redirect:/home";
+    }
+
+    @RequestMapping(value = "/history")
+    public ModelAndView showHistoryPage() {
+        ModelAndView modelAndView = new ModelAndView("historyTest");
+        modelAndView.addObject("orders",
+                orderService.findOrdersByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
+
+
         return modelAndView;
     }
 }

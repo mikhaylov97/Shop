@@ -12,12 +12,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 //@SessionAttributes(value = "bag")
@@ -83,9 +86,9 @@ public class CommonController {
         Product product = productService.findProductById(Long.parseLong(id));
         Object bag = request.getSession().getAttribute("bag");
         if (bag != null) {
-            ((List<Product>) bag).add(product);
+            ((Set<Product>) bag).add(product);
         } else {
-            List<Product> products = new ArrayList<>();
+            Set<Product> products = new HashSet<>();
             products.add(product);
             request.getSession().setAttribute("bag", products);
         }
@@ -104,6 +107,19 @@ public class CommonController {
         ModelAndView modelAndView = new ModelAndView("bagTest");
         modelAndView.addObject("bag", request.getSession().getAttribute("bag"));
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/bag/delete/{id}", method = RequestMethod.POST)
+    public String deleteFromBag(@PathVariable(value = "id") String id, @RequestParam(value = "source") String source,
+                                      HttpServletRequest request) {
+        Set<Product> products = (Set<Product>) request.getSession().getAttribute("bag");
+        for (Product product : products) {
+            if (Long.parseLong(id) == product.getId()) {
+                products.remove(product);
+                break;
+            }
+        }
+        return "redirect:/" + source;
     }
 
     private void authenticateUserAndSetSession(String email, String password, HttpServletRequest request) {

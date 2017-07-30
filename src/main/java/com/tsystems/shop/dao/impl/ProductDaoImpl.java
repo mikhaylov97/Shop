@@ -3,6 +3,7 @@ package com.tsystems.shop.dao.impl;
 import com.tsystems.shop.dao.api.ProductDao;
 import com.tsystems.shop.model.Product;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,5 +27,13 @@ public class ProductDaoImpl implements ProductDao {
         Query query = em.createQuery("SELECT p FROM Product p WHERE id = :id");
         query.setParameter("id", id);
         return (Product) query.getSingleResult();
+    }
+
+    @Override
+    @Transactional
+    public Product saveProduct(Product product) {
+        em.merge(product);
+        em.flush();
+        return product;
     }
 }

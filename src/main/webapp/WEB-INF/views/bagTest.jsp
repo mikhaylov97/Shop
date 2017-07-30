@@ -14,9 +14,16 @@
             <div class="col-lg-4">
                 ${product.name} ${product.price}
                     <img src="/resources/images/test.png" alt="">
+                    <form  method="post">
+                        <input hidden name="source" value="bag">
+                        <button formaction="/bag/delete/${product.id}">Удалить</button>
+                    </form>
             </div>
         </c:forEach>
     </div>
+    <c:if test="${not empty bag}">
+    <a href="/user/ordering">Check out</a>
+    </c:if>
 </div>
 </body>
 </html>

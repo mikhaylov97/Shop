@@ -17,17 +17,17 @@ public class Order implements Serializable {
     private String shippingMethod;
 
     @Column(name = "order_status", nullable = false)
-    private String order_status;
+    private String orderStatus;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "orders_products",
             joinColumns = {@JoinColumn(name = "order_id")}, inverseJoinColumns = {@JoinColumn(name = "product_id")})
     private Set<Product> products;
@@ -35,9 +35,9 @@ public class Order implements Serializable {
     public Order() {
     }
 
-    public Order(String shippingMethod, String order_status, User user, Payment payment, Set<Product> products) {
+    public Order(String shippingMethod, String orderStatus, User user, Payment payment, Set<Product> products) {
         this.shippingMethod = shippingMethod;
-        this.order_status = order_status;
+        this.orderStatus = orderStatus;
         this.user = user;
         this.payment = payment;
         this.products = products;
@@ -59,12 +59,12 @@ public class Order implements Serializable {
         this.shippingMethod = shippingMethod;
     }
 
-    public String getOrder_status() {
-        return order_status;
+    public String getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setOrder_status(String order_status) {
-        this.order_status = order_status;
+    public void setOrderStatus(String order_status) {
+        this.orderStatus = order_status;
     }
 
     public User getUser() {
