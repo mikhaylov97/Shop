@@ -1,0 +1,137 @@
+
+.image-slider img {
+    width:100%;
+    height: 80%;
+}
+
+.image-slider {
+    border: 1px solid rgba(0,0,0,0.2);
+}
+
+#item-context {
+    margin-top: 60px;
+    margin-bottom: 80px;
+}
+
+.item-info {
+    padding-left: 40px;
+}
+
+.item-name h4 {
+    color: black;
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: default;
+}
+
+.item-price {
+    font-size: 21px;
+    font-weight: 600;
+    color: #848495;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.item-size select {
+    height: 40px;
+    width: 225px;
+    padding: 8px 8px 8px;
+    font-size: 18px;
+    border: 1px solid black;
+    color: black;
+    cursor: hand;
+    outline: none;
+}
+
+.item-size select:focus {
+    outline: none;
+    border: 1px solid black;
+}
+
+.item-size {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.item-size h4 {
+    color: black;
+    font-size: 18px;
+    letter-spacing: 1px;
+    cursor: default;
+}
+
+.item-amount {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    color: black;
+    font-size: 18px;
+}
+
+.item-amount h4 {
+    color: black;
+    font-size: 18px;
+    letter-spacing: 1px;
+    cursor: default;
+}
+
+.amount-button .amount-number {
+    border: 1px solid black;
+    height: 40px;
+    width: 130px;
+    text-align: center;
+    padding-top: 8px;
+    cursor: default;
+
+}
+
+.amount-button {
+    display: flex;
+}
+
+.amount-button .button-less {
+    border: 1px solid black;
+    border-right: none;
+    width: 47.5px;
+    transition: all ease-in-out 0.3s;
+    background-color: white;
+    font-size:14px;
+    outline: none;
+}
+
+.amount-button .button-more {
+    border: 1px solid black;
+    border-left: none;
+    width: 47.5px;
+    transition: all ease-in-out 0.3s;
+    background-color: white;
+    font-size:14px;
+    outline: none;
+}
+
+.amount-button .button-less:hover, .button-more:hover {
+    color: white;
+    background-color: black;
+}
+
+
+.bag-button {
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.bag-button button {
+    color: black;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all ease-in-out 0.2s;
+}
+
+.bag-button button:hover {
+    color: #d80000;
+    border-color: #d80000;
+}

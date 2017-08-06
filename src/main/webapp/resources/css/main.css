@@ -1,5 +1,5 @@
 body {
-	background-color: #f2f2f2;
+// background-color: #f2f2f2;
 	font-weight: 300;
 	font-size: 16px;
 	color: #555;
@@ -36,9 +36,10 @@ hr {
 	display: block;
 	height: 1px;
 	border: 0;
-	border-top: 1px solid #ccc;
-	margin: 1em 0;
+	border-top: 1px solid black;
+	margin: 0 auto;
 	padding: 0;
+	padding-bottom: 10px;
 }
 
 .navbar {
@@ -49,8 +50,9 @@ hr {
 }
 
 .navbar-inverse {
-	background: #2d2d2d;
-	border-color: #2d2d2d;
+	background: #000000;
+	border-color: #000000;
+	padding: 10px 0 5px;
 }
 
 .navbar-inverse .navbar-nav > .active > a {
@@ -64,14 +66,19 @@ hr {
 	letter-spacing: 1px;
 }
 
+#navbar-brand img {
+	width: 40px;
+	display: inline;
+}
+
 #headerwrap {
-	/*background: url(../images/headerwrap.jpg) no-repeat center top;*/
-	margin-top: -10px;
+	background: url(/resources/images/headerwrap2.jpg) no-repeat center top;
+// margin-top: -10px;
 	padding-top: 80px;
 	text-align: center;
-	/*background-attachment: relative;*/
+	background-attachment: relative;
 	background-position: center center;
-	min-height: 500px;
+	min-height: 100%;
 	width: 100%;
 
 	background-size: 100%;
@@ -84,17 +91,58 @@ hr {
 
 #headerwrap h1 {
 	margin-top: 100px;
-	color: white;
-	font-size: 50px;
-	font-weight: 300;
-	letter-spacing: 3px;
 }
 
-#headerwrap h2 {
+#headerwrap h1 a {
 	color: white;
-	font-size: 30px;
-	letter-spacing: 2px;
-	text-transform: uppercase;
+	font-size: 50px;
+	font-weight: 700;
+	letter-spacing: 1px;
+	border-bottom: 3px solid transparent;
+	transition: all ease-in-out 0.5s;
+}
+
+#headerwrap h1 a:hover {
+	border-color: white;
+//transition: 0.9s;
+}
+
+#headerwrap h4 {
+	color: white;
+	font-size: 18px;
+	letter-spacing: 1px;
+// text-transform: uppercase;
+}
+
+#tops-and-new {
+	margin-top: 60px;
+	margin-bottom: 60px;
+}
+
+.tops-and-new-name {
+	color: black;
+	font-size: 20px;
+	font-weight: 500;
+}
+
+#tops-and-new a:hover {
+	background-color: #d80000;
+}
+
+.link-content {
+	border-bottom: 2px solid transparent;
+	transition: all ease-in-out 0.4s;
+}
+
+.link-content:hover {
+	color: #d80000;
+	border-color: #d80000;
+}
+
+#tops-and-new .photo img {
+	display: block;
+	width: 100%;
+	height: 500px
 }
 
 .wrap {
@@ -168,33 +216,75 @@ hr {
 }
 
 #footer {
-	background: #dd7878;
-	padding-top: 70px;
-	padding-bottom: 70px;
+	padding-top: 15px;
+	padding-bottom: 40px;
 }
 
-#footer h4 {
-	color: white;
-	font-size: 35px;
+#footer {
+	color: #999;
+	font-size: 12px;
+	font-weight: 600;
 }
 
-#footer p {
-	color: white;
+#footer a {
+	color: #999;
+	border-bottom: 2px solid transparent;
+	transition: all ease-in-out 0.2s;
+}
+
+#footer a:hover {
+	color: #d80000;
+	border-color: #d80000;
 }
 
 #contacts {
-	background: #2d2d2d;
+// background: #2d2d2d;
 	padding-top: 30px;
 	padding-bottom: 20px;
 }
 
-#contacts i {
-	color: #bdbdbd;
-	font-size: 30px;
-	padding: 20px;
+#contacts a {
+	color: black;
+	letter-spacing: 1px;
+	border-bottom: 2px solid transparent;
+	transition: all ease-in-out 0.2s;
+	font-size: 15px;
+	font-weight: 600;
+	margin-right: 14px;
 }
 
-#contacts i:hover {
-	color: #ff7878;
-	transition: 0.4s;
+
+
+#contacts a:hover {
+	color: #d80000;
+	border-color: #d80000;
+	transition: 0.6s;
+}
+
+.fa-stack {
+	position: relative;
+	top: -25px;
+	left: 10px;
+	font-size: 9px;
+	color: #d80000;
+}
+
+.bag-size {
+	color: white;
+}
+
+.navbar-bag {
+	width: 45px;
+	height: 44px;
+}
+
+#navbar-brand {
+	color: white;
+	border-bottom: 1px solid transparent;
+	transition: all ease-in-out 0.4s;
+}
+
+#navbar-brand:hover {
+//color: #d80000;
+	border-color: white;
 }

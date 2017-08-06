@@ -35,9 +35,9 @@ public class UserController {
     @Autowired
     private PaymentService paymentService;
 
-    @RequestMapping(value = "/settings")
+    @RequestMapping(value = "")
     public ModelAndView showSettingsPage() {
-        ModelAndView modelAndView = new ModelAndView("settingsTest");
+        ModelAndView modelAndView = new ModelAndView("account");
         modelAndView.addObject("user",
                 userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
         return modelAndView;
@@ -45,19 +45,30 @@ public class UserController {
 
     @RequestMapping(value = "/settings/password", method = RequestMethod.POST)
     public ModelAndView changePassword(@RequestParam(name = "old-password") String oldPassword,
-                                       @RequestParam(name = "password") String newPassword) {
+                                       @RequestParam(name = "new-password") String newPassword) {
         ModelAndView modelAndView = new ModelAndView();
         User user = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         modelAndView.addObject("user", user);
         if (user.getPassword().equals(oldPassword)) {
             user.setPassword(newPassword);
-            modelAndView.setViewName("settingsTest");
-            modelAndView.addObject("msg", "Password successfully changed.");
+            modelAndView.setViewName("manage-account");
+            modelAndView.addObject("msg", "Password was successfully changed.");
+            modelAndView.addObject("status", "success");
             userService.saveNewUser(user);
         } else {
-            modelAndView.setViewName("settingsTest");
+            modelAndView.setViewName("manage-account");
             modelAndView.addObject("msg", "Your old password incorrect.");
+            modelAndView.addObject("status", "error");
         }
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/settings")
+    public ModelAndView showChangeSettingsPage() {
+        ModelAndView modelAndView = new ModelAndView("manage-account");
+        User user = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        modelAndView.addObject("user", user);
+
         return modelAndView;
     }
 
@@ -65,6 +76,7 @@ public class UserController {
     public ModelAndView changeSettings(@RequestParam(name = "name") String name,
                                        @RequestParam(name = "surname") String surname,
                                        @RequestParam(name = "birthday") String birthday,
+                                       @RequestParam(name = "phone") String phone,
                                        @RequestParam(name = "country") String country,
                                        @RequestParam(name = "city") String city,
                                        @RequestParam(name = "street") String street,
@@ -77,9 +89,11 @@ public class UserController {
         user.setBirthday(birthday);
         user.setSurname(surname);
         user.setAddress(address);
+        user.setPhone(phone);
         userService.saveNewUser(user);
-        ModelAndView modelAndView = new ModelAndView("settingsTest");
+        ModelAndView modelAndView = new ModelAndView("manage-account");
         modelAndView.addObject("msg2", "Settings successfully changed.");
+        modelAndView.addObject("status2", "success");
         modelAndView.addObject("user", user);
         return modelAndView;
     }
@@ -90,7 +104,7 @@ public class UserController {
         Set<Product> products = (Set<Product>) request.getSession().getAttribute("bag");
         modelAndView.addObject("bag", products);
         modelAndView.addObject("paymentTypes", paymentService.getPaymentTypes());
-        modelAndView.addObject("totalPrice", bagService.figureOutTotalPrice(products));
+        //modelAndView.addObject("totalPrice", bagService.figureOutTotalPrice(products));
 
         return modelAndView;
     }
@@ -98,10 +112,10 @@ public class UserController {
     @RequestMapping(value = "/ordering", method = RequestMethod.POST)
     public String addNewOrder(@RequestParam(name = "type") String type, HttpServletRequest request) {
         Set<Product> products = (Set<Product>) request.getSession().getAttribute("bag");
-        String totalPrice = bagService.figureOutTotalPrice(products);
+        String totalPrice = "2000";//bagService.figureOutTotalPrice(products);
         Payment payment = paymentService.createNewPayment(type, totalPrice);
         User user = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        orderService.addNewOrder("COURIER", user, payment, products);
+        //orderService.addNewOrder("COURIER", user, payment, products);
         products.clear();
         return "redirect:/home";
     }

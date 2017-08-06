@@ -1,0 +1,71 @@
+.login-content {
+    margin-top: 10px;
+    height: 300px;
+// background-color: rgba(153,153,153,0.35);
+// background-color: rgba(255,255,255);
+}
+
+#headerwrap h4 {
+    font-size: 30px;
+    font-weight: 600;
+}
+.login-form{
+    margin-top: 50px;
+    color: black;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.login-form .row {
+    margin-bottom: 20px;
+}
+
+.login-form input {
+    border-radius: 3px;
+    width: 350px;
+    color: black;
+    padding: 5px 6px 5px;
+    border: 2px solid rgba(255, 255, 255, 0.0);
+//border: 2px solid black;
+    background-color: rgba(255,255,255, 0.6);
+    outline: none;
+}
+
+
+.login-form .submit-button {
+    letter-spacing: 1px;
+    background-color: transparent;
+//border: none;
+    border: 2px solid white;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    transition: all ease-in-out 0.4s;
+}
+
+.login-form .submit-button:hover {
+    border: 2px solid rgba(255,255,255,0.0);
+//border: none;
+    background-color: rgba(255,255,255,0.2);
+//color: black;
+//font-weight: 100;
+//color: #d80000;
+//border-color: #d80000;
+}
+
+.sign-up {
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.sign-up a {
+    color: white;
+    border-bottom: 2px solid transparent;
+    transition: all ease-in-out 0.4s;
+}
+
+.sign-up a:hover {
+    border-color: white;
+//color: #d80000;
+}

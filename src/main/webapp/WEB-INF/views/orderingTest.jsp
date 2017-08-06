@@ -34,17 +34,17 @@
             </div>
         </c:forEach>
         <div class="col-lg-2 col-lg-offset-5">
-            <form action="/user/ordering" method="post">
                 <select name="type" required>
                     <c:forEach var="type" items="${paymentTypes}">
                         <option value="${type}">${type}</option>
                     </c:forEach>
                 </select>
                 <button type="submit">Order</button>
-            </form>
+
         </div>
     </div>
 
 </div>
+</form>
 </body>
 </html>

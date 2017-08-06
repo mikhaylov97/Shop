@@ -2,6 +2,7 @@ package com.tsystems.shop.dao.impl;
 
 import com.tsystems.shop.dao.api.OrderDao;
 import com.tsystems.shop.model.Order;
+import com.tsystems.shop.model.OrdersProducts;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,5 +61,13 @@ public class OrderDaoImpl implements OrderDao {
         em.merge(order);
         em.flush();
         return order;
+    }
+
+    @Override
+    @Transactional
+    public OrdersProducts savePartOfOrder(OrdersProducts ordersProducts) {
+        em.merge(ordersProducts);
+        em.flush();
+        return ordersProducts;
     }
 }

@@ -1,0 +1,103 @@
+#manage-address {
+    padding-top: 40px;
+    padding-bottom: 90px;
+}
+
+#manage-address h4 {
+    text-align: center;
+    color: black;
+}
+
+.main-context {
+    padding-top: 30px;
+}
+
+.back-button {
+    text-align: center;
+}
+
+.back-button a {
+    color: black;
+    letter-spacing: 1px;
+    border-bottom: 1px solid transparent;
+    transition: all ease-in-out 0.2s;
+}
+
+.back-button a:hover {
+    color: #d80000;
+    padding-bottom: 2px;
+    border-color: #d80000;
+}
+
+#title {
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.address-title {
+    font-weight: 600;
+    font-size: 13px;
+    color: black;
+    padding-bottom: 7px;
+}
+
+.account-info .placeholder {
+    font-size: 12px;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.account-info > div {
+    padding-top: 8px;
+    padding-bottom: 5px;
+}
+
+.account-info {
+    text-align: center;
+}
+
+.account-info .input-field input{
+    color: black;
+    width: 80%;
+    padding: 8px 10px 8px;
+    border: 1px solid black;
+    outline: none;
+}
+
+.account-info .input-field input:focus{
+    border: 2px solid black;
+}
+
+.manage-address-button {
+    margin-top: 20px;
+}
+
+.manage-address-button button {
+    color: white;
+    padding: 10px 60px 10px;
+    background-color: black;
+    font-weight: 600;
+    border: none;
+    transition: all ease-in-out 0.4s;
+}
+
+.manage-address-button button:hover {
+    background-color: #d80000;
+}
+
+.message {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.error-message {
+    color: #d80000;
+}
+
+.success-message {
+    color: green;
+}

@@ -1,0 +1,108 @@
+#account-overview {
+    padding-top: 40px;
+    padding-bottom: 90px;
+}
+
+#account-overview h4, h5 {
+    text-align: center;
+    color: black;
+}
+
+#greeting {
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+#title {
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+.address-title, .history-title {
+    font-weight: 600;
+    font-size: 13px;
+    color: black;
+    padding-bottom: 7px;
+}
+
+.main-context {
+    padding-top: 50px;
+}
+
+.account-info {
+    padding-top: 10px;
+}
+
+.account-info .name, .account-info .email, .account-info .birthday,
+.account-info .phone {
+    letter-spacing: 1px;
+    font-size: 15px;
+}
+
+.account-info .birthday a,.account-info .email a,.account-info .name a,.account-info .phone a{
+    color: black;
+    font-size: 16px;
+    transition: all ease-in-out 0.2s;
+}
+
+.account-info .birthday a:hover,.account-info .email a:hover,.account-info .name a:hover,.account-info .phone a:hover {
+    color: #d80000;
+}
+
+.info-message-account {
+    padding-top: 20px;
+    padding-bottom: 25px;
+    color: black;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.manage-address-button {
+    padding-bottom: 30px;
+}
+
+.manage-address-button a {
+    color: black;
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-size: 18px;
+    border-bottom: 2px solid transparent;
+    transition: all ease-in-out 0.3s;
+}
+
+.manage-address-button a:hover {
+    color: #d80000;
+    padding-bottom: 5px;
+    border-color: #d80000;
+}
+
+.info-message-history {
+    letter-spacing: 1px;
+    font-size: 15px;
+}
+
+.logout-button {
+    text-align:center;
+}
+
+.logout-button a {
+    color: black;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all ease-in-out 0.3s;
+    border-bottom: 2px solid transparent;
+}
+
+.logout-button a:hover {
+    color: #d80000;
+    border-color: #d80000;
+    padding-bottom: 5px;
+}
+
+.address {
+    padding-top: 6px;
+    padding-bottom: 8px;
+    font-size: 15px;
+    letter-spacing: 1px;
+}

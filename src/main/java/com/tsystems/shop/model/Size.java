@@ -18,16 +18,16 @@ public class Size implements Serializable{
     @Column(name = "available_number", nullable = false)
     private String availableNumber;
 
-    @Column(name = "cost_dependency", nullable = false)
-    private String costDependency;
+//    @Column(name = "cost_dependency", nullable = false)
+//    private String costDependency;
 
     public Size() {
     }
 
-    public Size(String size, String availableNumber, String costDependency) {
+    public Size(String size, String availableNumber) {
         this.size = size;
         this.availableNumber = availableNumber;
-        this.costDependency = costDependency;
+        //this.costDependency = costDependency;
     }
 
     public long getId() {
@@ -54,11 +54,11 @@ public class Size implements Serializable{
         this.availableNumber = availableNumber;
     }
 
-    public String getCostDependency() {
-        return costDependency;
-    }
-
-    public void setCostDependency(String costDependency) {
-        this.costDependency = costDependency;
-    }
+//    public String getCostDependency() {
+//        return costDependency;
+//    }
+//
+//    public void setCostDependency(String costDependency) {
+//        this.costDependency = costDependency;
+//    }
 }

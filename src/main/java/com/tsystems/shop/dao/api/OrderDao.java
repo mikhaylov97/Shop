@@ -2,6 +2,7 @@ package com.tsystems.shop.dao.api;
 
 
 import com.tsystems.shop.model.Order;
+import com.tsystems.shop.model.OrdersProducts;
 
 import java.util.List;
 
@@ -12,4 +13,5 @@ public interface OrderDao {
     List<Order> findAllOrders();
     Order findOrderById(long id);
     Order saveOrder(Order order);
+    OrdersProducts savePartOfOrder(OrdersProducts ordersProducts);
 }

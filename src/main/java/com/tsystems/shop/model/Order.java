@@ -2,6 +2,7 @@ package com.tsystems.shop.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -27,20 +28,27 @@ public class Order implements Serializable {
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "orders_products",
-            joinColumns = {@JoinColumn(name = "order_id")}, inverseJoinColumns = {@JoinColumn(name = "product_id")})
-    private Set<Product> products;
+    @Column(name = "address", nullable = false)
+    private String address;
+
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name = "orders_products",
+//            joinColumns = {@JoinColumn(name = "order_id")}, inverseJoinColumns = {@JoinColumn(name = "product_id")})
+//    private Set<Product> products;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private Set<OrdersProducts> products = new HashSet<>();
 
     public Order() {
     }
 
-    public Order(String shippingMethod, String orderStatus, User user, Payment payment, Set<Product> products) {
+    public Order(String address, String shippingMethod, String orderStatus, User user, Payment payment) { //Set<Product> products) {
         this.shippingMethod = shippingMethod;
         this.orderStatus = orderStatus;
         this.user = user;
         this.payment = payment;
         this.products = products;
+        this.address = address;
     }
 
     public long getId() {
@@ -83,11 +91,27 @@ public class Order implements Serializable {
         this.payment = payment;
     }
 
-    public Set<Product> getProducts() {
+    public Set<OrdersProducts> getProducts() {
         return products;
     }
 
-    public void setProducts(Set<Product> products) {
+    public void setProducts(Set<OrdersProducts> products) {
         this.products = products;
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    //    public Set<Product> getProducts() {
+//        return products;
+//    }
+//
+//    public void setProducts(Set<Product> products) {
+//        this.products = products;
+//    }
 }

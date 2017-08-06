@@ -12,11 +12,16 @@ public class Category  implements Serializable {
     @Column(name = "category_id")
     private long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "image", nullable = false)
-    private String image;
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "parent_id")
+//    private Set<Category> childs = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Category parent;
 
     @Column(name = "hierarchy_number", nullable = false)
     private String hierarchyNumber;
@@ -24,10 +29,11 @@ public class Category  implements Serializable {
     public Category() {
     }
 
-    public Category(String name, String image, String hierarchyNumber) {
+    public Category(String name,String hierarchyNumber, Category parent) {
         this.name = name;
-        this.image = image;
+        //this.childs = childs;
         this.hierarchyNumber = hierarchyNumber;
+        this.parent = parent;
     }
 
     public long getId() {
@@ -46,13 +52,13 @@ public class Category  implements Serializable {
         this.name = name;
     }
 
-    public String getImage() {
-        return image;
-    }
+//    public Set<Category> getChilds() {
+//        return childs;
+//    }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
+//    public void setChilds(Set<Category> childs) {
+//        this.childs = childs;
+//    }
 
     public String getHierarchyNumber() {
         return hierarchyNumber;
@@ -60,5 +66,13 @@ public class Category  implements Serializable {
 
     public void setHierarchyNumber(String hierarchyNumber) {
         this.hierarchyNumber = hierarchyNumber;
+    }
+
+    public Category getParent() {
+        return parent;
+    }
+
+    public void setParent(Category parent) {
+        this.parent = parent;
     }
 }

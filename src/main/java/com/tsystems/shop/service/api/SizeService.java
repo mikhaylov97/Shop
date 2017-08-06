@@ -7,4 +7,5 @@ import java.util.Set;
 
 public interface SizeService {
     Set<Size> parseString(String sizes);
+    int getAvaiableAmountOfSize(int sizeId);
 }

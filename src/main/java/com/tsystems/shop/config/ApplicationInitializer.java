@@ -31,4 +31,6 @@ public class ApplicationInitializer implements WebApplicationInitializer{
         encodingFilter.setInitParameter("forceEncoding", "true");
         encodingFilter.addMappingForUrlPatterns(null, true, "/*");
     }
+
+
 }

@@ -18,23 +18,15 @@ public class Attribute implements Serializable {
             joinColumns = {@JoinColumn(name = "attribute_id")}, inverseJoinColumns = {@JoinColumn(name = "size_id")})
     private Set<Size> sizes;
 
-    @Column(name = "color", nullable = false)
-    private String color;
-
-    @Column(name = "sex", nullable = false)
-    private String sex;
-
-    @Column(name = "model", nullable = false)
-    private String model;
+    @Column(name = "description", nullable = false)
+    private String description;
 
     public Attribute() {
     }
 
-    public Attribute(Set<Size> sizes, String color, String sex, String model) {
+    public Attribute(Set<Size> sizes, String description) {
         this.sizes = sizes;
-        this.color = color;
-        this.sex = sex;
-        this.model = model;
+        this.description = description;
     }
 
     public long getId() {
@@ -53,27 +45,11 @@ public class Attribute implements Serializable {
         this.sizes = sizes;
     }
 
-    public String getColor() {
-        return color;
+    public String getDescription() {
+        return description;
     }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

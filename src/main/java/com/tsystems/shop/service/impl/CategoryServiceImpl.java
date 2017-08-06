@@ -23,4 +23,19 @@ public class CategoryServiceImpl implements CategoryService {
     public Category findCategoryById(String id) {
         return categoryDao.findCategoryById(id);
     }
+
+    @Override
+    public List<Category> findRootCategories() {
+       return categoryDao.findRootCategories();
+    }
+
+    @Override
+    public List<Category> findChilds(Category category) {
+        return categoryDao.findChilds(category);
+    }
+
+    @Override
+    public List<Category> findCategoriesByHierarchyNumber(String hierarchyNumber) {
+        return categoryDao.findCategoriesByHierarchyNumber(hierarchyNumber);
+    }
 }

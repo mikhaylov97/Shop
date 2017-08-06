@@ -14,9 +14,14 @@ public class SizeServiceImpl implements SizeService {
         Set<Size> sizeSet = new HashSet<>();
         for (String string : sizes.split(",")) {
             String[] sizeItem = string.split("-");
-            Size size = new Size(sizeItem[0], sizeItem[2], sizeItem[1]);
+            Size size = new Size(sizeItem[0], sizeItem[2]);
             sizeSet.add(size);
         }
         return sizeSet;
+    }
+
+    @Override
+    public int getAvaiableAmountOfSize(int sizeId) {
+        return 0;
     }
 }
