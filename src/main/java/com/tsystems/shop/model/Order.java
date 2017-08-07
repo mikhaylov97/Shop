@@ -2,8 +2,8 @@ package com.tsystems.shop.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -14,8 +14,8 @@ public class Order implements Serializable {
     @Column(name = "order_id")
     private long id;
 
-    @Column(name = "shipping_method", nullable = false)
-    private String shippingMethod;
+//    @Column(name = "shipping_cost", nullable = false)
+//    private String shippingMethod;
 
     @Column(name = "order_status", nullable = false)
     private String orderStatus;
@@ -31,24 +31,32 @@ public class Order implements Serializable {
     @Column(name = "address", nullable = false)
     private String address;
 
+    @Column(name = "date", nullable = false)
+    private String date;
+
+    @Column(name = "phone", nullable = false)
+    private String phone;
+
 //    @ManyToMany(fetch = FetchType.EAGER)
 //    @JoinTable(name = "orders_products",
 //            joinColumns = {@JoinColumn(name = "order_id")}, inverseJoinColumns = {@JoinColumn(name = "product_id")})
 //    private Set<Product> products;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private Set<OrdersProducts> products = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrdersProducts> products = new ArrayList<>();
 
     public Order() {
     }
 
-    public Order(String address, String shippingMethod, String orderStatus, User user, Payment payment) { //Set<Product> products) {
-        this.shippingMethod = shippingMethod;
+    public Order(String address, String orderStatus,
+                 User user, Payment payment, String date, String phone) { //Set<Product> products) {
+       // this.shippingMethod = shippingMethod;
         this.orderStatus = orderStatus;
         this.user = user;
         this.payment = payment;
-        this.products = products;
         this.address = address;
+        this.date = date;
+        this.phone = phone;
     }
 
     public long getId() {
@@ -59,13 +67,13 @@ public class Order implements Serializable {
         this.id = id;
     }
 
-    public String getShippingMethod() {
-        return shippingMethod;
-    }
-
-    public void setShippingMethod(String shippingMethod) {
-        this.shippingMethod = shippingMethod;
-    }
+//    public String getShippingMethod() {
+//        return shippingMethod;
+//    }
+//
+//    public void setShippingMethod(String shippingMethod) {
+//        this.shippingMethod = shippingMethod;
+//    }
 
     public String getOrderStatus() {
         return orderStatus;
@@ -91,11 +99,11 @@ public class Order implements Serializable {
         this.payment = payment;
     }
 
-    public Set<OrdersProducts> getProducts() {
+    public List<OrdersProducts> getProducts() {
         return products;
     }
 
-    public void setProducts(Set<OrdersProducts> products) {
+    public void setProducts(List<OrdersProducts> products) {
         this.products = products;
     }
 
@@ -105,6 +113,22 @@ public class Order implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     //    public Set<Product> getProducts() {

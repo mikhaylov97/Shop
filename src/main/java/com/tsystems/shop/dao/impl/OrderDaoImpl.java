@@ -70,4 +70,18 @@ public class OrderDaoImpl implements OrderDao {
         em.flush();
         return ordersProducts;
     }
+
+    @Override
+    public List<Order> findDoneOrders() {
+        Query query = em.createQuery("SELECT o FROM Order o WHERE orderStatus = 'DONE'");
+        List<Order> orders = (List<Order>) query.getResultList();
+        return orders;
+    }
+
+    @Override
+    public List<Order> findActiveOrders() {
+        Query query = em.createQuery("SELECT o FROM Order o WHERE orderStatus != 'DONE'");
+        List<Order> orders = (List<Order>) query.getResultList();
+        return orders;
+    }
 }

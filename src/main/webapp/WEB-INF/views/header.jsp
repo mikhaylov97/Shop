@@ -14,7 +14,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#"><i class="fa fa-search fa-lg"></i></a></li>
                 <sec:authorize access="hasRole('ROLE_USER') or hasRole('ROLE_ANONYMOUS')">
-                    <li><a href="/user"><i class="fa fa-user fa-lg"></i></a></li>
+                    <li><a href="/redirect"><i class="fa fa-user fa-lg"></i></a></li>
                     <li class="navbar-bag">
                         <a href="/bag">
                             <div>
@@ -38,6 +38,7 @@
                 </sec:authorize>
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                     <li><a href="/admin/products/add"><i class="fa fa-plus fa-lg"></i></a></li>
+                    <li><a href="/admin/orders"><i class="fa fa-pencil-square-o fa-lg"></i></a></li>
                 </sec:authorize>
                 <sec:authorize access="hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')">
                     <li><a href="/logout"><i class="fa fa-sign-out fa-lg"></i></a></li>

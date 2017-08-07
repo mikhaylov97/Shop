@@ -1,0 +1,355 @@
+#bag-context {
+    padding-top: 30px;
+    padding-bottom: 110px;
+}
+
+#title {
+    text-align: center;
+    font-size: 30px;
+    color: black;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.bag-context {
+// border-left: 1px solid black;
+// border-top: 1px solid black;
+    border: 1px solid rgba(0,0,0,0.1);
+    background-color: #fafafa;
+}
+
+.bag-info {
+    padding: 20px 10px 30px;
+}
+
+.bag-discount .result, .bag-shipping .result, .bag-subtotal .result, .bag-total .result {
+    text-align: right;
+}
+
+.bag-shipping div, .bag-discount div, .bag-subtotal div {
+// padding-top: 10px;
+// padding-bottom: 10px;
+    color: #666;;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.bag-shipping .result {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.bag-total .result {
+    display: flex;
+    justify-content: flex-end;
+}
+
+i {
+    padding-top: 2px;
+}
+
+.bag-total div {
+    padding-top: 15px;
+    color: #444;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.bag-total .total-price {
+    padding-top: 0;
+}
+
+.bag-subtotal .result {
+    display: flex;
+    justify-content: flex-end;
+}
+.bag-shipping {
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+}
+
+.checkout-button {
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+    background-color: black;
+    height: 40px;
+    padding-top: 10px;
+}
+
+.checkout-button a {
+    padding: 10px 164px 10px;
+    font-weight: 600;
+    color: white;
+}
+
+.checkout-button:hover {
+    background-color: #d80000;
+}
+
+.continue-button {
+    padding-top: 10px;
+    color: black;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+.continue-button a {
+    color: black;
+    border-bottom: 1px solid transparent;
+    transition: all ease-in-out 0.2s;
+}
+
+.continue-button a:hover {
+    color: #d80000;
+    border-color: #d80000;
+}
+
+.info-context {
+    text-align: center;
+}
+
+.info-message {
+    padding-top: 5px;
+    padding-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.info-context .continue-button {
+    font-weight: 600;
+}
+
+.bag-item {
+    margin-bottom: 10px;
+}
+
+.bag-item .image {
+    padding: 0 6px 0;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,0.3);
+// border-left: 4px solid gray;
+// border-right: 4px solid gray;
+    border-radius: 6px;
+}
+
+.bag-item .image img {
+    width: 100%;
+}
+
+.bag-item-info {
+    color: black;
+    font-size: 14px;
+}
+
+.bag-item-info .main-info .name a{
+    color: #444;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all ease-in-out 0.3s;
+}
+
+.bag-item-info .main-info .name a:hover{
+    color: #d80000;
+}
+
+.bag-item-info .main-info .size {
+    font-size: 13px;
+    color: #666;
+    font-weight: 300;
+}
+
+.bag-item-info .main-info .amount {
+    font-size: 13px;
+    color: #666;
+    font-weight: 300;
+}
+
+.cost-info {
+    text-align: right;
+    font-weight: 600;
+    color: #333;
+    font-size: 17px;
+}
+
+.bag-item-info {
+    padding-left: 4px;
+    padding-right: 0;
+}
+
+.bag-items {
+    padding-top: 20px;
+    padding-left: 45px;
+}
+
+.discount-code {
+    margin-top: 20px;
+    border-top: 1px solid rgba(0,0,0,0.3);
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+.discount-code input {
+    outline: none;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,0.3);
+    height: 40px;
+    width: 100%;
+    border-radius: 3px;
+    padding: 6px 10px 6px;
+}
+
+.pay-button {
+    padding: 40px 0 0;
+    text-align: center;
+}
+
+.pay-button button {
+    padding: 8px 40px 8px;
+    border: none;
+    background-color: black;
+    color: white;
+    outline: none;
+    transition: all ease-in-out 0.3s;
+}
+
+.pay-button button:hover {
+    background-color: #d80000;
+}
+
+.payment h4 {
+    text-align: center;
+    letter-spacing: 2px;
+    font-weight: 600;
+    font-size: 14px;
+    color: black;
+    border-bottom: 1px solid black;
+    padding-bottom: 5px;
+}
+
+.payment-type {
+    padding: 0 0 20px;
+    text-align: center;
+    color: black;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.payment-type a {
+    color: black;
+    border-bottom: 2px solid transparent;
+    transition: all ease-in-out 0.3s;
+}
+
+.payment-type a:hover {
+    color: #d80000;
+    border-color: #d80000;
+}
+
+.payment-type .active {
+    color: #d80000;
+    border-color: #d80000;
+}
+
+.shipping-address {
+    text-align: center;
+}
+
+.shipping-address input {
+    margin: 8px 6px 8px;
+    width: 45%;
+    padding: 8px 10px 8px;
+    border-radius: 3px;
+    border: 1px solid black;
+    outline: none;
+    color: black;
+}
+
+.shipping-method input {
+    display: none;
+}
+
+.radio-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid black;
+    border-radius: 10px;
+    position: relative;
+}
+
+.radio-custom {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.radio:checked + .radio-custom::before {
+    content: "";             /* Добавляем наш псевдоэлемент */
+    display: block;          /* Делаем его блочным элементом */
+    position: absolute;      /* Позиционируем его абсолютным образом */
+
+    /* Задаем расстояние от верхней, правой, нижней и левой границы */
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    left: 2px;
+
+    background-color: black;     /* Добавляем фон. Если требуется, можете поставить сюда картинку в виде "галочки", которая будет символизировать, что чекбокс отмечен */
+    border-radius: 2px;
+}
+
+.radio-custom,
+.radio:checked + .radio-custom::before {
+    border-radius: 50%;
+}
+
+.shipping-method label {
+    display: flex;
+// justify-content: space-between;
+    width: 100%;
+}
+
+.shipping-method .method .method-name {
+    color: black;
+    font-weight: 300;
+    font-size: 16px;
+}
+
+.shipping-method .method .method-price {
+    display: flex;
+    text-align: right;
+    color: black;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.card-info {
+    text-align: center;
+}
+
+.card-prototype {
+    height: 200px;
+    border: 2px solid black;
+    padding: 20px 10px 10px;
+}
+
+.card-info .user-name, .card-info .card-date,
+.card-info .card-cvv, .card-info .card-number {
+    padding: 0 5px 0;
+}
+
+.card-info input {
+    color: black;
+    border: 1px solid black;
+    padding: 8px 10px 8px;
+    border-radius: 3px;
+    width: 100%;
+    outline: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

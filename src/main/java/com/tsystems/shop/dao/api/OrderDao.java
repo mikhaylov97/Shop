@@ -14,4 +14,6 @@ public interface OrderDao {
     Order findOrderById(long id);
     Order saveOrder(Order order);
     OrdersProducts savePartOfOrder(OrdersProducts ordersProducts);
+    List<Order> findDoneOrders();
+    List<Order> findActiveOrders();
 }

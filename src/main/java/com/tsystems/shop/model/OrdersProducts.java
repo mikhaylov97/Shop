@@ -16,7 +16,7 @@ public class OrdersProducts implements Serializable {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH})
     @JoinColumn(name = "product_id")
     private Product product;
 

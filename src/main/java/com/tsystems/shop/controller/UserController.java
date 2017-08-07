@@ -1,9 +1,9 @@
 package com.tsystems.shop.controller;
 
-import com.tsystems.shop.model.Address;
-import com.tsystems.shop.model.Payment;
-import com.tsystems.shop.model.Product;
-import com.tsystems.shop.model.User;
+import com.tsystems.shop.model.*;
+import com.tsystems.shop.model.enums.OrderStatusEnum;
+import com.tsystems.shop.model.enums.PaymentStatusEnum;
+import com.tsystems.shop.model.enums.PaymentTypeEnum;
 import com.tsystems.shop.service.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -40,6 +44,8 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView("account");
         modelAndView.addObject("user",
                 userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
+        modelAndView.addObject("orders",
+                orderService.findOrdersByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
         return modelAndView;
     }
 
@@ -113,7 +119,7 @@ public class UserController {
     public String addNewOrder(@RequestParam(name = "type") String type, HttpServletRequest request) {
         Set<Product> products = (Set<Product>) request.getSession().getAttribute("bag");
         String totalPrice = "2000";//bagService.figureOutTotalPrice(products);
-        Payment payment = paymentService.createNewPayment(type, totalPrice);
+       // Payment payment = paymentService.createNewPayment(type, totalPrice);
         User user = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         //orderService.addNewOrder("COURIER", user, payment, products);
         products.clear();
@@ -126,6 +132,78 @@ public class UserController {
         modelAndView.addObject("orders",
                 orderService.findOrdersByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
 
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/checkout")
+    public ModelAndView showCheckoutPage(HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("checkout");
+        modelAndView.addObject("user",
+                userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
+        modelAndView.addObject("bagTotalPrice", bagService.figureOutTotalPrice((List<BagProduct>)session.getAttribute("bag")));
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/checkout/cash", method = RequestMethod.POST)
+    public ModelAndView checkoutWithCash(@RequestParam(name = "country") String country,
+                                         @RequestParam(name = "postcode") String postcode,
+                                         @RequestParam(name = "city") String city,
+                                         @RequestParam(name = "house") String house,
+                                         @RequestParam(name = "street") String street,
+                                         @RequestParam(name = "apartment") String apartment,
+                                         @RequestParam(name = "phone") String phone,
+                                         @RequestParam(name = "shipping-method") String methodCost,
+                                         HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("checkout");
+        modelAndView.addObject("successMsg", "Order successfully completed");
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        String date = dtf.format(now);
+
+        String address = country + ", " + city + " (" + postcode + "), " + street + " " + house + ", " + apartment;
+        String totalPrice = String.valueOf(Long.parseLong(bagService.figureOutTotalPrice((List<BagProduct>)session.getAttribute("bag")))
+                + Long.parseLong(methodCost));
+        Payment payment = new Payment(PaymentTypeEnum.CASH.name(), totalPrice, methodCost, PaymentStatusEnum.AWAITING_PAYMENT.name());
+        User user = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        orderService.addNewOrder(address, OrderStatusEnum.AWAITING_SHIPMENT.name(), user,
+                payment, date, phone, (List<BagProduct>)session.getAttribute("bag"));
+
+        ((List<BagProduct>)session.getAttribute("bag")).clear();
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/checkout/card", method = RequestMethod.POST)
+    public ModelAndView checkoutWithCard(@RequestParam(name = "country") String country,
+                                         @RequestParam(name = "postcode") String postcode,
+                                         @RequestParam(name = "city") String city,
+                                         @RequestParam(name = "house") String house,
+                                         @RequestParam(name = "street") String street,
+                                         @RequestParam(name = "apartment") String apartment,
+                                         @RequestParam(name = "phone") String phone,
+                                         @RequestParam(name = "shipping-method") String methodCost,
+                                         HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("checkout");
+        modelAndView.addObject("successMsg", "Order successfully completed");
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        String date = dtf.format(now);
+
+        String address = country + ", " + city + " (" + postcode + "), " + street + " " + house + ", " + apartment;
+        String totalPrice = String.valueOf(Long.parseLong(bagService.figureOutTotalPrice((List<BagProduct>)session.getAttribute("bag")))
+                + Long.parseLong(methodCost));
+        Payment payment = new Payment(PaymentTypeEnum.CASH.name(), totalPrice, methodCost, PaymentStatusEnum.AWAITING_PAYMENT.name());
+        User user = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        orderService.addNewOrder(address, OrderStatusEnum.AWAITING_SHIPMENT.name(), user,
+                payment, date, phone, (List<BagProduct>)session.getAttribute("bag"));
+
+        ((List<BagProduct>)session.getAttribute("bag")).clear();
 
         return modelAndView;
     }

@@ -62,7 +62,12 @@ public class AdminController {
                                       @RequestParam(name = "description") String description) {
         ModelAndView modelAndView = new ModelAndView();
         if (image.isEmpty()) {
-            modelAndView.setViewName("redirect:/add-product");
+            modelAndView.setViewName("add-product");
+            modelAndView.addObject("oldName", name);
+            modelAndView.addObject("oldPrice", price);
+            modelAndView.addObject("oldDescription", description);
+            modelAndView.addObject("oldSizes", sizes.getSizes());
+            modelAndView.addObject("oldCategory", category);
             modelAndView.addObject("errorMessage", "You didn't choose the image");
             modelAndView.addObject("options", categoryService.findCategoriesByHierarchyNumber("2"));
             modelAndView.addObject("sizes", new AddProductForm());
@@ -131,12 +136,31 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/orders")
-    public ModelAndView showOrdersPage(@RequestParam(name = "orderStatus", required = false) String status) {
-        ModelAndView modelAndView = new ModelAndView("ordersHistoryTest");
-        if (status == null) status = "all";
-        modelAndView.addObject("types", orderService.findOrderStatusTypes());
-        if (status.equals("all")) modelAndView.addObject("orders", orderService.findAllOrders());
-        else modelAndView.addObject("orders", orderService.findOrderByStatusType(status));
+    public ModelAndView showOrdersPage() {
+        ModelAndView modelAndView = new ModelAndView("management");
+        modelAndView.addObject("ordersActive", orderService.findActiveOrders());
+        modelAndView.addObject("ordersDone", orderService.findDoneOrders());
+        modelAndView.addObject("orderStatuses", OrderStatusEnum.values());
+        modelAndView.addObject("paymentStatuses", PaymentStatusEnum.values());
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/orders/save/{id}", method = RequestMethod.POST)
+    public ModelAndView saveNewOrderInstance(@PathVariable(name = "id") String id,
+                                             @RequestParam(name = "payment-status") String paymentStatus,
+                                             @RequestParam(name = "order-status") String orderStatus) {
+        ModelAndView modelAndView = new ModelAndView("redirect:/admin/orders");
+        Order order = orderService.findOrderById(id);
+        if (paymentStatus.equalsIgnoreCase(PaymentStatusEnum.PAID.name())
+                && orderStatus.equalsIgnoreCase(OrderStatusEnum.DELIVERED.name())) {
+            order.getPayment().setPaymentStatus(paymentStatus);
+            order.setOrderStatus(OrderStatusEnum.DONE.name());
+        } else {
+            order.getPayment().setPaymentStatus(paymentStatus);
+            order.setOrderStatus(orderStatus);
+        }
+        orderService.saveOrder(order);
 
         return modelAndView;
     }

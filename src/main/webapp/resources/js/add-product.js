@@ -19,7 +19,7 @@ $(document).ready(function() {
     var add_button      = $("#add-size-button"); //Add button ID
 
     var x = 0; //initlal text box count
-    x = wrapper.children.length;
+    x = wrapper.children('.size-line').length;
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
         if(x < max_fields){ //max input box allowed

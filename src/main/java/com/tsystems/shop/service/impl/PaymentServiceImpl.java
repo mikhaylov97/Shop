@@ -18,11 +18,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     PaymentDao paymentDao;
 
-    @Override
-    public Payment createNewPayment(String type, String price) {
-        Payment payment = new Payment(type, price, PaymentStatusEnum.AWAITING_PAYMENT.name());
-        return payment;
-    }
 
     @Override
     public List<String> getPaymentTypes() {

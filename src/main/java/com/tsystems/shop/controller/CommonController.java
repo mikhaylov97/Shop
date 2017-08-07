@@ -4,6 +4,7 @@ import com.tsystems.shop.model.BagProduct;
 import com.tsystems.shop.model.Category;
 import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.User;
+import com.tsystems.shop.model.enums.UserRoleEnum;
 import com.tsystems.shop.service.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -74,8 +75,22 @@ public class CommonController {
 
     @RequestMapping(value = "/login")
     public String showLoginPage() {
-        if (isCurrentAuthenticationAnonymous()) return "login";
-        else return "redirect:/home";
+        return "login";
+    }
+
+    @RequestMapping(value = "/redirect")
+    public String redirectToAccount() {
+        if (isCurrentAuthenticationAnonymous()) {
+            return "redirect:/login";
+        }
+        else {
+            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+            String role = userService.findUserByEmail(userName).getRole();
+            if (role.equals(UserRoleEnum.ROLE_USER.name())) return "redirect:/user";
+            if (role.equals(UserRoleEnum.ROLE_ADMIN.name())
+                    || role.equals(UserRoleEnum.ROLE_SUPER_ADMIN.name())) return "redirect:/admin/orders";
+            return "redirect:/home";
+        }
     }
 
     @RequestMapping(value = "/signUp")

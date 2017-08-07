@@ -94,8 +94,16 @@
     font-weight: 600;
 }
 
-.item-main-info .item-name {
+.item-main-info .item-name a{
     color: black;
+    font-size: 22px;
+    font-weight: 600;
+    padding-bottom: 10px;
+    transition: all ease-in-out 0.3s;
+}
+
+.item-main-info .item-name a:hover{
+    color: #d80000;
     font-size: 22px;
     font-weight: 600;
     padding-bottom: 10px;

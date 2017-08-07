@@ -39,12 +39,12 @@
                                 <hr>
                                 <form action="/bag/delete/${product.id}" method="post">
                                     <div class="col-lg-5 item-image">
-                                        <img src="${product.image}" alt="Item">
+                                        <img src="/image/${product.name}" alt="Item">
                                     </div>
                                     <div class="col-lg-7 item-main-info">
                                         <div class="col-lg-10">
                                             <div class="item-name">
-                                                    ${product.name}
+                                                <a href="/catalog/${product.id}">${product.name}</a>
                                             </div>
                                             <div class="item-size">
                                                 <select name="sizeId" id="sizeId">
@@ -92,7 +92,7 @@
                                 </div>
                             </div>
                             <div class="checkout-button">
-                                <a href="#">Checkout</a>
+                                <a href="/user/checkout">Checkout</a>
                             </div>
                             <div class="continue-button">
                                 <a href="#">Continue Shopping</a>

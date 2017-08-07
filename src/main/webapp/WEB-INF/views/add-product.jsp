@@ -35,13 +35,37 @@
                     <div class="item-info">
                         <div class="item-name">
                             <!-- <h4>Ben-Day Tee</h4> -->
-                            <input type="text" name="name" placeholder="Name" required>
+                            <c:choose>
+                                <c:when test="${not empty oldName}">
+                                    <input type="text" name="name" placeholder="Name" value="${oldName}" required>
+                                </c:when>
+                                <c:otherwise>
+                                    <input type="text" name="name" placeholder="Name" required>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                         <div class="item-price">
-                            <i class="fa fa-usd"></i><input type="text" name="price" placeholder="Price" required>
+                            <c:choose>
+                                <c:when test="${not empty oldPrice}">
+                                    <i class="fa fa-usd"></i><input type="text" name="price" placeholder="Price" value="${oldPrice}" required>
+                                </c:when>
+                                <c:otherwise>
+                                    <i class="fa fa-usd"></i><input type="text" name="price" placeholder="Price" required>
+                                </c:otherwise>
+                            </c:choose>
+                            <%--<i class="fa fa-usd"></i><input type="text" name="price" placeholder="Price" required>--%>
                         </div>
                         <div class="item-size">
                             <h4>Add some sizes:</h4>
+                            <c:if test="${not empty oldSizes}">
+                                <c:forEach var="size" items="${oldSizes}" varStatus="status">
+                                    <div class="col-lg-12 size-line">
+                                        <input type="text" name="sizes[${status.count-1}].size" value="${size.size}" placeholder="Size" required/>
+                                        <input type="text" name="sizes[${status.count-1}].availableNumber" value="${size.availableNumber}" placeholder="Amount" required/>
+                                        <a href="#" class="remove-field"><i class="fa fa-times"></i></a>
+                                    </div>
+                                </c:forEach>
+                            </c:if>
                         </div>
                         <div class="add-size-button">
                             <button id="add-size-button" type="button"><i class="fa fa-plus"></i></button>
@@ -50,13 +74,27 @@
                             <h4>Choose the category:</h4>
                             <select name="category">
                                 <c:forEach var="category" items="${options}">
-                                    <option value="${category.id}">${category.parent.name}/${category.name}</option>
+                                    <c:choose>
+                                        <c:when test="${category.id eq oldCategory}">
+                                            <option value="${category.id}" selected>${category.parent.name}/${category.name}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="${category.id}">${category.parent.name}/${category.name}</option>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </c:forEach>
                             </select>
                         </div>
                         <div class="item-description">
                             <h4>Add some description:</h4>
-                            <textarea name="description" cols="50" rows="7" placeholder="Description" required></textarea>
+                            <c:choose>
+                                <c:when test="${not empty oldDescription}">
+                                    <textarea name="description" cols="50" rows="7" placeholder="Description" required>${oldDescription}</textarea>
+                                </c:when>
+                                <c:otherwise>
+                                    <textarea name="description" cols="50" rows="7" placeholder="Description" required></textarea>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
                 </div>

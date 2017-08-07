@@ -97,14 +97,6 @@
 .logout-button a:hover {
     color: #d80000;
     border-color: #d80000;
-    padding-bottom: 5px;
-}
-
-.address {
-    padding-top: 6px;
-    padding-bottom: 8px;
-    font-size: 15px;
-    letter-spacing: 1px;
 }
 
 .bag-item .image {
@@ -125,16 +117,8 @@
     font-size: 14px;
 }
 
-.bag-item-info .main-info .name a {
+.bag-item-info .main-info .name {
     color: #444;
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    transition: all ease-in-out 0.3s;
-}
-
-.bag-item-info .main-info .name a:hover {
-    color: #d80000;
     font-size: 16px;
     font-weight: 600;
     letter-spacing: 1px;
@@ -168,6 +152,7 @@
     border-bottom: 1px solid rgba(0,0,0,0.2);
     padding-bottom: 20px;
     padding-left: 5px;
+    margin-bottom: 30px;
 }
 
 .bag-item {
@@ -204,4 +189,43 @@
 
 .order-address .content {
     text-align: left;
+}
+
+.user-name a {
+    color: #666;
+    border-bottom: 2px solid transparent;
+    transition: all ease-in-out 0.2s;
+}
+
+.user-name a:hover {
+    color: #d80000;
+    border-color: #d80000;
+}
+
+.save-button {
+    text-align: center;
+    margin: 20px 0 10px;
+}
+
+.save-button button {
+    color: white;
+    background-color: black;
+    border: none;
+    padding: 10px 30px 10px;
+    transition: all ease-in-out 0.3s;
+}
+
+.save-button button:hover {
+    background-color: #d80000;
+}
+
+.payment-status select {
+    border: 1px solid black;
+    outline: none;
+    margin-bottom: 3px;
+}
+
+.order-status select {
+    border: 1px solid black;
+    outline: none;
 }

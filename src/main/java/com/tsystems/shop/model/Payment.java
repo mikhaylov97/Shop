@@ -18,15 +18,19 @@ public class Payment implements Serializable {
     @Column(name = "total_price", nullable = false)
     private String totalPrice;
 
+    @Column(name = "shipping_price", nullable = false)
+    private String shippingPrice;
+
     @Column(name = "payment_status", nullable = false)
     private String paymentStatus;
 
     public Payment() {
     }
 
-    public Payment(String paymentType, String totalPrice, String paymentStatus) {
+    public Payment(String paymentType, String totalPrice, String shippingPrice, String paymentStatus) {
         this.paymentType = paymentType;
         this.totalPrice = totalPrice;
+        this.shippingPrice = shippingPrice;
         this.paymentStatus = paymentStatus;
     }
 
@@ -60,5 +64,13 @@ public class Payment implements Serializable {
 
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public String getShippingPrice() {
+        return shippingPrice;
+    }
+
+    public void setShippingPrice(String shippingPrice) {
+        this.shippingPrice = shippingPrice;
     }
 }
