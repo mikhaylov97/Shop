@@ -8,12 +8,15 @@ import com.tsystems.shop.model.Size;
 import com.tsystems.shop.service.api.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+
+    private List<Product> tops = new ArrayList<>(10);
 
     @Autowired
     private ProductDao productDao;
@@ -57,5 +60,29 @@ public class ProductServiceImpl implements ProductService {
         }
         products.addAll(productDao.findProductsByCategory(category));
         return products;
+    }
+
+    @Override
+    public List<Product> findTop10Products() {
+        return productDao.findTop10Products();
+    }
+
+    @Override
+    @Transactional
+    public boolean isTopProductsChanged() {
+        if(tops.containsAll(productDao.findTop10Products())) {
+            return false;
+        } else {
+            tops = productDao.findTop10Products();
+            return true;
+        }
+    }
+
+    public List<Product> getTops() {
+        return tops;
+    }
+
+    public void setTops(List<Product> tops) {
+        this.tops = tops;
     }
 }

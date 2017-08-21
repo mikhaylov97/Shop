@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -59,5 +60,19 @@ public class ProductDaoImpl implements ProductDao {
         Query query = em.createQuery("SELECT p FROM Product p WHERE category.id = :id");
         query.setParameter("id", category.getId());
         return (List<Product>) query.getResultList();
+    }
+
+    @Override
+    public List<Product> findTop10Products() {
+        Query topListQuery = em.createQuery("SELECT p.product.id FROM OrdersProducts p GROUP BY p.product.id ORDER BY COUNT(p.product.id) DESC");
+        topListQuery.setMaxResults(10);
+        Query query = em.createQuery("SELECT p FROM Product p WHERE p.id IN (:ids)");
+        query.setParameter("ids", topListQuery.getResultList());
+       // List<Product> products = new ArrayList<>();
+        List<Product> list = query.getResultList();
+//        for (Long id : (List<Long>)query.getResultList()) {
+//            products.add(findProductById(id));
+//        }
+        return list;
     }
 }

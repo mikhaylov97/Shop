@@ -14,5 +14,6 @@ public interface ProductDao {
     Size findSizeById(long id);
     int findAvailableAmountOfSize(long sizeId);
     List<Product> findProductsByCategory(Category category);
+    List<Product> findTop10Products();
     //List<Product> findProductsByCurrentCategory(Category category);
 }

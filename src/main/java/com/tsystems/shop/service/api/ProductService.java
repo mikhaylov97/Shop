@@ -14,4 +14,6 @@ public interface ProductService {
     Size findSizeById(long id);
     int findAvailableAmountOfSize(long sizeId);
     List<Product> findProductsByCategory(Category category);
+    List<Product> findTop10Products();
+    boolean isTopProductsChanged();
 }

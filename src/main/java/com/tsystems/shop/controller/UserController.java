@@ -1,11 +1,15 @@
 package com.tsystems.shop.controller;
 
-import com.tsystems.shop.model.*;
+import com.tsystems.shop.model.Address;
+import com.tsystems.shop.model.BagProduct;
+import com.tsystems.shop.model.Payment;
+import com.tsystems.shop.model.User;
 import com.tsystems.shop.model.enums.OrderStatusEnum;
 import com.tsystems.shop.model.enums.PaymentStatusEnum;
 import com.tsystems.shop.model.enums.PaymentTypeEnum;
 import com.tsystems.shop.service.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,16 +17,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.jms.TextMessage;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/user")
 public class UserController {
+
+    @Autowired
+    JmsTemplate jmsTemplate;
 
     @Autowired
     private UserService userService;
@@ -104,27 +110,16 @@ public class UserController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/ordering")
-    public ModelAndView showOrderingPage(HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView("orderingTest");
-        Set<Product> products = (Set<Product>) request.getSession().getAttribute("bag");
-        modelAndView.addObject("bag", products);
-        modelAndView.addObject("paymentTypes", paymentService.getPaymentTypes());
-        //modelAndView.addObject("totalPrice", bagService.figureOutTotalPrice(products));
-
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/ordering", method = RequestMethod.POST)
-    public String addNewOrder(@RequestParam(name = "type") String type, HttpServletRequest request) {
-        Set<Product> products = (Set<Product>) request.getSession().getAttribute("bag");
-        String totalPrice = "2000";//bagService.figureOutTotalPrice(products);
-       // Payment payment = paymentService.createNewPayment(type, totalPrice);
-        User user = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        //orderService.addNewOrder("COURIER", user, payment, products);
-        products.clear();
-        return "redirect:/home";
-    }
+//    @RequestMapping(value = "/ordering")
+//    public ModelAndView showOrderingPage(HttpServletRequest request) {
+//        ModelAndView modelAndView = new ModelAndView("orderingTest");
+//        Set<Product> products = (Set<Product>) request.getSession().getAttribute("bag");
+//        modelAndView.addObject("bag", products);
+//        modelAndView.addObject("paymentTypes", paymentService.getPaymentTypes());
+//        //modelAndView.addObject("totalPrice", bagService.figureOutTotalPrice(products));
+//
+//        return modelAndView;
+//    }
 
     @RequestMapping(value = "/history")
     public ModelAndView showHistoryPage() {
@@ -174,6 +169,8 @@ public class UserController {
 
         ((List<BagProduct>)session.getAttribute("bag")).clear();
 
+        if(productService.isTopProductsChanged()) sendMessage("advertising.stand", "update");
+
         return modelAndView;
     }
 
@@ -206,5 +203,13 @@ public class UserController {
         ((List<BagProduct>)session.getAttribute("bag")).clear();
 
         return modelAndView;
+    }
+
+    public void sendMessage(final String queueName, final String message) {
+        jmsTemplate.send(queueName, session -> {
+            TextMessage msg = session.createTextMessage();
+            msg.setText(message);
+            return msg;
+        });
     }
 }
