@@ -14,8 +14,8 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#"><i class="fa fa-search fa-lg"></i></a></li>
+                <li><a href="/account"><i class="fa fa-user fa-lg"></i></a></li>
                 <sec:authorize access="hasRole('ROLE_USER') or hasRole('ROLE_ANONYMOUS')">
-                    <li><a href="/redirect"><i class="fa fa-user fa-lg"></i></a></li>
                     <li class="navbar-bag">
                         <a href="/bag">
                             <div>
@@ -45,6 +45,7 @@
                     <li><a href="/logout"><i class="fa fa-sign-out fa-lg"></i></a></li>
                 </sec:authorize>
                 <li><a href="#"><i class="fa fa-envelope fa-lg"></i></a></li>
+                <li><a href="http://localhost:8081/stand"><i class="fa fa-star fa-lg"></i></a></li>
             </ul>
         </div>
     </div>

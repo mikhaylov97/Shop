@@ -63,7 +63,7 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-1 delete-button">
-                                            <button type="submit"><i class="fa fa-times"></i></button>
+                                            <button type="submit"><i class="fa fa-times fa-lg"></i></button>
                                         </div>
                                     </div>
                                 </form>

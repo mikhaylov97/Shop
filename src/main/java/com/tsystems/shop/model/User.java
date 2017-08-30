@@ -75,6 +75,14 @@ public class User implements Serializable {
         this.role = UserRoleEnum.ROLE_USER.name();
     }
 
+    public User(String role, String name, String surname, String email, String password) {
+        this.role = role;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+    }
+
     public long getId() {
         return id;
     }

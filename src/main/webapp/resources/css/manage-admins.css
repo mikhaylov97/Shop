@@ -39,7 +39,8 @@
     font-weight: 600;
     font-size: 13px;
     color: black;
-    padding-bottom: 7px;
+    padding-bottom: 5px;
+    padding-top: 8px;
 }
 
 .account-info .placeholder {
@@ -101,4 +102,38 @@
 
 .success-message {
     color: green;
+}
+
+.admin {
+    text-align: left;
+}
+
+.admin div {
+    text-align: left;
+    padding: 0;
+}
+
+.admin {
+    position: relative;
+    font-size: 15px;
+    letter-spacing: 1px;
+    border-top: 1px solid black;
+    margin-bottom: 10px;
+}
+
+.delete-button {
+    position: absolute;
+    top: 5%;
+    right: 2%;
+}
+
+.delete-button button {
+    color: black;
+    border: none;
+    background-color: transparent;
+    transition: all ease-in-out 0.2s;
+}
+
+.delete-button button:hover {
+    color: #d80000;
 }

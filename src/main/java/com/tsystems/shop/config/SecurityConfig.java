@@ -36,16 +36,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                 .antMatchers("/user/**").access("hasRole('ROLE_USER')")
+                .antMatchers("/account/**").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .and().formLogin().loginPage("/login").usernameParameter("email").passwordParameter("password");
         http.logout()
                 .permitAll()
-                //.logoutSuccessUrl("/logout")
-                //.logoutUrl("/logout");
                 .clearAuthentication(true)
                 .invalidateHttpSession(false);
-
-
-
     }
 
     @Bean

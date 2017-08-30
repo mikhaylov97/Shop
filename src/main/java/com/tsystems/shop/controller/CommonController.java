@@ -1,10 +1,8 @@
 package com.tsystems.shop.controller;
 
 import com.tsystems.shop.model.BagProduct;
-import com.tsystems.shop.model.Category;
 import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.User;
-import com.tsystems.shop.model.enums.UserRoleEnum;
 import com.tsystems.shop.service.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -21,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,21 +74,6 @@ public class CommonController {
         return "login";
     }
 
-    @RequestMapping(value = "/redirect")
-    public String redirectToAccount() {
-        if (isCurrentAuthenticationAnonymous()) {
-            return "redirect:/login";
-        }
-        else {
-            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-            String role = userService.findUserByEmail(userName).getRole();
-            if (role.equals(UserRoleEnum.ROLE_USER.name())) return "redirect:/user";
-            if (role.equals(UserRoleEnum.ROLE_ADMIN.name())
-                    || role.equals(UserRoleEnum.ROLE_SUPER_ADMIN.name())) return "redirect:/admin/orders";
-            return "redirect:/home";
-        }
-    }
-
     @RequestMapping(value = "/signUp")
     public String showSignUpPage() {
         return "sign-up";
@@ -110,13 +91,6 @@ public class CommonController {
         return "redirect:/home";
     }
 
-
-    //    @RequestMapping(value = "/addToBag/{id}")
-//    public String addToBag(@PathVariable(name = "id") String id, @ModelAttribute("bag") List<Product> products) {
-//        Product product = productService.findProductById(Long.parseLong(id));
-//        products.add(product);
-//        return "redirect:/home";
-//    }
     @RequestMapping(value = "/bag/add/{id}", method = RequestMethod.POST)
     public String addToBag(@RequestParam(name = "amount") String amount,
                            @RequestParam(name = "sizeId") String sizeId,
@@ -140,13 +114,6 @@ public class CommonController {
         }
         return "redirect:/home";
     }
-
-//    @RequestMapping(value = "/bag")
-//    public ModelAndView showBagPage(@ModelAttribute("bag")List<Product> products) {
-//        ModelAndView modelAndView = new ModelAndView("bagTest");
-//        modelAndView.addObject("bag", products);
-//        return modelAndView;
-//    }
 
     @RequestMapping(value = "/bag")
     public ModelAndView showBagPage(HttpServletRequest request) {
@@ -244,32 +211,6 @@ public class CommonController {
     private boolean isCurrentAuthenticationAnonymous() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication instanceof AnonymousAuthenticationToken;
-    }
-
-    @RequestMapping(value = "/test")
-    public ModelAndView showTestPage(HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView("test");
-        String a = request.getContextPath();
-        String b = request.getPathInfo();
-        String c = request.getPathTranslated();
-        try {
-            URL url = request.getServletContext().getResource("classpath:");
-            String a2 = url.toString();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        //modelAndView.addObject("order", orderService.findOrderById("1"));
-        List<Category> root = categoryService.findRootCategories();
-        List<Category> child = categoryService.findChilds(root.get(0));
-//        List<BagProduct> bagProducts = new ArrayList<>();
-//        bagProducts.add(new BagProduct(1, 2, 2000, Arrays.asList(1L, 2L)));
-//        bagProducts.add(new BagProduct(2, 1, 2000, Arrays.asList(4L)));
-//        orderService.addNewOrder("test",
-//                userService.findUserByEmail("mi.mi.mikhaylov97@gmail.com"),
-//                new Payment("test", "test", "test"),
-//                bagProducts);
-
-        return modelAndView;
     }
 
     public void setBagSizeToModelAndView(HttpSession session, ModelAndView mav) {

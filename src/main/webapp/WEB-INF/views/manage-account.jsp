@@ -17,11 +17,11 @@
 <div id="manage-address" class="container">
     <h4 id="title">Manage Account</h4>
     <div class="back-button">
-        <a href="/user"><i class="fa fa-long-arrow-left"></i> Back to my account</a>
+        <a href="/account"><i class="fa fa-long-arrow-left"></i> Back to my account</a>
     </div>
     <div class="row main-context">
         <div class="col-lg-8">
-            <form class="account-info" action="/user/settings" method="POST">
+            <form class="account-info" action="/account/settings" method="POST">
                 <div class="col-lg-6">
                     <div class="address-title">Manage your address</div>
                     <hr>
@@ -129,7 +129,7 @@
             </form>
         </div>
         <div class="col-lg-4">
-            <form class="account-info" action="/user/settings/password" method="POST">
+            <form class="account-info" action="/account/settings/password" method="POST">
                 <div class="address-title">Manage your password</div>
                 <hr>
                 <div class="old-password">

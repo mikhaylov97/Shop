@@ -205,3 +205,22 @@
 .order-address .content {
     text-align: left;
 }
+
+.actions .action {
+    padding-left: 0;
+}
+
+.actions .action a {
+    color: black;
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-size: 18px;
+    border-bottom: 2px solid transparent;
+    transition: all ease-in-out 0.3s;
+}
+
+.actions .action a:hover {
+    color: #d80000;
+    padding-bottom: 2px;
+    border-color: #d80000;
+}
