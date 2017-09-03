@@ -1,0 +1,59 @@
+.error-content {
+    margin-top: 200px;
+    height: 300px;
+    letter-spacing: 1px;
+// background-color: rgba(153,153,153,0.35);
+// background-color: rgba(255,255,255);
+}
+
+#wrap h3 {
+    text-align: center;
+    color: white;
+    font-size: 50px;
+    font-weight: 600;
+}
+
+#wrap h4 {
+    text-align: center;
+    margin-top: 30px;
+    color: white;
+    font-size: 22px;
+    font-weight: 300;
+}
+
+#wrap h5 {
+    text-align: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+#wrap h6 {
+    margin-top: 40px;
+    text-align: center;
+    color: white;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+#wrap h6 a:hover {
+    color: #d80000;
+}
+
+#wrap {
+    background: url(/resources/images/javascript-disabled.jpg) no-repeat center top;
+    padding-top: 80px;
+    text-align: center;
+    background-attachment: relative;
+    background-position: center center;
+    min-height: 100%;
+    width: 100%;
+
+    background-size: 100%;
+
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+

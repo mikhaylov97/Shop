@@ -1,12 +1,15 @@
 package com.tsystems.shop.controller;
 
 import com.tsystems.shop.model.*;
+import com.tsystems.shop.model.dto.SizesDto;
 import com.tsystems.shop.model.enums.OrderStatusEnum;
 import com.tsystems.shop.model.enums.PaymentStatusEnum;
 import com.tsystems.shop.service.api.CategoryService;
 import com.tsystems.shop.service.api.OrderService;
 import com.tsystems.shop.service.api.ProductService;
-import com.tsystems.shop.service.api.SizeService;
+import com.tsystems.shop.service.api.UserService;
+import com.tsystems.shop.util.ByteArrayConverterUtil;
+import com.tsystems.shop.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -17,7 +20,11 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -36,24 +43,24 @@ public class AdminController {
     private CategoryService categoryService;
 
     @Autowired
-    private SizeService sizeService;
-
-    @Autowired
     private ProductService productService;
 
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(value = "/products/add")
     public ModelAndView showAddProductPage() {
         ModelAndView modelAndView = new ModelAndView("add-product");
         modelAndView.addObject("options", categoryService.findCategoriesByHierarchyNumber("2"));
-        modelAndView.addObject("sizes", new AddProductForm());
+        modelAndView.addObject("sizes", new SizesDto());
         return modelAndView;
     }
 
     @RequestMapping(value = "/products/add/upload", method = RequestMethod.POST)
-    public ModelAndView uploadProduct(@ModelAttribute("sizes") AddProductForm sizes,
+    public ModelAndView uploadProduct(@ModelAttribute("sizes") SizesDto sizes,
                                       BindingResult result,
                                       @RequestParam(name = "name") String name,
                                       @RequestParam(name = "price") String price,
@@ -70,7 +77,7 @@ public class AdminController {
             modelAndView.addObject("oldCategory", category);
             modelAndView.addObject("errorMessage", "You didn't choose the image");
             modelAndView.addObject("options", categoryService.findCategoriesByHierarchyNumber("2"));
-            modelAndView.addObject("sizes", new AddProductForm());
+            modelAndView.addObject("sizes", new SizesDto());
             return modelAndView;
         } else {
             createImagesDirectoryIfNeeded();
@@ -95,14 +102,20 @@ public class AdminController {
     public ModelAndView showEditPage(@PathVariable(name = "id") String id) {
         ModelAndView modelAndView = new ModelAndView("edit");
         modelAndView.addObject("product", productService.findProductById(Long.parseLong(id)));
-        modelAndView.addObject("sizes", new AddProductForm());
-        modelAndView.addObject("options", categoryService.findCategoriesByHierarchyNumber("2"));
+        modelAndView.addObject("sizes", new SizesDto());
+        Category currentCategory = categoryService
+                .findCategoryById(String.valueOf(productService.findProductById(Long.parseLong(id)).getCategory().getId()));
+        Category parentCategory = currentCategory.getParent();
+        if (parentCategory.getId() == 1) modelAndView.addObject("isMensActive", true);
+        if (parentCategory.getId() == 2) modelAndView.addObject("isWomensActive", true);
+        modelAndView.addObject("options", categoryService.findChilds(parentCategory));
+        modelAndView.addObject("activeOptionId", currentCategory.getId());
 
         return modelAndView;
     }
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
-    public ModelAndView editProduct(@ModelAttribute("sizes") AddProductForm sizes,
+    public ModelAndView editProduct(@ModelAttribute("sizes") SizesDto sizes,
                                     BindingResult result,
                                     @PathVariable(name = "id") String id,
                                     @RequestParam(name = "name") String name,
@@ -156,6 +169,7 @@ public class AdminController {
                 && orderStatus.equalsIgnoreCase(OrderStatusEnum.DELIVERED.name())) {
             order.getPayment().setPaymentStatus(paymentStatus);
             order.setOrderStatus(OrderStatusEnum.DONE.name());
+            order.setDate(DateUtil.getLocalDateNowInDtfFormat());
         } else {
             order.getPayment().setPaymentStatus(paymentStatus);
             order.setOrderStatus(orderStatus);
@@ -173,6 +187,34 @@ public class AdminController {
         if (!status.equals(OrderStatusEnum.AWAITING_PAYMENT.name())) order.getPayment().setPaymentStatus(PaymentStatusEnum.PAID.name());
         orderService.saveOrder(order);
         return "redirect:/admin/orders";
+    }
+
+    @RequestMapping(value = "/statistics")
+    public ModelAndView showStatisticsPage() {
+        ModelAndView modelAndView = new ModelAndView("statistics");
+        modelAndView.addObject("topUsers", userService.findTop10UsersDto());
+        modelAndView.addObject("topProducts", productService.findTop10ProductsDto());
+        modelAndView.addObject("incomePerWeek", orderService.findIncomePerLastWeek());
+        modelAndView.addObject("incomePerMonth", orderService.findIncomePerLastMonth());
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/statistics/download/pdf")
+    public ModelAndView showOrDownloadStatisticsPdf() throws IOException {
+        ModelAndView modelAndView = new ModelAndView("pdfView");
+        modelAndView.addObject("listProducts", productService.findTop10ProductsDto());
+        modelAndView.addObject("listUsers", userService.findTop10UsersDto());
+        modelAndView.addObject("incomePerWeek", orderService.findIncomePerLastWeek());
+        modelAndView.addObject("incomePerMonth", orderService.findIncomePerLastMonth());
+        Map<Long, Byte[]> imageMap = new HashMap<>();
+        for (Product product : productService.findTop10Products()) {
+            File serverFile = new File(IMAGES_DIR_ABSOLUTE_PATH + product.getName());
+            imageMap.put(product.getId(), ByteArrayConverterUtil.convertBytes(Files.readAllBytes(serverFile.toPath())));
+        }
+        modelAndView.addObject("imagesMap", imageMap);
+        // return a view which will be resolved by an excel view resolver
+        return modelAndView;
     }
 
     private void createImagesDirectoryIfNeeded() {

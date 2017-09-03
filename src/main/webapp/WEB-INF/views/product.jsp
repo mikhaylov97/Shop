@@ -4,6 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <noscript>
+        <style>html{display:none;}</style>
+        <meta http-equiv="refresh" content="0.0;url=/javascript/disabled">
+    </noscript>
     <title>Home page</title>
     <link href="/resources/css/bootstrap.css" rel="stylesheet">
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">
@@ -16,8 +20,18 @@
 <body>
 <%@include file="header.jsp"%>
 <%@include file="second-header.jsp"%>
+<%@include file="options.jsp"%>
 <div id="item-context">
     <div class="container">
+        <h4 id="title">Product Page</h4>
+        <div class="back-button">
+            <c:if test="${product.category.parent.id eq 1}">
+                <a href="/catalog/mens/${product.category.id}"><i class="fa fa-long-arrow-left"></i> Continue shopping</a>
+            </c:if>
+            <c:if test="${product.category.parent.id eq 2}">
+                <a href="/catalog/womens/${product.category.id}"><i class="fa fa-long-arrow-left"></i> Continue shopping</a>
+            </c:if>
+        </div>
         <div class="row">
             <div class="col-lg-5 col-lg-offset-1">
                 <div class="image-slider">

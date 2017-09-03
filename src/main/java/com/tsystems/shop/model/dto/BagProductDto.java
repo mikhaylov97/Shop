@@ -1,7 +1,7 @@
-package com.tsystems.shop.model;
+package com.tsystems.shop.model.dto;
 
 
-public class BagProduct {
+public class BagProductDto {
     private long id;
     private String name;
     private String image;
@@ -10,7 +10,7 @@ public class BagProduct {
     private long sizeId;
     private String size;
 
-    public BagProduct(long id, String name, String image, long amount, long totalPrice, long sizeId, String size) {
+    public BagProductDto(long id, String name, String image, long amount, long totalPrice, long sizeId, String size) {
         this.id = id;
         this.name = name;
         this.image = image;

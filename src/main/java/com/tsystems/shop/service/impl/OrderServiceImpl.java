@@ -2,13 +2,16 @@ package com.tsystems.shop.service.impl;
 
 import com.tsystems.shop.dao.api.OrderDao;
 import com.tsystems.shop.model.*;
+import com.tsystems.shop.model.dto.BagProductDto;
 import com.tsystems.shop.model.enums.OrderStatusEnum;
 import com.tsystems.shop.service.api.BagService;
 import com.tsystems.shop.service.api.OrderService;
 import com.tsystems.shop.service.api.ProductService;
+import com.tsystems.shop.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +29,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order addNewOrder(String address, String orderStatus, User user,
-                             Payment payment, String date, String phone, List<BagProduct> products) {
+                             Payment payment, String date, String phone, List<BagProductDto> products) {
         Order order = new Order(address, orderStatus, user, payment, date, phone);
-        for (BagProduct product : products) {
+        for (BagProductDto product : products) {
             Product p = bagService.findProductByBagProduct(product);
             Size size = productService.findSizeById(product.getSizeId());
             OrdersProducts ordersProducts = new OrdersProducts(order, p, String.valueOf(product.getAmount()), size);
@@ -75,6 +78,26 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public long findIncomePerLastWeek() {
+        long amount = 0;
+        List<Order> orders = findOrdersForTheLastWeek();
+        for (Order order : orders) {
+            amount += Long.parseLong(order.getPayment().getTotalPrice());
+        }
+        return amount;
+    }
+
+    @Override
+    public long findIncomePerLastMonth() {
+        long amount = 0;
+        List<Order> orders = findOrdersForTheLastMonth();
+        for (Order order : orders) {
+            amount += Long.parseLong(order.getPayment().getTotalPrice());
+        }
+        return amount;
+    }
+
+    @Override
     public List<Order> findDoneOrders() {
         return orderDao.findDoneOrders();
     }
@@ -82,5 +105,42 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findActiveOrders() {
         return orderDao.findActiveOrders();
+    }
+
+    @Override
+    public List<Order> findOrdersForTheLastWeek() {
+        return findOrdersForTheLastNDays(8);
+    }
+
+    @Override
+    public List<Order> findOrdersForTheLastMonth() {
+        LocalDate now = DateUtil.getLocalDateNow();
+
+        List<Order> orders = orderDao.findDoneOrders();
+        List<Order> lastWeekOrders = new ArrayList<>();
+        LocalDate orderDate;
+        for (Order order : orders) {
+            orderDate = LocalDate.parse(order.getDate(), DateUtil.getDtf());
+            if (now.minusMonths(1).minusDays(1).isBefore(orderDate)) {
+                lastWeekOrders.add(order);
+            }
+        }
+        return lastWeekOrders;
+    }
+
+    @Override
+    public List<Order> findOrdersForTheLastNDays(int n) {
+        LocalDate now = DateUtil.getLocalDateNow();
+
+        List<Order> orders = orderDao.findDoneOrders();
+        List<Order> lastWeekOrders = new ArrayList<>();
+        LocalDate orderDate;
+        for (Order order : orders) {
+            orderDate = LocalDate.parse(order.getDate(), DateUtil.getDtf());
+            if (now.minusDays(n).isBefore(orderDate)) {
+                lastWeekOrders.add(order);
+            }
+        }
+        return lastWeekOrders;
     }
 }

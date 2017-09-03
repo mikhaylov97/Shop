@@ -1,9 +1,11 @@
-package com.tsystems.shop.model;
+package com.tsystems.shop.model.dto;
 
+
+import com.tsystems.shop.model.Size;
 
 import java.util.List;
 
-public class AddProductForm {
+public class SizesDto {
     private List<Size> sizes;
 
     public List<Size> getSizes() {

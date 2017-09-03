@@ -10,6 +10,10 @@ $(document).ready(function() {
         }
     });
 
+    if ($('.item-size select').val() === null) {
+        $('.bag-button button').html("Sold out").attr("disabled", "true").addClass("disabled");
+    }
+
     $('#button-less').on('click', function () {
         if (parseInt($('#amount-number').val()) !== 1) {
             $('#amount-number').val(parseInt($('#amount-number').val()) - 1);

@@ -1,12 +1,13 @@
 package com.tsystems.shop.controller;
 
-import com.tsystems.shop.model.BagProduct;
+import com.tsystems.shop.model.dto.BagProductDto;
 import com.tsystems.shop.model.Payment;
 import com.tsystems.shop.model.User;
 import com.tsystems.shop.model.enums.OrderStatusEnum;
 import com.tsystems.shop.model.enums.PaymentStatusEnum;
 import com.tsystems.shop.model.enums.PaymentTypeEnum;
 import com.tsystems.shop.service.api.*;
+import com.tsystems.shop.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -70,7 +71,7 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView("checkout");
         modelAndView.addObject("user",
                 userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
-        modelAndView.addObject("bagTotalPrice", bagService.figureOutTotalPrice((List<BagProduct>)session.getAttribute("bag")));
+        modelAndView.addObject("bagTotalPrice", bagService.figureOutTotalPrice((List<BagProductDto>)session.getAttribute("bag")));
 
         return modelAndView;
     }
@@ -88,20 +89,21 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView("checkout");
         modelAndView.addObject("successMsg", "Order successfully completed");
 
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime now = LocalDateTime.now();
-        String date = dtf.format(now);
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        LocalDateTime now = LocalDateTime.now();
+//        String date = dtf.format(now);
+        String date = DateUtil.getLocalDateNowInDtfFormat();
 
         String address = country + ", " + city + " (" + postcode + "), " + street + " " + house + ", " + apartment;
-        String totalPrice = String.valueOf(Long.parseLong(bagService.figureOutTotalPrice((List<BagProduct>)session.getAttribute("bag")))
+        String totalPrice = String.valueOf(Long.parseLong(bagService.figureOutTotalPrice((List<BagProductDto>)session.getAttribute("bag")))
                 + Long.parseLong(methodCost));
         Payment payment = new Payment(PaymentTypeEnum.CASH.name(), totalPrice, methodCost, PaymentStatusEnum.AWAITING_PAYMENT.name());
         User user = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 
         orderService.addNewOrder(address, OrderStatusEnum.AWAITING_SHIPMENT.name(), user,
-                payment, date, phone, (List<BagProduct>)session.getAttribute("bag"));
+                payment, date, phone, (List<BagProductDto>)session.getAttribute("bag"));
 
-        ((List<BagProduct>)session.getAttribute("bag")).clear();
+        ((List<BagProductDto>)session.getAttribute("bag")).clear();
 
         if(productService.isTopProductsChanged()) sendMessage("advertising.stand", "update");
 
@@ -126,15 +128,15 @@ public class UserController {
         String date = dtf.format(now);
 
         String address = country + ", " + city + " (" + postcode + "), " + street + " " + house + ", " + apartment;
-        String totalPrice = String.valueOf(Long.parseLong(bagService.figureOutTotalPrice((List<BagProduct>)session.getAttribute("bag")))
+        String totalPrice = String.valueOf(Long.parseLong(bagService.figureOutTotalPrice((List<BagProductDto>)session.getAttribute("bag")))
                 + Long.parseLong(methodCost));
         Payment payment = new Payment(PaymentTypeEnum.CASH.name(), totalPrice, methodCost, PaymentStatusEnum.AWAITING_PAYMENT.name());
         User user = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 
         orderService.addNewOrder(address, OrderStatusEnum.AWAITING_SHIPMENT.name(), user,
-                payment, date, phone, (List<BagProduct>)session.getAttribute("bag"));
+                payment, date, phone, (List<BagProductDto>)session.getAttribute("bag"));
 
-        ((List<BagProduct>)session.getAttribute("bag")).clear();
+        ((List<BagProductDto>)session.getAttribute("bag")).clear();
 
         return modelAndView;
     }

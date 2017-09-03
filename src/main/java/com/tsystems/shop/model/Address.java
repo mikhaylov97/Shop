@@ -98,4 +98,27 @@ public class Address implements Serializable{
     public void setApartment(String apartment) {
         this.apartment = apartment;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        boolean countryExpr = country != null && country.length() != 0;
+        boolean cityExpr = city != null && city.length() != 0;
+        boolean postcodeExpr = postcode != null && postcode.length() != 0;
+        boolean streetExpr = street != null && street.length() != 0;
+        boolean houseExpr = house != null && house.length() != 0;
+        boolean apartmentExpr = apartment != null && apartment.length() != 0;
+
+        if (countryExpr) sb.append(country);
+        if (sb.length() > 0 && cityExpr) sb.append(", ");
+        if (cityExpr) sb.append(city);
+        if (sb.length() > 0 && postcodeExpr) sb.append(" ");
+        if (postcodeExpr) sb.append("(").append(postcode).append(")");
+        if (sb.length() > 0 && streetExpr) sb.append(", ");
+        if (streetExpr) sb.append(street);
+        if (streetExpr && houseExpr) sb.append(" ").append(house);
+        if (streetExpr && houseExpr && apartmentExpr) sb.append(", ").append(apartment);
+
+        return sb.toString();
+    }
 }

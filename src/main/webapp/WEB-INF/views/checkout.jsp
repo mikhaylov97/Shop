@@ -4,6 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <noscript>
+        <style>html{display:none;}</style>
+        <meta http-equiv="refresh" content="0.0;url=/javascript/disabled">
+    </noscript>
     <title>Checkout page</title>
     <link href="/resources/css/bootstrap.css" rel="stylesheet">
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">

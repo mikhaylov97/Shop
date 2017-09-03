@@ -5,6 +5,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <noscript>
+        <style>html{display:none;}</style>
+        <meta http-equiv="refresh" content="0.0;url=/javascript/disabled">
+    </noscript>
     <title>Home page</title>
     <link href="/resources/css/bootstrap.css" rel="stylesheet">
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">
@@ -17,9 +21,11 @@
 <%@include file="header.jsp"%>
 <%@include file="second-header.jsp"%>
 <div id="account-overview" class="container">
-    <h4 id="greeting">Welcome, Admin</h4>
-    <h5 id="title">Order Management</h5>
-    <div class="logout-button"><a href="/logout"><i class="fa fa-sign-out"></i>Log Out</a></div>
+    <h4 id="greeting">Order Management</h4>
+    <div class="back-button">
+        <a href="/account"><i class="fa fa-long-arrow-left"></i> Back to my account</a>
+    </div>
+    <%--<div class="logout-button"><a href="/logout"><i class="fa fa-sign-out"></i>Log Out</a></div>--%>
     <div class="row main-context">
         <div class="col-lg-8 col-lg-offset-2">
             <div class="history-title">Active orders</div>

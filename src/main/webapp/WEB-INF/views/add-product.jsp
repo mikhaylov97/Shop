@@ -4,6 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <noscript>
+        <style>html{display:none;}</style>
+        <meta http-equiv="refresh" content="0.0;url=/javascript/disabled">
+    </noscript>
     <title>Home page</title>
     <link href="/resources/css/bootstrap.css" rel="stylesheet">
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">
@@ -18,6 +22,10 @@
 <%@include file="second-header.jsp"%>
 <div id="item-context">
     <div class="container">
+        <h4 id="title">Adding Product</h4>
+        <div class="back-button">
+            <a href="/account"><i class="fa fa-long-arrow-left"></i> Back to my account</a>
+        </div>
         <div class="row">
             <form:form action="/admin/products/add/upload" method="post" enctype="multipart/form-data">
                 <div class="col-lg-5 col-lg-offset-1">

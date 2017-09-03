@@ -135,3 +135,41 @@
     color: #d80000;
     border-color: #d80000;
 }
+
+
+#title {
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+
+.back-button {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.back-button a {
+    color: black;
+    letter-spacing: 1px;
+    border-bottom: 1px solid transparent;
+    transition: all ease-in-out 0.2s;
+}
+
+.back-button a:hover {
+    color: #d80000;
+    padding-bottom: 2px;
+    border-color: #d80000;
+}
+
+.disabled {
+    border: none;
+    transition: none;
+}
+
+.disabled:hover {
+    border: none;
+    cursor: not-allowed;
+    transition: none;
+}

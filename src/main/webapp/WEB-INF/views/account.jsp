@@ -5,6 +5,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <noscript>
+        <style>html{display:none;}</style>
+        <meta http-equiv="refresh" content="0.0;url=/javascript/disabled">
+    </noscript>
     <title>Home page</title>
     <link href="/resources/css/bootstrap.css" rel="stylesheet">
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">
@@ -156,21 +160,21 @@
                         <a href=""><i class="fa fa-share-alt fa-lg"></i> Manage Categories</a>
                     </div>
                     <div class="col-lg-12 action">
-                        <a href=""><i class="fa fa-check-square-o fa-lg"></i> Manage Orders</a>
+                        <a href="/admin/orders"><i class="fa fa-check-square-o fa-lg"></i> Manage Orders</a>
                         <!-- <a href=""><i class="fa fa-edit"></i> Manage Orders</a> -->
                     </div>
                     <sec:authorize access="hasRole('ROLE_SUPER_ADMIN')">
                         <div class="col-lg-12 action">
-                            <a href="/admin/super/management"><i class="fa fa-group"></i> Manage Admins</a>
+                            <a href="/super/admin/management"><i class="fa fa-group"></i> Manage Admins</a>
                         </div>
                     </sec:authorize>
                     <div class="col-lg-12 action">
                         <!-- <a href=""><i class="fa fa-plus-circle fa-lg"></i> Add Product</a> -->
-                        <a href=""><i class="fa fa-plus fa-lg"></i> Add Product</a>
+                        <a href="/admin/products/add"><i class="fa fa-plus fa-lg"></i> Add Product</a>
                     </div>
                     <div class="col-lg-12 action">
                         <!-- <a href=""><i class="fa fa-calendar"></i> Statistics</a> -->
-                        <a href=""><i class="fa fa-bar-chart"></i> Statistics</a>
+                        <a href="/admin/statistics"><i class="fa fa-bar-chart"></i> Statistics</a>
                     </div>
                 </div>
             </div>

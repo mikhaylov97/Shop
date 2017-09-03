@@ -1,7 +1,7 @@
 package com.tsystems.shop.service.impl;
 
 import com.tsystems.shop.dao.api.ProductDao;
-import com.tsystems.shop.model.BagProduct;
+import com.tsystems.shop.model.dto.BagProductDto;
 import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.Size;
 import com.tsystems.shop.service.api.BagService;
@@ -17,27 +17,27 @@ public class BagServiceImpl implements BagService {
     private ProductDao productDao;
 
     @Override
-    public String figureOutTotalPrice(List<BagProduct> products) {
+    public String figureOutTotalPrice(List<BagProductDto> products) {
         long totalPrice = 0;
         if (products == null) return "0";
-        for (BagProduct product : products) {
+        for (BagProductDto product : products) {
             totalPrice += product.getTotalPrice();
         }
         return String.valueOf(totalPrice);
     }
 
     @Override
-    public boolean checkIfProductAlreadyExist(List<BagProduct> products, long id) {
-        for (BagProduct bagProduct : products) {
+    public boolean checkIfProductAlreadyExist(List<BagProductDto> products, long id) {
+        for (BagProductDto bagProduct : products) {
             if (bagProduct.getId() == id) return true;
         }
         return false;
     }
 
     @Override
-    public void addOrIncreaseIfExist(List<BagProduct> products, Product product) {
+    public void addOrIncreaseIfExist(List<BagProductDto> products, Product product) {
         boolean isExist = false;
-        for (BagProduct bagProduct : products) {
+        for (BagProductDto bagProduct : products) {
             if (bagProduct.getId() == product.getId()){
                 bagProduct.setAmount(bagProduct.getAmount() + 1);
                 isExist = true;
@@ -50,8 +50,8 @@ public class BagServiceImpl implements BagService {
     }
 
     @Override
-    public BagProduct createBagProductFromProduct(Product product, long sizeId) {
-        BagProduct bagProduct = new BagProduct(product.getId(),product.getName(),
+    public BagProductDto createBagProductFromProduct(Product product, long sizeId) {
+        BagProductDto bagProduct = new BagProductDto(product.getId(),product.getName(),
                 product.getImage(), 1L,
                 Long.parseLong(product.getPrice()), sizeId,
                 productDao.findSizeById(sizeId).getSize());
@@ -59,14 +59,14 @@ public class BagServiceImpl implements BagService {
     }
 
     @Override
-    public Product findProductByBagProduct(BagProduct bagProduct) {
+    public Product findProductByBagProduct(BagProductDto bagProduct) {
         return productDao.findProductById(bagProduct.getId());
     }
 
     @Override
-    public void addToBag(long productId, int amount, long sizeId, long price, List<BagProduct> bagProducts) {
+    public void addToBag(long productId, int amount, long sizeId, long price, List<BagProductDto> bagProducts) {
         boolean isFoundInBag = false;
-        for (BagProduct product : bagProducts) {
+        for (BagProductDto product : bagProducts) {
             if (product.getId() == productId && product.getSizeId() == sizeId) {
                 product.setAmount(product.getAmount() + amount);
                 product.setTotalPrice(price * product.getAmount());
@@ -76,7 +76,7 @@ public class BagServiceImpl implements BagService {
         }
         Product originalProduct = productDao.findProductById(productId);
         if (!isFoundInBag) {
-            BagProduct bagProduct = new BagProduct(productId, originalProduct.getName(),
+            BagProductDto bagProduct = new BagProductDto(productId, originalProduct.getName(),
                     originalProduct.getImage(), amount,
                     price*amount, sizeId,
                     productDao.findSizeById(sizeId).getSize());
@@ -93,8 +93,8 @@ public class BagServiceImpl implements BagService {
     }
 
     @Override
-    public void deleteFromBag(long productId, long sizeId, List<BagProduct> bagProducts) {
-        for (BagProduct product : bagProducts) {
+    public void deleteFromBag(long productId, long sizeId, List<BagProductDto> bagProducts) {
+        for (BagProductDto product : bagProducts) {
             if (product.getId() == productId && product.getSizeId() == sizeId) {
                 Product originalProduct = productDao.findProductById(productId);
                 for (Size size : originalProduct.getAttributes().getSizes()) {

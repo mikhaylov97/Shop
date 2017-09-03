@@ -3,6 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <noscript>
+        <style>html{display:none;}</style>
+        <meta http-equiv="refresh" content="0.0;url=/javascript/disabled">
+    </noscript>
     <title>Home page</title>
     <link href="/resources/css/bootstrap.css" rel="stylesheet">
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">
@@ -35,7 +39,7 @@
                         First Name
                     </div>
                     <div class="input-field">
-                        <input type="text" name="name" <c:if test="${not empty name}">value="${name}"</c:if> required>
+                        <input type="text" name="name"  autocomplete="off" <c:if test="${not empty name}">value="${name}"</c:if> required>
                     </div>
                 </div>
                 <div class="surname">
@@ -43,7 +47,7 @@
                         Last Name
                     </div>
                     <div class="input-field">
-                        <input type="text" name="surname" <c:if test="${not empty surname}">value="${surname}"</c:if> required>
+                        <input type="text" name="surname"  autocomplete="off" <c:if test="${not empty surname}">value="${surname}"</c:if> required>
                     </div>
                 </div>
                 <div class="email">
@@ -51,7 +55,7 @@
                         Email
                     </div>
                     <div class="input-field">
-                        <input type="email" name="email" <c:if test="${not empty email}">value="${email}"</c:if> required>
+                        <input type="email" name="email"  autocomplete="off" <c:if test="${not empty email}">value="${email}"</c:if> required>
                     </div>
                 </div>
                 <div class="password">
@@ -62,18 +66,12 @@
                         <input type="password" name="password" required>
                     </div>
                 </div>
-                <c:if test="${not empty successMsg}">
-                    <div class="message success-message">
-                        ${successMsg}
-                    </div>
-                </c:if>
-                <c:if test="${not empty errorMsg}">
-                    <div class="message error-message">
-                        ${errorMsg}
-                    </div>
-                </c:if>
+                <div class="message success-message hidden">
+                </div>
+                <div class="message error-message hidden">
+                </div>
                 <div class="manage-address-button">
-                    <button type="submit">Add</button>
+                    <button type="button" onclick="addNewAdmin()">Add</button>
                 </div>
             </form>
         </div>

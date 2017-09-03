@@ -5,6 +5,7 @@ import com.tsystems.shop.dao.api.ProductDao;
 import com.tsystems.shop.model.Category;
 import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.Size;
+import com.tsystems.shop.model.dto.ProductDto;
 import com.tsystems.shop.service.api.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDto> castProductsToDtos(List<Product> products) {
+        List<ProductDto> resultList = new ArrayList<>();
+        for (Product product : products) {
+            ProductDto dto = new ProductDto();
+            dto.setId(product.getId());
+            dto.setName(product.getName());
+            dto.setImage(product.getImage());
+            dto.setPrice(product.getPrice());
+            //dto.setNumberOfSales();
+        }
+        return resultList;
+    }
+
+    @Override
     @Transactional
     public boolean isTopProductsChanged() {
         if(tops.containsAll(productDao.findTop10Products())) {
@@ -76,6 +91,36 @@ public class ProductServiceImpl implements ProductService {
             tops = productDao.findTop10Products();
             return true;
         }
+    }
+
+    @Override
+    public long findTotalSalesById(long id) {
+        return productDao.findTotalSalesById(id);
+    }
+
+    @Override
+    public ProductDto convertProductToProductDto(Product product) {
+        ProductDto dto = new ProductDto();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setImage(product.getImage());
+        dto.setPrice(product.getPrice());
+        dto.setNumberOfSales(findTotalSalesById(product.getId()));
+        return dto;
+    }
+
+    @Override
+    public List<ProductDto> convertProductsToProductsDto(List<Product> products) {
+        List<ProductDto> resultList = new ArrayList<>();
+        for (Product product : products) {
+            resultList.add(convertProductToProductDto(product));
+        }
+        return resultList;
+    }
+
+    @Override
+    public List<ProductDto> findTop10ProductsDto() {
+        return convertProductsToProductsDto(findTop10Products());
     }
 
     public List<Product> getTops() {

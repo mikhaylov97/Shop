@@ -5,16 +5,13 @@ import com.tsystems.shop.model.enums.UserRoleEnum;
 import com.tsystems.shop.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/admin/super")
+@RequestMapping(value = "/super/admin")
 public class SuperAdminController {
 
     @Autowired
@@ -49,6 +46,28 @@ public class SuperAdminController {
             modelAndView.addObject("admins", userService.findSimpleAdmins());
             return modelAndView;
         }
+    }
+
+    @RequestMapping(value = "/management/add/ajax", method = RequestMethod.POST)
+    @ResponseBody
+    public String addNewAdminAjax(@RequestParam(name = "name") String name,
+                                  @RequestParam(name = "surname") String surname,
+                                  @RequestParam(name = "email") String email,
+                                  @RequestParam(name = "password") String password) {
+        if (!userService.isEmailFree(email)) {
+            return "declined";
+        } else {
+            User admin = new User(UserRoleEnum.ROLE_ADMIN.name(), name, surname, email, password);
+            userService.saveNewUser(admin);
+            return "saved";
+        }
+    }
+
+    @RequestMapping(value = "/management/get/admins", method = RequestMethod.POST)
+    public ModelAndView getAdminsList() {
+        ModelAndView modelAndView = new ModelAndView("admins-list");
+        modelAndView.addObject("admins", userService.findSimpleAdmins());
+        return modelAndView;
     }
 
     @RequestMapping(value = "/management/delete/{id}", method = RequestMethod.POST)

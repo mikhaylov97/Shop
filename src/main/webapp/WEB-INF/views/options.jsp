@@ -1,13 +1,5 @@
 <div class="row centered">
     <div class="col-lg-10 col-lg-offset-1 secondary-categories">
-        <%--<a href="#">New Arrivals</a>--%>
-        <%--<a href="#">Tops</a>--%>
-        <%--<a href="#">Shirts & Jackets</a>--%>
-        <%--<a href="#">Sweatshirts</a>--%>
-        <%--<a href="#">Tees</a>--%>
-        <%--<a href="#">Headwear</a>--%>
-        <%--<a href="#">Bottoms</a>--%>
-        <%--<a href="#">Accessories</a>--%>
         <c:forEach var="ref" items="${options}">
             <c:choose>
                 <c:when test="${ref.id eq activeOptionId}">

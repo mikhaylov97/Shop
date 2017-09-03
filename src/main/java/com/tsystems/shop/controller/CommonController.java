@@ -1,8 +1,9 @@
 package com.tsystems.shop.controller;
 
-import com.tsystems.shop.model.BagProduct;
+import com.tsystems.shop.model.Category;
 import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.User;
+import com.tsystems.shop.model.dto.BagProductDto;
 import com.tsystems.shop.service.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -98,7 +99,7 @@ public class CommonController {
         Product product = productService.findProductById(Long.parseLong(id));
         Object bag = request.getSession().getAttribute("bag");
         if (bag == null) {
-            List<BagProduct> bagProducts = new ArrayList<>();
+            List<BagProductDto> bagProducts = new ArrayList<>();
            bagService.addToBag(product.getId(),
                     Integer.parseInt(amount),
                     Long.parseLong(sizeId),
@@ -110,7 +111,7 @@ public class CommonController {
                     Integer.parseInt(amount),
                     Long.parseLong(sizeId),
                     Long.parseLong(product.getPrice()),
-                    (List<BagProduct>) bag);
+                    (List<BagProductDto>) bag);
         }
         return "redirect:/home";
     }
@@ -120,7 +121,7 @@ public class CommonController {
         ModelAndView modelAndView = new ModelAndView("bag");
         modelAndView.addObject("bag", request.getSession().getAttribute("bag"));
         modelAndView.addObject("totalPrice",
-                bagService.figureOutTotalPrice((List<BagProduct>)request.getSession().getAttribute("bag")));
+                bagService.figureOutTotalPrice((List<BagProductDto>)request.getSession().getAttribute("bag")));
         return modelAndView;
     }
 
@@ -133,7 +134,7 @@ public class CommonController {
     public String deleteFromBag(@RequestParam(name = "sizeId") String sizeId,
                                 @PathVariable(value = "id") String id,
                                 HttpSession session) {
-        List<BagProduct> bag = (List<BagProduct>) session.getAttribute("bag");
+        List<BagProductDto> bag = (List<BagProductDto>) session.getAttribute("bag");
         bagService.deleteFromBag(Long.parseLong(id),
                 Long.parseLong(sizeId),
                 bag);
@@ -195,8 +196,18 @@ public class CommonController {
     public ModelAndView showProductPage(@PathVariable(name = "id") long id) {
         ModelAndView modelAndView = new ModelAndView("product");
         modelAndView.addObject("product", productService.findProductById(id));
-
+        Category currentCategory = categoryService.findCategoryById(String.valueOf(productService.findProductById(id).getCategory().getId()));
+        Category parentCategory = currentCategory.getParent();
+        if (parentCategory.getId() == 1) modelAndView.addObject("isMensActive", true);
+        if (parentCategory.getId() == 2) modelAndView.addObject("isWomensActive", true);
+        modelAndView.addObject("options", categoryService.findChilds(parentCategory));
+        modelAndView.addObject("activeOptionId", currentCategory.getId());
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/javascript/disabled")
+    public String showDisabledJavascriptPage() {
+        return "javascript-disabled";
     }
 
     private void authenticateUserAndSetSession(String email, String password, HttpServletRequest request) {
@@ -216,10 +227,10 @@ public class CommonController {
     public void setBagSizeToModelAndView(HttpSession session, ModelAndView mav) {
         Object bag = session.getAttribute("bag");
         if (bag == null)  {
-            session.setAttribute("bag", new ArrayList<BagProduct>());
+            session.setAttribute("bag", new ArrayList<BagProductDto>());
             mav.addObject("bagSize", 0);
         } else {
-            mav.addObject("bagSize", ((List<BagProduct>) bag).size());
+            mav.addObject("bagSize", ((List<BagProductDto>) bag).size());
         }
     }
 

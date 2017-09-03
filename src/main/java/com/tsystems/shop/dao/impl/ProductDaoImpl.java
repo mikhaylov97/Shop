@@ -2,9 +2,9 @@ package com.tsystems.shop.dao.impl;
 
 import com.tsystems.shop.dao.api.ProductDao;
 import com.tsystems.shop.model.Category;
-import com.tsystems.shop.model.OrdersProducts;
 import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.Size;
+import com.tsystems.shop.model.dto.ProductDto;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,15 +64,32 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<Product> findTop10Products() {
-        Query topListQuery = em.createQuery("SELECT p.product.id FROM OrdersProducts p GROUP BY p.product.id ORDER BY COUNT(p.product.id) DESC");
+//        String subQuery = "SELECT p1.id, p1.order.id, p1.product.id FROM OrdersProducts p1 "
+//                + "LEFT JOIN OrdersProducts p2 ON p1.order.id=p2.order.id AND p1.product.id=p2.product.id"
+//                +
+        String subQuery = "SELECT MIN(p1.id), p1.order.id, p1.product.id FROM OrdersProducts p1"
+                + " GROUP BY(p1.order.id, p1.product.id)";
+        Query topListQuery = em.createQuery("SELECT p.product.id FROM OrdersProducts p"
+                + " WHERE (p.id, p.order.id, p.product.id) IN(" + subQuery + ") GROUP BY p.product.id"
+                + " ORDER BY COUNT(p.product.id) DESC");
         topListQuery.setMaxResults(10);
-        Query query = em.createQuery("SELECT p FROM Product p WHERE p.id IN (:ids)");
-        query.setParameter("ids", topListQuery.getResultList());
-       // List<Product> products = new ArrayList<>();
-        List<Product> list = query.getResultList();
-//        for (Long id : (List<Long>)query.getResultList()) {
-//            products.add(findProductById(id));
-//        }
-        return list;
+        List<Product> products = new ArrayList<>();
+        for (Long id : (List<Long>)topListQuery.getResultList()) {
+            products.add(findProductById(id));
+        }
+        return products;
+    }
+
+    @Override
+    public long findTotalSalesById(long id) {
+        String subQuery = "SELECT MIN(p1.id), p1.order.id, p1.product.id FROM OrdersProducts p1"
+                + " WHERE p1.product.id = :id"
+                + " GROUP BY(p1.order.id, p1.product.id)";
+        Query totalSalesQuery = em.createQuery("SELECT COUNT(o.product.id) FROM OrdersProducts o"
+                + " WHERE (o.id, o.order.id, o.product.id) IN"
+                + " (" + subQuery +") GROUP BY o.product.id");
+        totalSalesQuery.setParameter("id", id);
+        long sales = (Long)totalSalesQuery.getSingleResult();
+        return sales;
     }
 }

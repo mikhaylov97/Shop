@@ -1,0 +1,229 @@
+#statistics {
+    padding-top: 40px;
+    padding-bottom: 90px;
+}
+
+#statistics h4 {
+    text-align: center;
+    color: black;
+}
+
+.block {
+    padding-top: 20px;
+}
+
+.main-context {
+    padding-top: 30px;
+}
+
+.back-button {
+    text-align: center;
+}
+
+.back-button a {
+    color: black;
+    letter-spacing: 1px;
+    border-bottom: 1px solid transparent;
+    transition: all ease-in-out 0.2s;
+}
+
+.back-button a:hover {
+    color: #d80000;
+    padding-bottom: 2px;
+    border-color: #d80000;
+}
+
+#title {
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 13px;
+    color: black;
+    padding-bottom: 7px;
+}
+
+.manage-address-button {
+    margin-top: 20px;
+}
+
+.manage-address-button button {
+    color: white;
+    padding: 10px 60px 10px;
+    background-color: black;
+    font-weight: 600;
+    border: none;
+    transition: all ease-in-out 0.4s;
+}
+
+.manage-address-button button:hover {
+    background-color: #d80000;
+}
+
+.message {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.error-message {
+    color: #d80000;
+}
+
+.success-message {
+    color: green;
+}
+
+.statistic-item {
+    text-align: left;
+    font-size: 15px;
+    letter-spacing: 1px;
+    border-top: 1px solid black;
+    margin-bottom: 10px;
+    padding: 0;
+    padding-top: 6px;
+}
+
+.account-info {
+    text-align: left;
+}
+
+.delete-button {
+    position: absolute;
+    top: 5%;
+    right: 2%;
+}
+
+.delete-button a {
+    color: black;
+    transition: all ease-in-out 0.2s;
+}
+
+.delete-button a:hover {
+    color: #d80000;
+}
+
+.top-number {
+    color: black;
+    font-size: 18px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.product {
+    margin-bottom: 10px;
+}
+
+.product .image {
+    padding: 0 4px 0;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,0.3);
+// border-left: 4px solid gray;
+// border-right: 4px solid gray;
+    border-radius: 6px;
+}
+
+.product .image img {
+    width: 100%;
+}
+
+.product-info {
+    color: black;
+    font-size: 14px;
+    padding-left: 4px;
+    padding-right: 0;
+
+}
+
+.product-info .main-info .name a{
+    color: #444;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all ease-in-out 0.3s;
+}
+
+.product-info .main-info .name a:hover{
+    color: #d80000;
+}
+
+.product-info .main-info .sales {
+    font-size: 15px;
+    color: #666;
+    font-weight: 300;
+}
+
+.cost-info {
+    text-align: right;
+    font-weight: 600;
+    color: #333;
+    font-size: 17px;
+}
+
+.income-info {
+    border: 1px solid #333;
+}
+
+.account-footer .total-cash {
+    padding: 0;
+    color: #333;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.account-footer {
+    padding: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    margin-top: 4px;
+    padding-top: 10px;
+}
+
+.account-footer .reference {
+    text-align: right;
+}
+
+.account-footer .reference a{
+    color: #333;
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0px;
+    transition: all ease-in-out 0.2s;
+}
+
+.account-footer .reference a:hover {
+    color: #d80000;
+}
+
+.income {
+    padding: 0;
+    padding-top: 4px;
+    font-weight: 600;
+    color: #333;
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+.income .amount {
+    text-align: right;
+}
+
+.documents {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.documents .pdf a {
+    color: white;
+    padding: 10px 20px 10px;
+    background-color: black;
+    transition: all ease-in-out 0.3s;
+}
+
+.documents .pdf a:hover {
+    background-color: #d80000;
+}

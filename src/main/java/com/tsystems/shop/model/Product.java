@@ -22,6 +22,9 @@ public class Product implements Serializable {
     @Column(name = "image", nullable = false)
     private String image;
 
+//    @Column(name = "hidden", nullable = false)
+//    private boolean hidden;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
@@ -39,6 +42,7 @@ public class Product implements Serializable {
         this.image = image;
         this.category = category;
         this.attributes = attributes;
+        //this.hidden = false;
     }
 
     public long getId() {
@@ -84,6 +88,14 @@ public class Product implements Serializable {
     public Attribute getAttributes() {
         return attributes;
     }
+
+//    public boolean isHidden() {
+//        return hidden;
+//    }
+//
+//    public void setHidden(boolean hidden) {
+//        this.hidden = hidden;
+//    }
 
     public void setAttributes(Attribute attributes) {
         this.attributes = attributes;

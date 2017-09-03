@@ -229,3 +229,21 @@
     border: 1px solid black;
     outline: none;
 }
+
+
+.back-button {
+    text-align: center;
+}
+
+.back-button a {
+    color: black;
+    letter-spacing: 1px;
+    border-bottom: 1px solid transparent;
+    transition: all ease-in-out 0.2s;
+}
+
+.back-button a:hover {
+    color: #d80000;
+    padding-bottom: 2px;
+    border-color: #d80000;
+}

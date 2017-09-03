@@ -37,10 +37,6 @@
                         </a>
                     </li>
                 </sec:authorize>
-                <sec:authorize access="hasRole('ROLE_ADMIN')">
-                    <li><a href="/admin/products/add"><i class="fa fa-plus fa-lg"></i></a></li>
-                    <li><a href="/admin/orders"><i class="fa fa-pencil-square-o fa-lg"></i></a></li>
-                </sec:authorize>
                 <sec:authorize access="hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')">
                     <li><a href="/logout"><i class="fa fa-sign-out fa-lg"></i></a></li>
                 </sec:authorize>
