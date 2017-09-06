@@ -13,8 +13,11 @@
     <link rel="stylesheet" href="/resources/css/main.css">
     <link rel="stylesheet" href="/resources/css/home.css">
     <link rel="stylesheet" href="/resources/css/manage-admins.css">
+    <link rel="stylesheet" href="/resources/css/jquery-ui.css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
+    <script src="/resources/js/jquery-ui.min.js"></script>
     <script src="/resources/js/manage-admins.js"></script>
+    <script src="/resources/js/main.js"></script>
 </head>
 <body>
 <%@include file="header.jsp"%>

@@ -8,6 +8,7 @@
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/resources/css/main.css">
     <link rel="stylesheet" href="/resources/css/javascript-disabled.css">
+    <script src="/resources/js/main.js"></script>
 </head>
 <body>
 <%@include file="header.jsp"%>

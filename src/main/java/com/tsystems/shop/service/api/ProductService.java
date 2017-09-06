@@ -22,4 +22,6 @@ public interface ProductService {
     ProductDto convertProductToProductDto(Product product);
     List<ProductDto> convertProductsToProductsDto(List<Product> products);
     List<ProductDto> findTop10ProductsDto();
+    List<Product> filterProductsByCostAndSize(String cost, String size, String categoryId);
+    List<ProductDto> findProductsByTerm(String term);
 }

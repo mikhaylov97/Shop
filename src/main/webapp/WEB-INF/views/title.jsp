@@ -13,7 +13,10 @@
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/resources/css/main.css">
     <link rel="stylesheet" href="/resources/css/transparent-header.css">
+    <link rel="stylesheet" href="/resources/css/jquery-ui.css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
+    <script src="/resources/js/jquery-ui.min.js"></script>
+    <script src="/resources/js/header.js"></script>
     <script src="/resources/js/main.js"></script>
 </head>
 <body>
@@ -60,8 +63,6 @@
     </div>
 </div>
 <%@include file="footer.jsp"%>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="/resources/js/bootstrap.min.js"></script>
 </body>

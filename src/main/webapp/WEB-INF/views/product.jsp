@@ -14,8 +14,11 @@
     <link rel="stylesheet" href="/resources/css/main.css">
     <link rel="stylesheet" href="/resources/css/product.css">
     <link rel="stylesheet" href="/resources/css/home.css">
+    <link rel="stylesheet" href="/resources/css/jquery-ui.css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
+    <script src="/resources/js/jquery-ui.min.js"></script>
     <script src="/resources/js/product-page.js"></script>
+    <script src="/resources/js/main.js"></script>
 </head>
 <body>
 <%@include file="header.jsp"%>
@@ -35,7 +38,7 @@
         <div class="row">
             <div class="col-lg-5 col-lg-offset-1">
                 <div class="image-slider">
-                    <img src="/image/${product.name}" alt="Item">
+                    <img src="/image/${product.id}" alt="Item">
                 </div>
             </div>
             <div class="col-lg-5">
@@ -80,7 +83,7 @@
                         </sec:authorize>
                     </form>
                     <div class="item-description">
-                        ${product.attributes.description}
+                        <pre>${product.attributes.description}</pre>
                     </div>
                 </div>
             </div>
@@ -88,8 +91,6 @@
     </div>
 </div>
 <%@include file="footer.jsp"%>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="/resources/js/bootstrap.min.js"></script>
 </body>

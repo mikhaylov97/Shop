@@ -13,7 +13,10 @@
     <link rel="stylesheet" href="/resources/css/main.css">
     <link rel="stylesheet" href="/resources/css/home.css">
     <link rel="stylesheet" href="/resources/css/statistics.css">
+    <link rel="stylesheet" href="/resources/css/jquery-ui.css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
+    <script src="/resources/js/jquery-ui.min.js"></script>
+    <script src="/resources/js/main.js"></script>
 </head>
 <body>
 <%@include file="header.jsp"%>
@@ -31,7 +34,7 @@
                     <div class="top-number">#${status.index + 1}</div>
                     <div class="product col-lg-12">
                         <div class="col-lg-2 image">
-                            <img src="/image/${product.name}" alt="item">
+                            <img src="/image/${product.id}" alt="item">
                         </div>
                         <div class="col-lg-10 product-info">
                             <div class="col-lg-8 main-info">

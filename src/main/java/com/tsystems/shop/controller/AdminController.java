@@ -10,34 +10,30 @@ import com.tsystems.shop.service.api.ProductService;
 import com.tsystems.shop.service.api.UserService;
 import com.tsystems.shop.util.ByteArrayConverterUtil;
 import com.tsystems.shop.util.DateUtil;
+import com.tsystems.shop.util.ImageSourceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.JmsException;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.jms.TextMessage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
 
-    private static final String IMAGES = "images";
-    private static final String TOMCAT_HOME_PROPERTY = "catalina.home";
-    private static final String TOMCAT_HOME_PATH = System.getProperty(TOMCAT_HOME_PROPERTY);
-    private static final String IMAGES_PATH = TOMCAT_HOME_PATH + File.separator + IMAGES;
-
-    private static final File IMAGES_DIR = new File(IMAGES_PATH);
-    private static final String IMAGES_DIR_ABSOLUTE_PATH = IMAGES_DIR.getAbsolutePath() + File.separator;
+    @Autowired
+    private JmsTemplate jmsTemplate;
 
     @Autowired
     private CategoryService categoryService;
@@ -82,18 +78,16 @@ public class AdminController {
         } else {
             createImagesDirectoryIfNeeded();
             modelAndView.setViewName("redirect:/home");
-            uploadImage(name, image);
             Set<Size> sizeSet = new HashSet<>();
-            if (sizes == null || sizes.getSizes().isEmpty()) {
-                sizeSet.add(new Size("All", "0"));
-            } else {
+            if (sizes.getSizes() != null && !sizes.getSizes().isEmpty()) {
                 for (Size size : sizes.getSizes()) {
                     sizeSet.add(new Size(size.getSize(), size.getAvailableNumber()));
                 }
             }
             Attribute attribute = new Attribute(sizeSet, description);
             Product product = new Product(name, price, "image/" + name, categoryService.findCategoryById(category), attribute);
-            productService.saveProduct(product);
+            product = productService.saveProduct(product);
+            uploadImage(String.valueOf(product.getId()), image);
             return modelAndView;
         }
     }
@@ -127,12 +121,10 @@ public class AdminController {
         Product product = productService.findProductById(Long.parseLong(id));
         if (!image.isEmpty()) {
             createImagesDirectoryIfNeeded();
-            uploadImage(name, image);
+            uploadImage(id, image);
         }
         Set<Size> sizeSet = new HashSet<>();
-        if (sizes == null || sizes.getSizes().isEmpty()) {
-            sizeSet.add(new Size("All", "0"));
-        } else {
+        if (sizes.getSizes() != null && !sizes.getSizes().isEmpty()) {
             for (Size size : sizes.getSizes()) {
                 sizeSet.add(new Size(size.getSize(), size.getAvailableNumber()));
             }
@@ -142,9 +134,15 @@ public class AdminController {
         product.setName(name);
         product.setPrice(price);
         product.setCategory(categoryService.findCategoryById(category));
-        product.setImage("/image/" + name);
+        product.setImage("/image/" + id);
         productService.saveProduct(product);
         modelAndView.setViewName("redirect:/catalog/" + id);
+
+        try {
+            sendMessage("advertising.stand", "update");
+        } catch (JmsException e) {
+            e.printStackTrace();
+        }
         return modelAndView;
     }
 
@@ -209,7 +207,7 @@ public class AdminController {
         modelAndView.addObject("incomePerMonth", orderService.findIncomePerLastMonth());
         Map<Long, Byte[]> imageMap = new HashMap<>();
         for (Product product : productService.findTop10Products()) {
-            File serverFile = new File(IMAGES_DIR_ABSOLUTE_PATH + product.getName());
+            File serverFile = new File(ImageSourceUtil.getImagesDirectoryAbsolutePath() + product.getId());
             imageMap.put(product.getId(), ByteArrayConverterUtil.convertBytes(Files.readAllBytes(serverFile.toPath())));
         }
         modelAndView.addObject("imagesMap", imageMap);
@@ -218,20 +216,28 @@ public class AdminController {
     }
 
     private void createImagesDirectoryIfNeeded() {
-        if (!IMAGES_DIR.exists()) {
-            IMAGES_DIR.mkdirs();
+        if (!ImageSourceUtil.getImagesDirectory().exists()) {
+            ImageSourceUtil.getImagesDirectory().mkdirs();
         }
     }
 
     private void uploadImage(String name, MultipartFile file) {
         try {
-            File image = new File(IMAGES_DIR_ABSOLUTE_PATH + name);
+            File image = new File(ImageSourceUtil.getImagesDirectoryAbsolutePath() + name);
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(image));
             stream.write(file.getBytes());
             stream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendMessage(final String queueName, final String message) throws JmsException {
+        jmsTemplate.send(queueName, session -> {
+            TextMessage msg = session.createTextMessage();
+            msg.setText(message);
+            return msg;
+        });
     }
 
 

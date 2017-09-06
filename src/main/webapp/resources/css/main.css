@@ -288,3 +288,109 @@ hr {
 //color: #d80000;
 	border-color: white;
 }
+
+.search {
+	margin-top: 10px;
+}
+
+.search input {
+	padding: 3px 10px 3px;
+	color: black;
+	font-weight: 300;
+	font-size: 16px;
+	outline: none;
+	width: 20px;
+	border: none;
+	border-radius: 3px;
+	background-color: #888;
+	transition: width ease-in-out 0.6s;
+}
+
+.filter {
+	margin-top: 30px;
+	margin-bottom: 15px;
+	color: black;
+	display: flex;
+	justify-content: center;
+}
+
+#filter-data {
+	display: flex;
+	justify-content: center;
+}
+
+.filter .filter-title {
+	letter-spacing: 1px;
+	margin-right: 10px;
+	padding-top: 4px;
+	font-size: 18px;
+}
+
+.filter .filter-cost input {
+	padding: 2px 6px 2px;
+	outline: none;
+	border: 1px solid black;
+	height: 35px;
+	margin-right: 5px;
+	width: 100px;
+}
+
+.filter .filter-size select {
+	margin-right: 5px;
+	outline: none;
+	border: 1px solid black;
+	height: 35px;
+	width: 100px;
+}
+
+.filter-find button {
+	letter-spacing: 1px;
+	border: none;
+	color: white;
+	outline: none;
+	background-color: black;
+	padding: 7px 25px 6px;
+	transition: all ease-in-out 0.2s;
+}
+
+.filter-find button:hover {
+	background-color: #d80000;
+}
+
+.info-message {
+	text-align: center;
+	margin-top: 60px;
+	color: black;
+	font-size: 23px;
+	font-weight: 600;
+}
+
+.search {
+	margin-top: 10px;
+}
+
+.search input {
+	padding: 3px 10px 3px;
+	color: black;
+	font-weight: 300;
+	font-size: 16px;
+	outline: none;
+	width: 20px;
+	border: none;
+	border-radius: 3px;
+	background-color: #888;
+	transition: width ease-in-out 0.6s;
+}
+
+.search input:focus {
+	width: 250px;
+	width: 100%;
+}
+
+.ui-widget {
+	z-index: 9999 !important;
+}
+
+.ui-menu {
+	border: 1px solid black;
+}

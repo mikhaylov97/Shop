@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     @Transactional
     public Product saveProduct(Product product) {
-        em.merge(product);
+        product = em.merge(product);
         em.flush();
         return product;
     }
@@ -89,7 +90,11 @@ public class ProductDaoImpl implements ProductDao {
                 + " WHERE (o.id, o.order.id, o.product.id) IN"
                 + " (" + subQuery +") GROUP BY o.product.id");
         totalSalesQuery.setParameter("id", id);
-        long sales = (Long)totalSalesQuery.getSingleResult();
-        return sales;
+        try {
+            long sales = (Long) totalSalesQuery.getSingleResult();
+            return sales;
+        } catch (NoResultException e) {
+            return  0L;
+        }
     }
 }

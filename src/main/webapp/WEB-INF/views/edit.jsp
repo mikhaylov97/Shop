@@ -8,14 +8,17 @@
         <style>html{display:none;}</style>
         <meta http-equiv="refresh" content="0.0;url=/javascript/disabled">
     </noscript>
-    <title>Home page</title>
+    <title>Edit page</title>
     <link href="/resources/css/bootstrap.css" rel="stylesheet">
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/resources/css/main.css">
     <link rel="stylesheet" href="/resources/css/home.css">
     <link rel="stylesheet" href="/resources/css/add-product.css">
+    <link rel="stylesheet" href="/resources/css/jquery-ui.css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
+    <script src="/resources/js/jquery-ui.min.js"></script>
     <script src="/resources/js/add-product.js"></script>
+    <script src="/resources/js/main.js"></script>
 </head>
 <body>
 <%@include file="header.jsp"%>
@@ -36,7 +39,7 @@
             <form:form action="/admin/edit/${product.id}" method="post" enctype="multipart/form-data">
                 <div class="col-lg-5 col-lg-offset-1">
                     <div class="image-slider">
-                        <img id="upload-image" src="/image/${product.name}" alt="Item">
+                        <img id="upload-image" src="/image/${product.id}" alt="Item">
                     </div>
                     <div class="file-upload">
                         <input type="file" onchange="readURL(this);" accept="image/jpeg, image/png, image/gif" name="image">
@@ -49,10 +52,10 @@
                     <div class="item-info">
                         <div class="item-name">
                             <!-- <h4>Ben-Day Tee</h4> -->
-                            <input type="text" name="name" placeholder="Name" value="${product.name}" required>
+                            <input type="text" name="name" maxlength="20" placeholder="Name" value="${product.name}" required>
                         </div>
                         <div class="item-price">
-                            <i class="fa fa-usd"></i><input type="text" name="price" placeholder="Price" value="${product.price}" required>
+                            <i class="fa fa-usd"></i><input type="number" name="price" placeholder="Price" value="${product.price}" required>
                         </div>
                         <div class="item-size">
                             <h4>Edit sizes:</h4>
@@ -96,8 +99,6 @@
     </div>
 </div>
 <%@include file="footer.jsp"%>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="/resources/js/bootstrap.min.js"></script>
 </body>

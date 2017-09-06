@@ -14,8 +14,11 @@
     <link rel="stylesheet" href="/resources/css/main.css">
     <link rel="stylesheet" href="/resources/css/checkout.css">
     <link rel="stylesheet" href="/resources/css/home.css">
+    <link rel="stylesheet" href="/resources/css/jquery-ui.css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
+    <script src="/resources/js/jquery-ui.min.js"></script>
     <script src="/resources/js/checkout-page.js"></script>
+    <script src="/resources/js/main.js"></script>
 </head>
 <body>
 <%@include file="header.jsp"%>
@@ -185,7 +188,7 @@
                     <c:forEach var="product" items="${sessionScope.get('bag')}">
                         <div class="bag-item col-lg-12">
                             <div class="col-lg-2 image">
-                                <img src="/image/${product.name}" alt="item">
+                                <img src="/image/${product.id}" alt="item">
                             </div>
                             <div class="col-lg-10 bag-item-info">
                                 <div class="col-lg-8 main-info">
@@ -254,8 +257,6 @@
 </c:otherwise>
 </c:choose>
 <%@include file="footer.jsp"%>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="/resources/js/bootstrap.min.js"></script>
 </body>

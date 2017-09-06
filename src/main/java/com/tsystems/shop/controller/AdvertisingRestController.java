@@ -53,12 +53,6 @@ public class AdvertisingRestController {
         emitters.add(emitter);
 
         return emitter;
-
-//        if (emitters1.isEmpty()) {
-//            emitters1.put(1L, new SseEmitter(50000L));
-//        }
-//
-//        return emitters1.get(1L);
     }
 
     @RequestMapping(value = "/stand/update")

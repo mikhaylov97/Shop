@@ -1,14 +1,15 @@
 package com.tsystems.shop.controller;
 
-import com.tsystems.shop.model.dto.BagProductDto;
 import com.tsystems.shop.model.Payment;
 import com.tsystems.shop.model.User;
+import com.tsystems.shop.model.dto.BagProductDto;
 import com.tsystems.shop.model.enums.OrderStatusEnum;
 import com.tsystems.shop.model.enums.PaymentStatusEnum;
 import com.tsystems.shop.model.enums.PaymentTypeEnum;
 import com.tsystems.shop.service.api.*;
 import com.tsystems.shop.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -105,7 +106,13 @@ public class UserController {
 
         ((List<BagProductDto>)session.getAttribute("bag")).clear();
 
-        if(productService.isTopProductsChanged()) sendMessage("advertising.stand", "update");
+        if(productService.isTopProductsChanged()) {
+            try {
+                sendMessage("advertising.stand", "update");
+            } catch (JmsException e) {
+                e.printStackTrace();
+            }
+        }
 
         return modelAndView;
     }
@@ -138,10 +145,18 @@ public class UserController {
 
         ((List<BagProductDto>)session.getAttribute("bag")).clear();
 
+        if(productService.isTopProductsChanged()) {
+            try {
+                sendMessage("advertising.stand", "update");
+            } catch (JmsException e) {
+                e.printStackTrace();
+            }
+        }
+
         return modelAndView;
     }
 
-    public void sendMessage(final String queueName, final String message) {
+    public void sendMessage(final String queueName, final String message) throws JmsException {
         jmsTemplate.send(queueName, session -> {
             TextMessage msg = session.createTextMessage();
             msg.setText(message);

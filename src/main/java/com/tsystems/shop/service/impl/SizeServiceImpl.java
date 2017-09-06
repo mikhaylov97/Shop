@@ -1,10 +1,12 @@
 package com.tsystems.shop.service.impl;
 
+import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.Size;
 import com.tsystems.shop.service.api.SizeService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -23,5 +25,13 @@ public class SizeServiceImpl implements SizeService {
     @Override
     public int getAvaiableAmountOfSize(int sizeId) {
         return 0;
+    }
+
+    @Override
+    public Set<String> findSizesFromProducts(List<Product> products) {
+        Set<String> sizes = new HashSet<>();
+        products.forEach(p -> p.getAttributes().getSizes()
+                .forEach(s -> sizes.add(s.getSize())));
+        return sizes;
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -121,6 +122,34 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> findTop10ProductsDto() {
         return convertProductsToProductsDto(findTop10Products());
+    }
+
+    @Override
+    public List<Product> filterProductsByCostAndSize(String cost, String size, String categoryId) {
+        List<Product> products;
+        try {
+            if (cost.equals("")) cost = "0";
+            long costLong = Long.parseLong(cost);
+            long id = Long.parseLong(categoryId);
+            products = findProductsByCategory(categoryDao.findCategoryById(categoryId))
+                    .stream()
+                    .filter( p -> (costLong == 0 || Long.parseLong(p.getPrice()) <= costLong) &&
+                    p.getAttributes().getSizes().stream().filter(s -> s.getSize().equals(size)).count() > 0)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            return findProductsByCategory(categoryDao.findCategoryById(categoryId));
+        }
+        return products;
+    }
+
+    @Override
+    public List<ProductDto> findProductsByTerm(String term) {
+        List<Product> products = findAllProducts();
+        List<ProductDto> productDtos = convertProductsToProductsDto(products);
+        return convertProductsToProductsDto(findAllProducts())
+                .stream()
+                .filter(p -> p.getName().toLowerCase().contains(term.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     public List<Product> getTops() {

@@ -4,7 +4,9 @@ import com.tsystems.shop.model.Category;
 import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.User;
 import com.tsystems.shop.model.dto.BagProductDto;
+import com.tsystems.shop.model.dto.ProductDto;
 import com.tsystems.shop.service.api.*;
+import com.tsystems.shop.util.ImageSourceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,13 +29,6 @@ import java.util.List;
 @Controller
 //@SessionAttributes(value = "bag")
 public class CommonController {
-    private static final String IMAGES = "images";
-    private static final String TOMCAT_HOME_PROPERTY = "catalina.home";
-    private static final String TOMCAT_HOME_PATH = System.getProperty(TOMCAT_HOME_PROPERTY);
-    private static final String IMAGES_PATH = TOMCAT_HOME_PATH + File.separator + IMAGES;
-
-    private static final File IMAGES_DIR = new File(IMAGES_PATH);
-    private static final String IMAGES_DIR_ABSOLUTE_PATH = IMAGES_DIR.getAbsolutePath() + File.separator;
 
     @Autowired
     private
@@ -53,6 +48,9 @@ public class CommonController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private SizeService sizeService;
 
 //    @ModelAttribute("bag")
 //    List<Product> createBag() { return new ArrayList<>(); }
@@ -152,9 +150,11 @@ public class CommonController {
     @RequestMapping(value = "/catalog/mens")
     public ModelAndView showMensPage() {
         ModelAndView modelAndView = new ModelAndView("catalog");
-        modelAndView.addObject("catalog", productService.findProductsByCategory(categoryService.findCategoryById("1")));
+        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById("1"));
+        modelAndView.addObject("catalog", products);
         modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("1")));
         modelAndView.addObject("isMensActive", true);
+        modelAndView.addObject("sizes", sizeService.findSizesFromProducts(products));
 
         return modelAndView;
     }
@@ -162,10 +162,12 @@ public class CommonController {
     @RequestMapping(value = "/catalog/mens/{id}")
     public ModelAndView showSectionPageFromMens(@PathVariable(name = "id") String id) {
         ModelAndView modelAndView = new ModelAndView("catalog");
-        modelAndView.addObject("catalog", productService.findProductsByCategory(categoryService.findCategoryById(id)));
+        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById(id));
+        modelAndView.addObject("catalog", products);
         modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("1")));
         modelAndView.addObject("isMensActive", true);
         modelAndView.addObject("activeOptionId", Long.parseLong(id));
+        modelAndView.addObject("sizes", sizeService.findSizesFromProducts(products));
 
         return modelAndView;
     }
@@ -173,10 +175,12 @@ public class CommonController {
     @RequestMapping(value = "/catalog/womens/{id}")
     public ModelAndView showSectionPageFromWomens(@PathVariable(name = "id") String id) {
         ModelAndView modelAndView = new ModelAndView("catalog");
-        modelAndView.addObject("catalog", productService.findProductsByCategory(categoryService.findCategoryById(id)));
+        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById(id));
+        modelAndView.addObject("catalog", products);
         modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("2")));
         modelAndView.addObject("isWomensActive", true);
         modelAndView.addObject("activeOptionId", Long.parseLong(id));
+        modelAndView.addObject("sizes", sizeService.findSizesFromProducts(products));
 
         return modelAndView;
     }
@@ -184,9 +188,11 @@ public class CommonController {
     @RequestMapping(value = "/catalog/womens")
     public ModelAndView showWomensPage() {
         ModelAndView modelAndView = new ModelAndView("catalog");
-        modelAndView.addObject("catalog", productService.findProductsByCategory(categoryService.findCategoryById("2")));
+        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById("2"));
+        modelAndView.addObject("catalog", products);
         modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("2")));
         modelAndView.addObject("isWomensActive", true);
+        modelAndView.addObject("sizes",sizeService.findSizesFromProducts(products));
 
         return modelAndView;
     }
@@ -219,6 +225,35 @@ public class CommonController {
         SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
     }
 
+    @RequestMapping(value = "/filter", method = RequestMethod.POST)
+    public ModelAndView getCatalogOnlyItems(@RequestParam(value = "cost") String cost,
+                                                          @RequestParam(value = "size") String size,
+                                                          @RequestParam(value = "category") String categoryId) {
+        ModelAndView modelAndView = new ModelAndView("catalog-only-items");
+        modelAndView.addObject("catalog", productService.filterProductsByCostAndSize(cost, size, categoryId));
+        Category currentCategory = categoryService.findCategoryById(categoryId);
+        Category parentCategory = currentCategory.getParent();
+        if (parentCategory != null) {
+            if (parentCategory.getId() == 1) modelAndView.addObject("isMensActive", true);
+            if (parentCategory.getId() == 2) modelAndView.addObject("isWomensActive", true);
+            modelAndView.addObject("options", categoryService.findChilds(parentCategory));
+            modelAndView.addObject("activeOptionId", currentCategory.getId());
+        } else {
+            if (currentCategory.getId() == 1) modelAndView.addObject("isMensActive", true);
+            if (currentCategory.getId() == 2) modelAndView.addObject("isWomensActive", true);
+            modelAndView.addObject("options", categoryService.findChilds(currentCategory));
+            modelAndView.addObject("activeOptionId", currentCategory.getId());
+        }
+        return modelAndView;
+    }
+
+//    @RequestMapping(value = "/")
+
+    @RequestMapping(value = "/products/json")
+    public @ResponseBody List<ProductDto> getProductsJson(@RequestParam(name = "term") String term) {
+        return productService.findProductsByTerm(term);
+    }
+
     private boolean isCurrentAuthenticationAnonymous() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication instanceof AnonymousAuthenticationToken;
@@ -234,12 +269,12 @@ public class CommonController {
         }
     }
 
-    @RequestMapping(value = "/image/{imageName}")
+    @RequestMapping(value = "/image/{imageId}")
     @ResponseBody
-    public byte[] getImage(@PathVariable(value = "imageName") String imageName) throws IOException {
+    public byte[] getImage(@PathVariable(value = "imageId") String imageId) throws IOException {
        // createImagesDirectoryIfNeeded();
 
-        File serverFile = new File(IMAGES_DIR_ABSOLUTE_PATH + imageName); //+ ".jpg");
+        File serverFile = new File(ImageSourceUtil.getImagesDirectoryAbsolutePath() + imageId); //+ ".jpg");
 
         return Files.readAllBytes(serverFile.toPath());
     }

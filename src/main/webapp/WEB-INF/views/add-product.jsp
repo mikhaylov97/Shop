@@ -14,8 +14,11 @@
     <link rel="stylesheet" href="/resources/css/main.css">
     <link rel="stylesheet" href="/resources/css/add-product.css">
     <link rel="stylesheet" href="/resources/css/home.css">
+    <link rel="stylesheet" href="/resources/css/jquery-ui.css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
+    <script src="/resources/js/jquery-ui.min.js"></script>
     <script src="/resources/js/add-product.js"></script>
+    <script src="/resources/js/main.js"></script>
 </head>
 <body>
 <%@include file="header.jsp"%>
@@ -45,20 +48,20 @@
                             <!-- <h4>Ben-Day Tee</h4> -->
                             <c:choose>
                                 <c:when test="${not empty oldName}">
-                                    <input type="text" name="name" placeholder="Name" value="${oldName}" required>
+                                    <input type="text" name="name" maxlength="20" placeholder="Name" value="${oldName}" required>
                                 </c:when>
                                 <c:otherwise>
-                                    <input type="text" name="name" placeholder="Name" required>
+                                    <input type="text" name="name" maxlength="20" placeholder="Name" required>
                                 </c:otherwise>
                             </c:choose>
                         </div>
                         <div class="item-price">
                             <c:choose>
                                 <c:when test="${not empty oldPrice}">
-                                    <i class="fa fa-usd"></i><input type="text" name="price" placeholder="Price" value="${oldPrice}" required>
+                                    <i class="fa fa-usd"></i><input type="number" name="price" placeholder="Price" value="${oldPrice}" required>
                                 </c:when>
                                 <c:otherwise>
-                                    <i class="fa fa-usd"></i><input type="text" name="price" placeholder="Price" required>
+                                    <i class="fa fa-usd"></i><input type="number" name="price" placeholder="Price" required>
                                 </c:otherwise>
                             </c:choose>
                             <%--<i class="fa fa-usd"></i><input type="text" name="price" placeholder="Price" required>--%>
@@ -114,8 +117,6 @@
     </div>
 </div>
 <%@include file="footer.jsp"%>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="/resources/js/bootstrap.min.js"></script>
 </body>
