@@ -6,6 +6,7 @@ public class ProductDto {
     private String price;
     private String image;
     private long numberOfSales;
+    private boolean active;
 
     public long getId() {
         return id;
@@ -45,5 +46,13 @@ public class ProductDto {
 
     public void setNumberOfSales(long numberOfSales) {
         this.numberOfSales = numberOfSales;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

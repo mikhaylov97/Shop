@@ -4,6 +4,7 @@ package com.tsystems.shop.dao.impl;
 import com.tsystems.shop.dao.api.CategoryDao;
 import com.tsystems.shop.model.Category;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,6 +16,15 @@ public class CategoryDaoImpl implements CategoryDao{
 
     @PersistenceContext
     EntityManager em;
+
+    @Override
+    @Transactional
+    public Category saveNewCategory(Category category) {
+        category = em.merge(category);
+        em.flush();
+        return category;
+    }
+
     @Override
     public List<Category> findCategories() {
         Query query = em.createQuery("SELECT c FROM Category c");

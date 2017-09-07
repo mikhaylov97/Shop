@@ -1,0 +1,182 @@
+#manage-address {
+    padding-top: 40px;
+    padding-bottom: 90px;
+}
+
+#manage-address h4 {
+    text-align: center;
+    color: black;
+}
+
+.main-context {
+    padding-top: 30px;
+}
+
+.back-button {
+    text-align: center;
+}
+
+.back-button a {
+    color: black;
+    letter-spacing: 1px;
+    border-bottom: 1px solid transparent;
+    transition: all ease-in-out 0.2s;
+}
+
+.back-button a:hover {
+    color: #d80000;
+    padding-bottom: 2px;
+    border-color: #d80000;
+}
+
+#title {
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 13px;
+    color: black;
+// padding-bottom: 7px;
+}
+
+.category-info .placeholder {
+    font-size: 12px;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.category-info > div {
+    padding-top: 8px;
+    padding-bottom: 5px;
+}
+
+.category-info {
+    text-align: center;
+}
+
+.category-info .input-field input, select{
+    color: black;
+    width: 80%;
+    padding: 8px 10px 8px;
+    border: 1px solid black;
+    outline: none;
+}
+
+.category-info .input-field input:focus, select:focus{
+    border: 2px solid black;
+    padding: 7px 9px 7px;
+}
+
+.manage-address-button {
+    margin-top: 20px;
+}
+
+.manage-address-button button {
+    color: white;
+    padding: 10px 60px 10px;
+    background-color: black;
+    font-weight: 600;
+    border: none;
+    outline: none;
+    transition: all ease-in-out 0.4s;
+}
+
+.manage-address-button button:hover {
+    background-color: #d80000;
+}
+
+.message {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.error-message {
+    color: #d80000;
+}
+
+.success-message {
+    color: green;
+}
+
+.category {
+    text-align: left;
+}
+
+.category div {
+    text-align: left;
+    padding: 0;
+}
+
+.category {
+    position: relative;
+    font-size: 15px;
+    letter-spacing: 1px;
+// border-top: 1px solid rgba(0,0,0,0.5);
+    margin-bottom: 10px;
+}
+
+.hide-show-button {
+    position: absolute;
+    top: 5%;
+    right: 2%;
+}
+
+.hide-show-button a {
+    color: black;
+// font-weight: 600;
+    font-size: 15px;
+    transition: all ease-in-out 0.2s;
+}
+
+.hide-show-button a:hover {
+    color: #d80000;
+}
+
+.checklist {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 5px;
+}
+
+
+.root-category a{
+    font-size: 14px;
+    color: black;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 7px;
+    transition: all ease-in-out 0.3s;
+}
+
+.root-category a:hover {
+    color: #d80000;
+    border-color: #d80000;
+    padding-bottom: 2px;
+}
+
+.root-category, .active a {
+    color: #d80000;
+    border-color: #d80000;
+    padding-bottom: 2px;
+}
+
+.block a {
+    color: black;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 4px;
+    transition: all ease-in-out 0.3s;
+}
+
+.block a:hover {
+    color: #d80000;
+    border-color: #d80000;
+    padding-bottom: 2px;
+}

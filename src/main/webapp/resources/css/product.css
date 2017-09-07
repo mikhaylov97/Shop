@@ -136,6 +136,22 @@
     border-color: #d80000;
 }
 
+.bag-button a {
+    color: black;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all ease-in-out 0.2s;
+}
+
+.bag-button a:hover {
+    color: #d80000;
+    border-color: #d80000;
+}
+
 
 #title {
     font-size: 25px;

@@ -16,6 +16,7 @@
                 </div>
                 <div class="filter-size">
                     <select name="size" id="size">
+                        <option value="No matter" selected>No matter</option>
                         <c:forEach var="size" items="${sizes}">
                             <option value="${size}">${size}</option>
                         </c:forEach>

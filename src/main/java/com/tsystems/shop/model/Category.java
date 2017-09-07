@@ -15,9 +15,8 @@ public class Category  implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-//    @OneToMany(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "parent_id")
-//    private Set<Category> childs = new HashSet<>();
+    @Column(name = "status", nullable = false)
+    private boolean active;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
@@ -31,9 +30,17 @@ public class Category  implements Serializable {
 
     public Category(String name,String hierarchyNumber, Category parent) {
         this.name = name;
-        //this.childs = childs;
+        this.active = true;
         this.hierarchyNumber = hierarchyNumber;
         this.parent = parent;
+    }
+
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public long getId() {

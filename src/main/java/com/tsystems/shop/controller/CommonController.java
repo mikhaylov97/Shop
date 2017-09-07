@@ -5,12 +5,14 @@ import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.User;
 import com.tsystems.shop.model.dto.BagProductDto;
 import com.tsystems.shop.model.dto.ProductDto;
+import com.tsystems.shop.model.enums.UserRoleEnum;
 import com.tsystems.shop.service.api.*;
 import com.tsystems.shop.util.ImageSourceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -64,7 +66,7 @@ public class CommonController {
     @RequestMapping(value = "/home")
     public ModelAndView showHomePage() {
         ModelAndView modelAndView = new ModelAndView("home");
-        modelAndView.addObject("products", productService.findAllProducts());
+        modelAndView.addObject("products", productService.findAllProducts(false));
         return modelAndView;
     }
 
@@ -94,7 +96,7 @@ public class CommonController {
     public String addToBag(@RequestParam(name = "amount") String amount,
                            @RequestParam(name = "sizeId") String sizeId,
                            @PathVariable(name = "id") String id, HttpServletRequest request) {
-        Product product = productService.findProductById(Long.parseLong(id));
+        Product product = productService.findProductById(Long.parseLong(id), false);
         Object bag = request.getSession().getAttribute("bag");
         if (bag == null) {
             List<BagProductDto> bagProducts = new ArrayList<>();
@@ -150,9 +152,14 @@ public class CommonController {
     @RequestMapping(value = "/catalog/mens")
     public ModelAndView showMensPage() {
         ModelAndView modelAndView = new ModelAndView("catalog");
-        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById("1"));
+        boolean adminMode = false;
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(new SimpleGrantedAuthority(UserRoleEnum.ROLE_ADMIN.name()))) {
+            adminMode = true;
+        }
+        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById("1", adminMode), adminMode);
         modelAndView.addObject("catalog", products);
-        modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("1")));
+        modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("1", adminMode), adminMode));
         modelAndView.addObject("isMensActive", true);
         modelAndView.addObject("sizes", sizeService.findSizesFromProducts(products));
 
@@ -162,9 +169,18 @@ public class CommonController {
     @RequestMapping(value = "/catalog/mens/{id}")
     public ModelAndView showSectionPageFromMens(@PathVariable(name = "id") String id) {
         ModelAndView modelAndView = new ModelAndView("catalog");
-        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById(id));
+        boolean adminMode = false;
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(new SimpleGrantedAuthority(UserRoleEnum.ROLE_ADMIN.name()))) {
+            adminMode = true;
+        }
+        if (categoryService.findCategoryById(id, adminMode) == null) {
+            return new ModelAndView("redirect:/404");
+        }
+
+        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById(id, adminMode), adminMode);
         modelAndView.addObject("catalog", products);
-        modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("1")));
+        modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("1", adminMode), adminMode));
         modelAndView.addObject("isMensActive", true);
         modelAndView.addObject("activeOptionId", Long.parseLong(id));
         modelAndView.addObject("sizes", sizeService.findSizesFromProducts(products));
@@ -175,9 +191,18 @@ public class CommonController {
     @RequestMapping(value = "/catalog/womens/{id}")
     public ModelAndView showSectionPageFromWomens(@PathVariable(name = "id") String id) {
         ModelAndView modelAndView = new ModelAndView("catalog");
-        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById(id));
+        boolean adminMode = false;
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(new SimpleGrantedAuthority(UserRoleEnum.ROLE_ADMIN.name()))) {
+            adminMode = true;
+        }
+        if (categoryService.findCategoryById(id, adminMode) == null) {
+            return new ModelAndView("redirect:/404");
+        }
+
+        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById(id, adminMode), adminMode);
         modelAndView.addObject("catalog", products);
-        modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("2")));
+        modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("2", adminMode), adminMode));
         modelAndView.addObject("isWomensActive", true);
         modelAndView.addObject("activeOptionId", Long.parseLong(id));
         modelAndView.addObject("sizes", sizeService.findSizesFromProducts(products));
@@ -188,9 +213,15 @@ public class CommonController {
     @RequestMapping(value = "/catalog/womens")
     public ModelAndView showWomensPage() {
         ModelAndView modelAndView = new ModelAndView("catalog");
-        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById("2"));
+        boolean adminMode = false;
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(new SimpleGrantedAuthority(UserRoleEnum.ROLE_ADMIN.name()))) {
+            adminMode = true;
+        }
+
+        List<Product> products = productService.findProductsByCategory(categoryService.findCategoryById("2", adminMode), adminMode);
         modelAndView.addObject("catalog", products);
-        modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("2")));
+        modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("2", adminMode), adminMode));
         modelAndView.addObject("isWomensActive", true);
         modelAndView.addObject("sizes",sizeService.findSizesFromProducts(products));
 
@@ -201,14 +232,28 @@ public class CommonController {
     @RequestMapping(value = "/catalog/{id}")
     public ModelAndView showProductPage(@PathVariable(name = "id") long id) {
         ModelAndView modelAndView = new ModelAndView("product");
-        modelAndView.addObject("product", productService.findProductById(id));
-        Category currentCategory = categoryService.findCategoryById(String.valueOf(productService.findProductById(id).getCategory().getId()));
+        boolean adminMode = false;
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(new SimpleGrantedAuthority(UserRoleEnum.ROLE_ADMIN.name()))) {
+            adminMode = true;
+        }
+        if (productService.findProductById(id, adminMode) == null) {
+            return new ModelAndView("redirect:/404");
+        }
+
+        modelAndView.addObject("product", productService.findProductById(id, adminMode));
+        Category currentCategory = categoryService.findCategoryById(String.valueOf(productService.findProductById(id, adminMode).getCategory().getId()), adminMode);
         Category parentCategory = currentCategory.getParent();
         if (parentCategory.getId() == 1) modelAndView.addObject("isMensActive", true);
         if (parentCategory.getId() == 2) modelAndView.addObject("isWomensActive", true);
-        modelAndView.addObject("options", categoryService.findChilds(parentCategory));
+        modelAndView.addObject("options", categoryService.findChilds(parentCategory, adminMode));
         modelAndView.addObject("activeOptionId", currentCategory.getId());
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/404")
+    public String show404Page() {
+        return "nothing-found";
     }
 
     @RequestMapping(value = "/javascript/disabled")
@@ -231,17 +276,17 @@ public class CommonController {
                                                           @RequestParam(value = "category") String categoryId) {
         ModelAndView modelAndView = new ModelAndView("catalog-only-items");
         modelAndView.addObject("catalog", productService.filterProductsByCostAndSize(cost, size, categoryId));
-        Category currentCategory = categoryService.findCategoryById(categoryId);
+        Category currentCategory = categoryService.findCategoryById(categoryId, false);
         Category parentCategory = currentCategory.getParent();
         if (parentCategory != null) {
             if (parentCategory.getId() == 1) modelAndView.addObject("isMensActive", true);
             if (parentCategory.getId() == 2) modelAndView.addObject("isWomensActive", true);
-            modelAndView.addObject("options", categoryService.findChilds(parentCategory));
+            modelAndView.addObject("options", categoryService.findChilds(parentCategory, false));
             modelAndView.addObject("activeOptionId", currentCategory.getId());
         } else {
             if (currentCategory.getId() == 1) modelAndView.addObject("isMensActive", true);
             if (currentCategory.getId() == 2) modelAndView.addObject("isWomensActive", true);
-            modelAndView.addObject("options", categoryService.findChilds(currentCategory));
+            modelAndView.addObject("options", categoryService.findChilds(currentCategory, false));
             modelAndView.addObject("activeOptionId", currentCategory.getId());
         }
         return modelAndView;
@@ -251,7 +296,7 @@ public class CommonController {
 
     @RequestMapping(value = "/products/json")
     public @ResponseBody List<ProductDto> getProductsJson(@RequestParam(name = "term") String term) {
-        return productService.findProductsByTerm(term);
+        return productService.findProductsByTerm(term, false);
     }
 
     private boolean isCurrentAuthenticationAnonymous() {

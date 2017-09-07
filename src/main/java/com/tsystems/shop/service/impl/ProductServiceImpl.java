@@ -7,6 +7,7 @@ import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.Size;
 import com.tsystems.shop.model.dto.ProductDto;
 import com.tsystems.shop.service.api.ProductService;
+import com.tsystems.shop.util.ComparatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,13 +28,16 @@ public class ProductServiceImpl implements ProductService {
     private CategoryDao categoryDao;
 
     @Override
-    public List<Product> findAllProducts() {
-        return productDao.findAllProducts();
+    public List<Product> findAllProducts(boolean adminMode) {
+        if (adminMode) return ascendingSortProductsById(productDao.findAllProducts());
+        else return ascendingSortProductsById(productDao.findNotHiddenProducts());
     }
 
     @Override
-    public Product findProductById(long id) {
-        return productDao.findProductById(id);
+    public Product findProductById(long id, boolean adminMode) {
+        Product product = productDao.findProductById(id);
+        if (adminMode) return product;
+        else return product.getActive() ? product : null;
     }
 
     @Override
@@ -52,21 +56,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findProductsByCategory(Category category) {
+    public List<Product> findProductsByCategory(Category category, boolean adminMode) {
         List<Product> products = new ArrayList<>();
         List<Category> childs = categoryDao.findChilds(category);
         if (childs != null) {
             for (Category child : childs) {
-                products.addAll(findProductsByCategory(child));
+                products.addAll(findProductsByCategory(child, adminMode));
             }
         }
         products.addAll(productDao.findProductsByCategory(category));
-        return products;
+        if (adminMode) return ascendingSortProductsById(products);
+        else return ascendingSortProductsById(products
+                .stream()
+                .filter(Product::getActive)
+                .collect(Collectors.toList()));
     }
 
     @Override
-    public List<Product> findTop10Products() {
-        return productDao.findTop10Products();
+    public List<Product> findTop10Products(boolean adminMode) {
+        return productDao.findTop10Products(adminMode);
     }
 
     @Override
@@ -78,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
             dto.setName(product.getName());
             dto.setImage(product.getImage());
             dto.setPrice(product.getPrice());
-            //dto.setNumberOfSales();
+            dto.setNumberOfSales(findTotalSalesById(product.getId()));
         }
         return resultList;
     }
@@ -86,12 +94,24 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public boolean isTopProductsChanged() {
-        if(tops.containsAll(productDao.findTop10Products())) {
+        if(tops.containsAll(productDao.findTop10Products(false))) {
             return false;
         } else {
-            tops = productDao.findTop10Products();
+            tops = productDao.findTop10Products(false);
             return true;
         }
+    }
+
+    @Override
+    public void hideProduct(Product product) {
+        product.setActive(false);
+        productDao.saveProduct(product);
+    }
+
+    @Override
+    public void showProduct(Product product) {
+        product.setActive(true);
+        productDao.saveProduct(product);
     }
 
     @Override
@@ -107,6 +127,7 @@ public class ProductServiceImpl implements ProductService {
         dto.setImage(product.getImage());
         dto.setPrice(product.getPrice());
         dto.setNumberOfSales(findTotalSalesById(product.getId()));
+        dto.setActive(product.getActive());
         return dto;
     }
 
@@ -120,35 +141,44 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> findTop10ProductsDto() {
-        return convertProductsToProductsDto(findTop10Products());
+    public List<ProductDto> findTop10ProductsDto(boolean adminMode) {
+        return convertProductsToProductsDto(findTop10Products(adminMode));
     }
 
     @Override
     public List<Product> filterProductsByCostAndSize(String cost, String size, String categoryId) {
         List<Product> products;
         try {
+            boolean sizeActive = true;
             if (cost.equals("")) cost = "0";
             long costLong = Long.parseLong(cost);
             long id = Long.parseLong(categoryId);
-            products = findProductsByCategory(categoryDao.findCategoryById(categoryId))
+            products = findProductsByCategory(categoryDao.findCategoryById(categoryId), false)
                     .stream()
-                    .filter( p -> (costLong == 0 || Long.parseLong(p.getPrice()) <= costLong) &&
-                    p.getAttributes().getSizes().stream().filter(s -> s.getSize().equals(size)).count() > 0)
+                    .filter( p -> (costLong == 0 || Long.parseLong(p.getPrice()) <= costLong)
+                            && (size.equals("No matter") || p.getAttributes().getSizes().stream().filter(s -> s.getSize().equals(size)).count() > 0))
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            return findProductsByCategory(categoryDao.findCategoryById(categoryId));
+            return findProductsByCategory(categoryDao.findCategoryById(categoryId), false);
         }
         return products;
     }
 
     @Override
-    public List<ProductDto> findProductsByTerm(String term) {
-        List<Product> products = findAllProducts();
+    public List<ProductDto> findProductsByTerm(String term, boolean adminMode) {
+        List<Product> products = findAllProducts(adminMode);
         List<ProductDto> productDtos = convertProductsToProductsDto(products);
-        return convertProductsToProductsDto(findAllProducts())
+        return convertProductsToProductsDto(findAllProducts(adminMode))
                 .stream()
                 .filter(p -> p.getName().toLowerCase().contains(term.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Product> ascendingSortProductsById(List<Product> products) {
+        return products
+                .stream()
+                .sorted(ComparatorUtil.getProductComparator())
                 .collect(Collectors.toList());
     }
 

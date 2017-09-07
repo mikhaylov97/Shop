@@ -8,7 +8,7 @@
         <style>html{display:none;}</style>
         <meta http-equiv="refresh" content="0.0;url=/javascript/disabled">
     </noscript>
-    <title>Home page</title>
+    <title>Product page</title>
     <link href="/resources/css/bootstrap.css" rel="stylesheet">
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/resources/css/main.css">
@@ -80,6 +80,26 @@
                             <div class="bag-button">
                                 <a href="/admin/edit/${product.id}">Edit<i class="fa fa-pencil fa-lg"></i></a>
                             </div>
+                            <form method="post">
+                                <c:choose>
+                                    <c:when test="${product.active}">
+                                        <div class="bag-button">
+                                            <button type="submit" formaction="/admin/hide/${product.id}">Hide<i class="fa fa-eye-slash fa-lg"></i></button>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="bag-button">
+                                            <button type="submit" formaction="/admin/show/${product.id}">Show<i class="fa fa-eye fa-lg"></i></button>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+                                <c:if test="${product.category.parent.id eq 1}">
+                                    <input name="redirect" type="hidden" value="/catalog/mens/${product.category.id}"/>
+                                </c:if>
+                                <c:if test="${product.category.parent.id eq 2}">
+                                    <input name="redirect" type="hidden" value="/catalog/womens/${product.category.id}"/>
+                                </c:if>
+                            </form>
                         </sec:authorize>
                     </form>
                     <div class="item-description">

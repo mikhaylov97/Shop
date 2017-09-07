@@ -9,7 +9,7 @@
         <style>html{display:none;}</style>
         <meta http-equiv="refresh" content="0.0;url=/javascript/disabled">
     </noscript>
-    <title>Home page</title>
+    <title>Account page</title>
     <link href="/resources/css/bootstrap.css" rel="stylesheet">
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/resources/css/main.css">
@@ -160,7 +160,7 @@
                 <div class="actions">
                     <div class="col-lg-12 action">
                         <!-- <a href=""><i class="fa fa-list-alt"></i> Manage Categories</a> -->
-                        <a href=""><i class="fa fa-share-alt fa-lg"></i> Manage Categories</a>
+                        <a href="/admin/categories"><i class="fa fa-share-alt fa-lg"></i> Manage Categories</a>
                     </div>
                     <div class="col-lg-12 action">
                         <a href="/admin/orders"><i class="fa fa-check-square-o fa-lg"></i> Manage Orders</a>

@@ -31,7 +31,7 @@ function addNewAdmin() {
                     success: function (response) {
                         $('.admins').html("<div class='address-title'>List of Admins</div>" + response);
                     }
-                })
+                });
             } else {
                 $('.password input').val('');
                 $('.success-message').addClass('hidden');

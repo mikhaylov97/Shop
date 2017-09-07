@@ -9,12 +9,13 @@ import java.util.List;
 
 public interface ProductDao {
     List<Product> findAllProducts();
+    List<Product> findNotHiddenProducts();
     Product findProductById(long id);
     Product saveProduct(Product product);
     Size findSizeById(long id);
     int findAvailableAmountOfSize(long sizeId);
     List<Product> findProductsByCategory(Category category);
-    List<Product> findTop10Products();
+    List<Product> findTop10Products(boolean adminMode);
     long findTotalSalesById(long id);
     //List<Product> findProductsByCurrentCategory(Category category);
 }

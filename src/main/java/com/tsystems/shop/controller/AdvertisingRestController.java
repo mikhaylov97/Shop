@@ -22,7 +22,7 @@ public class AdvertisingRestController {
 
     @RequestMapping(value = "/stand")
     public List<Map<String, String>> getStandInformation() {
-        List<Product> list = productService.findTop10Products();
+        List<Product> list = productService.findTop10Products(false);
         List<Map<String, String>> tops = new ArrayList<>();
         for (Product product : list) {
             Map<String, String> item = new HashMap<>();

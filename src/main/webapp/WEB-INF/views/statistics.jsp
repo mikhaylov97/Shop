@@ -7,7 +7,7 @@
         <style>html{display:none;}</style>
         <meta http-equiv="refresh" content="0.0;url=/javascript/disabled">
     </noscript>
-    <title>Statistics</title>
+    <title>Statistics page</title>
     <link href="/resources/css/bootstrap.css" rel="stylesheet">
     <link href="/resources/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/resources/css/main.css">

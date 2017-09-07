@@ -20,10 +20,18 @@ public class ProductDaoImpl implements ProductDao {
 
     @PersistenceContext
     EntityManager em;
+
     @Override
     public List<Product> findAllProducts() {
         Query query = em.createQuery("SELECT p FROM Product p");
         List<Product> products = (List<Product>) query.getResultList();
+        return products;
+    }
+
+    @Override
+    public List<Product> findNotHiddenProducts() {
+        Query productsListQuery = em.createQuery("SELECT p FROM Product p WHERE p.active=true");
+        List<Product> products = (List<Product>) productsListQuery.getResultList();
         return products;
     }
 
@@ -64,15 +72,22 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> findTop10Products() {
+    public List<Product> findTop10Products(boolean adminMode) {
 //        String subQuery = "SELECT p1.id, p1.order.id, p1.product.id FROM OrdersProducts p1 "
 //                + "LEFT JOIN OrdersProducts p2 ON p1.order.id=p2.order.id AND p1.product.id=p2.product.id"
 //                +
         String subQuery = "SELECT MIN(p1.id), p1.order.id, p1.product.id FROM OrdersProducts p1"
                 + " GROUP BY(p1.order.id, p1.product.id)";
-        Query topListQuery = em.createQuery("SELECT p.product.id FROM OrdersProducts p"
-                + " WHERE (p.id, p.order.id, p.product.id) IN(" + subQuery + ") GROUP BY p.product.id"
-                + " ORDER BY COUNT(p.product.id) DESC");
+        Query topListQuery;
+        if (adminMode) {
+            topListQuery = em.createQuery("SELECT p.product.id FROM OrdersProducts p"
+                    + " WHERE (p.id, p.order.id, p.product.id) IN(" + subQuery + ") GROUP BY p.product.id"
+                    + " ORDER BY COUNT(p.product.id) DESC");
+        } else {
+            topListQuery = em.createQuery("SELECT p.product.id FROM OrdersProducts p"
+                    + " WHERE (p.id, p.order.id, p.product.id) IN(" + subQuery + ") AND p.product.active=true GROUP BY p.product.id"
+                    + " ORDER BY COUNT(p.product.id) DESC");
+        }
         topListQuery.setMaxResults(10);
         List<Product> products = new ArrayList<>();
         for (Long id : (List<Long>)topListQuery.getResultList()) {

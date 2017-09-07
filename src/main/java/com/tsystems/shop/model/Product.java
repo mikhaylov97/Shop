@@ -22,6 +22,9 @@ public class Product implements Serializable {
     @Column(name = "image", nullable = false)
     private String image;
 
+    @Column(name = "status", nullable = false)
+    private boolean active;
+
 //    @Column(name = "hidden", nullable = false)
 //    private boolean hidden;
 
@@ -42,7 +45,7 @@ public class Product implements Serializable {
         this.image = image;
         this.category = category;
         this.attributes = attributes;
-        //this.hidden = false;
+        this.active = true;
     }
 
     public long getId() {
@@ -89,13 +92,13 @@ public class Product implements Serializable {
         return attributes;
     }
 
-//    public boolean isHidden() {
-//        return hidden;
-//    }
-//
-//    public void setHidden(boolean hidden) {
-//        this.hidden = hidden;
-//    }
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public void setAttributes(Attribute attributes) {
         this.attributes = attributes;
