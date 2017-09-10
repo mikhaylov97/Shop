@@ -14,11 +14,16 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <div class="search hidden ui-widget">
-                        <input id="search" type="text">
+                    <div class="search ui-widget">
+                        <input type="search" id="search" placeholder="Search">
                     </div>
                 </li>
-                <li onclick="showSearchField()"><a href="#"><i class="fa fa-search fa-lg"></i></a></li>
+                <%--<li>--%>
+                    <%--<div class="search hidden ui-widget">--%>
+                        <%--<input id="search" type="text">--%>
+                    <%--</div>--%>
+                <%--</li>--%>
+                <%--<li onclick="showSearchField()"><a href="#"><i class="fa fa-search fa-lg"></i></a></li>--%>
                 <li><a href="/account"><i class="fa fa-user fa-lg"></i></a></li>
                 <sec:authorize access="hasRole('ROLE_USER') or hasRole('ROLE_ANONYMOUS')">
                     <li class="navbar-bag">

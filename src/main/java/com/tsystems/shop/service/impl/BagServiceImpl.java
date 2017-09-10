@@ -10,14 +10,34 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Bag service. It is used to bag manipulations.
+ */
 @Service
 public class BagServiceImpl implements BagService {
 
-    @Autowired
-    private ProductDao productDao;
+    /**
+     * Injected by spring productDao bean
+     */
+    private final ProductDao productDao;
 
+    /**
+     * Injecting constructor
+     * @param productDao that must be injected
+     */
+    @Autowired
+    public BagServiceImpl(ProductDao productDao) {
+        this.productDao = productDao;
+    }
+
+    /**
+     * Method calculates total price of the user's bag.
+     *
+     * @param products - given list of products(BagProductDto)
+     * @return total price in String format.
+     */
     @Override
-    public String figureOutTotalPrice(List<BagProductDto> products) {
+    public String calculateTotalPrice(List<BagProductDto> products) {
         long totalPrice = 0;
         if (products == null) return "0";
         for (BagProductDto product : products) {
@@ -26,6 +46,13 @@ public class BagServiceImpl implements BagService {
         return String.valueOf(totalPrice);
     }
 
+    /**
+     * Method checks if product exists in bag.
+     *
+     * @param products existing products in bag.
+     * @param id       of product that must be checked.
+     * @return true if exist or false if not.
+     */
     @Override
     public boolean checkIfProductAlreadyExist(List<BagProductDto> products, long id) {
         for (BagProductDto bagProduct : products) {
@@ -34,6 +61,13 @@ public class BagServiceImpl implements BagService {
         return false;
     }
 
+    /**
+     * Method adds Product object to the bag. If such product already exists in user bag
+     * method will increase quality of this product.
+     *
+     * @param products existing products in bag.
+     * @param product  that must be added.
+     */
     @Override
     public void addOrIncreaseIfExist(List<BagProductDto> products, Product product) {
         boolean isExist = false;
@@ -45,10 +79,19 @@ public class BagServiceImpl implements BagService {
             }
         }
         if (!isExist) {
-            //products.add(createBagProductFromProduct(product));
+//            products.add(createBagProductFromProduct(product));
         }
     }
 
+    /**
+     * During the application execution we should have a possibility
+     * to convert our Product {@link Product}
+     * to bag product object {@link BagProductDto}.
+     *
+     * @param product that will be converted
+     * @param sizeId  - our bag product contains chosen by user size.
+     * @return converted BagProductDto
+     */
     @Override
     public BagProductDto createBagProductFromProduct(Product product, long sizeId) {
         BagProductDto bagProduct = new BagProductDto(product.getId(),product.getName(),
@@ -58,11 +101,28 @@ public class BagServiceImpl implements BagService {
         return  bagProduct;
     }
 
+    /**
+     * During the application execution we should have a possibility
+     * to convert our bag product(BagProductDto as you remember {@link BagProductDto})
+     * to simple Product object {@link Product}.
+     *
+     * @param bagProduct one.
+     * @return converted Product object.
+     */
     @Override
-    public Product findProductByBagProduct(BagProductDto bagProduct) {
+    public Product convertBagProductDtoToProduct(BagProductDto bagProduct) {
         return productDao.findProductById(bagProduct.getId());
     }
 
+    /**
+     * Method add product to the bag.
+     *
+     * @param productId   - id f the product that will be added.
+     * @param amount      - quality of product.
+     * @param sizeId      - id of product size.
+     * @param price       of product.
+     * @param bagProducts existing products in bag
+     */
     @Override
     public void addToBag(long productId, int amount, long sizeId, long price, List<BagProductDto> bagProducts) {
         boolean isFoundInBag = false;
@@ -92,6 +152,13 @@ public class BagServiceImpl implements BagService {
         }
     }
 
+    /**
+     * Method delete product from the bag by product id and size id of this product.
+     *
+     * @param productId   - id of the product that will be delted.
+     * @param sizeId      - id of product size.
+     * @param bagProducts - existing products in bag.
+     */
     @Override
     public void deleteFromBag(long productId, long sizeId, List<BagProductDto> bagProducts) {
         for (BagProductDto product : bagProducts) {
@@ -109,6 +176,4 @@ public class BagServiceImpl implements BagService {
             }
         }
     }
-
-
 }

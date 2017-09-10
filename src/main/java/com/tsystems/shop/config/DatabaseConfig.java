@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * As we see from class name, it set some database configs
+ */
 @Configuration
 @EnableTransactionManagement
 @PropertySource("classpath:db.properties")
@@ -27,6 +30,12 @@ public class DatabaseConfig {
     @Resource
     private Environment environment;
 
+    /**
+     * Method register entityMangerFactory bean for us in spring context.
+     * It provides us entity manager which uses in all dao classes to work with
+     * our database
+     * @return
+     */
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
@@ -38,6 +47,11 @@ public class DatabaseConfig {
         return entityManager;
     }
 
+    /**
+     * Method register dataSource bean in spring context. Data source provide us a possibility
+     * to connect with database using our settings. In particular, settings stores in resource folder.
+     * @return data source (our database)
+     */
     @Bean
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
@@ -46,6 +60,7 @@ public class DatabaseConfig {
         dataSource.setUsername(environment.getRequiredProperty("db.username"));
         dataSource.setPassword(environment.getRequiredProperty("db.password"));
 
+        //there we set some settings to work with java database connection pool
         dataSource.setInitialSize(Integer.valueOf(environment.getRequiredProperty("db.initialSize")));
         dataSource.setMinIdle(Integer.valueOf(environment.getRequiredProperty("db.minIdle")));
         dataSource.setMaxIdle(Integer.valueOf(environment.getRequiredProperty("db.maxIdle")));
@@ -57,6 +72,12 @@ public class DatabaseConfig {
         return dataSource;
     }
 
+    /**
+     * Method register transactionManager bean in spring context.
+     * It is obvious that the bean is used for transaction support
+     * @return some transaction manager which includes exemplar of
+     * our entityManagerFactory bean
+     */
     @Bean
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager manager = new JpaTransactionManager();
@@ -65,6 +86,9 @@ public class DatabaseConfig {
         return manager;
     }
 
+    /**
+     * Method gets hibernate properties from the properties file in the resource folder
+     */
     private Properties getHibernateProperties() {
         try {
             Properties properties = new Properties();

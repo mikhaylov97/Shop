@@ -11,7 +11,7 @@ function deleteAdmin(id) {
 
 function addNewAdmin() {
     $.ajax({
-        url: '/super/admin/management/add/ajax',
+        url: '/super/admin/management/add',
         type: 'post',
         async: true,
         data: $('.account-info').serialize(),
@@ -39,5 +39,5 @@ function addNewAdmin() {
                // $('.error-message').removeClass('hidden');
             }
         }
-    })
+    });
 }

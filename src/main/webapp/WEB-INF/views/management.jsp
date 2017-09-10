@@ -74,7 +74,7 @@
                                     <select name="payment-status">
                                         <c:forEach var="status" items="${paymentStatuses}">
                                             <c:choose>
-                                                <c:when test="${order.payment.paymentStatus eq 'PAID'}">
+                                                <c:when test="${status eq order.payment.paymentStatus}">
                                                     <option value="${status}" selected>${status}</option>
                                                 </c:when>
                                                 <c:otherwise>
@@ -92,7 +92,7 @@
                                 <div class="content col-lg-6">
                                     <select name="order-status">
                                         <c:forEach var="status" items="${orderStatuses}">
-                                            <c:if test="${status ne 'DONE'}">
+                                            <c:if test="${status ne 'Done'}">
                                                 <c:choose>
                                                     <c:when test="${status eq order.orderStatus}">
                                                         <option value="${status}" selected>${status}</option>

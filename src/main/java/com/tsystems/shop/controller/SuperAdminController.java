@@ -8,49 +8,51 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
-
+/**
+ * Secured controller for super admin actions.
+ * Super admin can add or remove admins. Simple admin cannot do it.
+ */
 @Controller
 @RequestMapping(value = "/super/admin")
 public class SuperAdminController {
 
-    @Autowired
-    private UserService userService;
+    /**
+     * User service. It is necessary for working with users.
+     */
+    private final UserService userService;
 
+    /**
+     * Injecting users service into this controller by spring tools.
+     * @param userService is our service which provide API to work with users and DB
+     */
+    @Autowired
+    public SuperAdminController(UserService userService) {
+        this.userService = userService;
+    }
+
+    /**
+     * Render the html from manage-admins.jsp and send it as a response for users(super admin in this case).
+     * @return ModelAndView object with manage-admins.jsp view inside.
+     */
     @RequestMapping(value = "/management")
     public ModelAndView showManageAdminsPage() {
         ModelAndView modelAndView = new ModelAndView("manage-admins");
-        List<User> list = userService.findSimpleAdmins();
         modelAndView.addObject("admins", userService.findSimpleAdmins());
 
         return modelAndView;
     }
 
+    /**
+     * POST request. This method tries to save new admin with provided data.
+     * @param name - The name of new admin
+     * @param surname - The surname of new admin
+     * @param email - Email of new admin
+     * @param password - Password of new admin (Yes, super admin set password for all admins.
+     *                But then they can change it).
+     * @return String in JSON format which tell us about the result of operation.
+     */
     @RequestMapping(value = "/management/add", method = RequestMethod.POST)
-    public ModelAndView addNewAdmin(@RequestParam(name = "name") String name,
-                                    @RequestParam(name = "surname") String surname,
-                                    @RequestParam(name = "email") String email,
-                                    @RequestParam(name = "password") String password) {
-        ModelAndView modelAndView = new ModelAndView("manage-admins");
-        if (!userService.isEmailFree(email)) {
-            modelAndView.addObject("errorMsg", "User with such email already exists");
-            modelAndView.addObject("admins", userService.findSimpleAdmins());
-            modelAndView.addObject("name", name);
-            modelAndView.addObject("surname", surname);
-            modelAndView.addObject("email", email);
-            return modelAndView;
-        } else {
-            User admin = new User(UserRoleEnum.ROLE_ADMIN.name(), name, surname, email, password);
-            userService.saveNewUser(admin);
-            modelAndView.addObject("successMsg", "New admin was successfully added");
-            modelAndView.addObject("admins", userService.findSimpleAdmins());
-            return modelAndView;
-        }
-    }
-
-    @RequestMapping(value = "/management/add/ajax", method = RequestMethod.POST)
-    @ResponseBody
-    public String addNewAdminAjax(@RequestParam(name = "name") String name,
+    public @ResponseBody String addNewAdminPostRequest(@RequestParam(name = "name") String name,
                                   @RequestParam(name = "surname") String surname,
                                   @RequestParam(name = "email") String email,
                                   @RequestParam(name = "password") String password) {
@@ -63,17 +65,29 @@ public class SuperAdminController {
         }
     }
 
+    /**
+     * POST request. Method return list of admins as a fragment of the page.
+     * Ajax use this method to update admins list after removing or adding some admin.
+     * @return ModelAndView with manage-admins-only-items.jsp view.
+     */
     @RequestMapping(value = "/management/get/admins", method = RequestMethod.POST)
-    public ModelAndView getAdminsList() {
-        ModelAndView modelAndView = new ModelAndView("admins-list");
+    public ModelAndView getAdminsListPostRequest() {
+        ModelAndView modelAndView = new ModelAndView("manage-admins-only-items");
         modelAndView.addObject("admins", userService.findSimpleAdmins());
         return modelAndView;
     }
 
+    /**
+     * POST request. Method allow us (super admin) to remove simple admin by his id.
+     * Ajax use this method to remove one or more admins without reloading page.
+     * Method return list of admins as a fragment of the manage-admins page.
+     * @param id - id of the admin who will be deleted.
+     * @return ModelAndView with manage-admins-only-items.jsp view.
+     */
     @RequestMapping(value = "/management/delete/{id}", method = RequestMethod.POST)
-    public ModelAndView deleteAdminById(@PathVariable(name = "id") String id) {
+    public ModelAndView deleteAdminByIdPostRequest(@PathVariable(name = "id") String id) {
         userService.deleteUser(Long.parseLong(id));
-        ModelAndView modelAndView = new ModelAndView("admins-list");
+        ModelAndView modelAndView = new ModelAndView("manage-admins-only-items");
         modelAndView.addObject("admins", userService.findSimpleAdmins());
 
         return modelAndView;

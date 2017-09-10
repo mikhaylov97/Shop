@@ -23,15 +23,33 @@ function filterProducts() {
     });
 }
 
-function showSearchField() {
-    $('.search').removeClass('hidden');
-    $('.search input').focus();
+function closeFilter() {
+    $('#filter-nav').css('left', -300);
+    $('.wrap').css('display', 'none');
 }
 
+function openFilter() {
+    $('#filter-nav').css('left', 0);
+    $('.wrap').css('display', 'block');
+}
 
 $(document).ready(function() {
+    $("#filter-data .filter-input input").blur(function() {
+        var val = $(this).val();
+        if (val !== '' && val.indexOf('$') === -1) {
+            $(this).val('$' + val);
+        }
+    });
+
     $('#search').autocomplete({
         minLength: 1,
+        open: function(event, ui) {
+            var autocomplete = $(".ui-autocomplete");
+            var oldTop = autocomplete.offset().top;
+            var newTop = oldTop - 24;
+
+            autocomplete.css("top", newTop);
+        },
         source: function(req, add) {
             $.getJSON("/products/json", req, function(data) {
                 var suggestions = [];
@@ -63,7 +81,11 @@ $(document).ready(function() {
 
     });
 
-    $(".search input").blur(function() {
-        $(".search").addClass('hidden');
+    $(document).scroll(function(){
+        $("#search").autocomplete("close");
+    });
+
+    $("#search").blur(function() {
+        $("#search").val('');
     })
 });

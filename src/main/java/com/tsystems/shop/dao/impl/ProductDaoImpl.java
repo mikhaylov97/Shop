@@ -4,7 +4,6 @@ import com.tsystems.shop.dao.api.ProductDao;
 import com.tsystems.shop.model.Category;
 import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.Size;
-import com.tsystems.shop.model.dto.ProductDto;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +14,26 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class which implements all necessary methods which allow us
+ * to work with database and categories.
+ */
 @Repository
 public class ProductDaoImpl implements ProductDao {
 
+    /**
+     * It's an exemplar created by EntityManagerFactory we created and configured in DatabaseConfig class.
+     * EntityManager provide us special API for working with database.
+     * In particular, we can create different HQL queries. After executing that queries will give us
+     * all necessary data.
+     */
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
 
+    /**
+     * See {@link ProductDao}
+     * @return list of found products.
+     */
     @Override
     public List<Product> findAllProducts() {
         Query query = em.createQuery("SELECT p FROM Product p");
@@ -28,6 +41,10 @@ public class ProductDaoImpl implements ProductDao {
         return products;
     }
 
+    /**
+     * See {@link ProductDao}
+     * @return list of found products.
+     */
     @Override
     public List<Product> findNotHiddenProducts() {
         Query productsListQuery = em.createQuery("SELECT p FROM Product p WHERE p.active=true");
@@ -35,6 +52,11 @@ public class ProductDaoImpl implements ProductDao {
         return products;
     }
 
+    /**
+     * See {@link ProductDao}
+     * @param id of the product.
+     * @return reference to a found Product object
+     */
     @Override
     public Product findProductById(long id) {
         Query query = em.createQuery("SELECT p FROM Product p WHERE id = :id");
@@ -42,6 +64,11 @@ public class ProductDaoImpl implements ProductDao {
         return (Product) query.getSingleResult();
     }
 
+    /**
+     * See {@link ProductDao}
+     * @param product reference to a product object.
+     * @return reference to a saved Product object.
+     */
     @Override
     @Transactional
     public Product saveProduct(Product product) {
@@ -50,6 +77,11 @@ public class ProductDaoImpl implements ProductDao {
         return product;
     }
 
+    /**
+     * See {@link ProductDao}
+     * @param id of the product size.
+     * @return reference to a found Size object.
+     */
     @Override
     public Size findSizeById(long id) {
         Query query = em.createQuery("SELECT s FROM Size s WHERE id = :id");
@@ -57,6 +89,11 @@ public class ProductDaoImpl implements ProductDao {
         return (Size) query.getSingleResult();
     }
 
+    /**
+     * See {@link ProductDao}
+     * @param sizeId - ID of the Size object.
+     * @return available amount of the product with certain size.
+     */
     @Override
     public int findAvailableAmountOfSize(long sizeId) {
         Query query = em.createQuery("SELECT s FROM Size s WHERE id = :id");
@@ -64,6 +101,11 @@ public class ProductDaoImpl implements ProductDao {
         return Integer.parseInt(((Size) query.getSingleResult()).getAvailableNumber());
     }
 
+    /**
+     * See {@link ProductDao}
+     * @param category reference to a mapped Category object. Method will find object within this category.
+     * @return list of found products.
+     */
     @Override
     public List<Product> findProductsByCategory(Category category) {
         Query query = em.createQuery("SELECT p FROM Product p WHERE category.id = :id");
@@ -71,11 +113,13 @@ public class ProductDaoImpl implements ProductDao {
         return (List<Product>) query.getResultList();
     }
 
+    /**
+     * See {@link ProductDao}
+     * @param adminMode - parameter which signalize is this top needed for admin or user.
+     * @return list of found products.
+     */
     @Override
     public List<Product> findTop10Products(boolean adminMode) {
-//        String subQuery = "SELECT p1.id, p1.order.id, p1.product.id FROM OrdersProducts p1 "
-//                + "LEFT JOIN OrdersProducts p2 ON p1.order.id=p2.order.id AND p1.product.id=p2.product.id"
-//                +
         String subQuery = "SELECT MIN(p1.id), p1.order.id, p1.product.id FROM OrdersProducts p1"
                 + " GROUP BY(p1.order.id, p1.product.id)";
         Query topListQuery;
@@ -96,6 +140,11 @@ public class ProductDaoImpl implements ProductDao {
         return products;
     }
 
+    /**
+     * See {@link ProductDao}
+     * @param id of the product.
+     * @return number of sales of the product by his ID.
+     */
     @Override
     public long findTotalSalesById(long id) {
         String subQuery = "SELECT MIN(p1.id), p1.order.id, p1.product.id FROM OrdersProducts p1"

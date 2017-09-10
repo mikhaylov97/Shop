@@ -125,18 +125,10 @@ hr {
 	font-weight: 500;
 }
 
-#tops-and-new a:hover {
-	background-color: #d80000;
-}
-
 .link-content {
 	border-bottom: 2px solid transparent;
+	position: relative;
 	transition: all ease-in-out 0.4s;
-}
-
-.link-content:hover {
-	color: #d80000;
-	border-color: #d80000;
 }
 
 #tops-and-new .photo img {
@@ -289,74 +281,6 @@ hr {
 	border-color: white;
 }
 
-.search {
-	margin-top: 10px;
-}
-
-.search input {
-	padding: 3px 10px 3px;
-	color: black;
-	font-weight: 300;
-	font-size: 16px;
-	outline: none;
-	width: 20px;
-	border: none;
-	border-radius: 3px;
-	background-color: #888;
-	transition: width ease-in-out 0.6s;
-}
-
-.filter {
-	margin-top: 30px;
-	margin-bottom: 15px;
-	color: black;
-	display: flex;
-	justify-content: center;
-}
-
-#filter-data {
-	display: flex;
-	justify-content: center;
-}
-
-.filter .filter-title {
-	letter-spacing: 1px;
-	margin-right: 10px;
-	padding-top: 4px;
-	font-size: 18px;
-}
-
-.filter .filter-cost input {
-	padding: 2px 6px 2px;
-	outline: none;
-	border: 1px solid black;
-	height: 35px;
-	margin-right: 5px;
-	width: 100px;
-}
-
-.filter .filter-size select {
-	margin-right: 5px;
-	outline: none;
-	border: 1px solid black;
-	height: 35px;
-	width: 100px;
-}
-
-.filter-find button {
-	letter-spacing: 1px;
-	border: none;
-	color: white;
-	outline: none;
-	background-color: black;
-	padding: 7px 25px 6px;
-	transition: all ease-in-out 0.2s;
-}
-
-.filter-find button:hover {
-	background-color: #d80000;
-}
-
 .info-message {
 	text-align: center;
 	margin-top: 60px;
@@ -365,32 +289,335 @@ hr {
 	font-weight: 600;
 }
 
-.search {
-	margin-top: 10px;
-}
-
-.search input {
-	padding: 3px 10px 3px;
-	color: black;
-	font-weight: 300;
-	font-size: 16px;
-	outline: none;
-	width: 20px;
-	border: none;
-	border-radius: 3px;
-	background-color: #888;
-	transition: width ease-in-out 0.6s;
-}
-
-.search input:focus {
-	width: 250px;
-	width: 100%;
-}
-
 .ui-widget {
-	z-index: 9999 !important;
+	z-index: 300 !important;
 }
 
 .ui-menu {
 	border: 1px solid black;
 }
+
+#scroll-to-top-button {
+	display: none; /* Hidden by default */
+	position: fixed; /* Fixed/sticky position */
+	bottom: 40px; /* Place the button at the bottom of the page */
+	right: 30px; /* Place the button 30px from the right */
+	z-index: 99; /* Make sure it does not overlap */
+	border: none; /* Remove borders */
+	outline: none; /* Remove outline */
+	background-color: rgba(0, 0, 0, 0.7); /* Set a background color */
+	color: white; /* Text color */
+	cursor: pointer; /* Add a mouse pointer on hover */
+	padding: 25px; /* Some padding */
+	border-radius: 50%; /* Rounded corners */
+	transition: all ease-in-out 0.3s;
+}
+
+#scroll-to-top-button:hover {
+	background-color: rgba(0, 0, 0, 0.4); /* Add a dark-grey background on hover */
+}
+
+.link-content:hover .overlay {
+	opacity: 1;
+}
+
+.overlay {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 100%;
+	width: 100%;
+	opacity: 0;
+	transition: .5s ease;
+	background-color: rgba(255, 255, 255, 0.8);
+}
+
+.text {
+	color: black;
+	font-size: 20px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+}
+
+.text a {
+	color: white;
+	background-color: black;
+	padding: 10px 40px 10px;
+	transition: all ease-in-out 0.2s;
+}
+
+.text a:hover {
+	background-color: #d80000;
+}
+
+/* The side navigation menu */
+.filter-nav {
+	padding: 0;
+	height: 100%; /* 100% Full-height */
+	width: 300px; /* 0 width - change this with JavaScript */
+	position: fixed; /* Stay in place */
+	z-index: 999; /* Stay on top */
+	top: 0;
+	left: -300px; /*#BBA; #DDD #FFF8F8 */
+	background-color: white; /* Black*/
+    /*background-color: black;*/
+	/*border: 2px solid black;*/
+	overflow-x: hidden; /* Disable horizontal scroll */
+	padding-top: 60px; /* Place content 60px from the top */
+	transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.filter-nav a {
+	padding: 8px 8px 8px 32px;
+	text-decoration: none;
+	font-size: 25px;
+	color: #818181;
+	display: block;
+	transition: 0.3s
+}
+
+/* When you mouse over the navigation links, change their color */
+.filter-nav a:hover{
+	color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.filter-nav .close-button {
+	position: absolute;
+	top: 0;
+	color: black;
+	right: 25px;
+	z-index: 999;
+	font-size: 25px;
+	margin-left: 50px;
+	margin-top: 75px;
+}
+
+.filter-nav .close-button:hover {
+	color: #d80000;
+}
+
+#filter h4 {
+	position: absolute;
+	top: 0;
+	left: 30px;
+// color: white;
+	color: black;
+	z-index: 999;
+	font-size: 21px;
+	font-weight: 600;
+	letter-spacing: 1px;
+	margin-top: 84px;
+}
+
+#filter-data {
+	margin-top: 100px;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+#filter-data h5 {
+	text-align: center;
+// color: rgba(255,255,255,0.8);
+	color: black;
+	font-weight: 600;
+	font-size: 13px;
+	letter-spacing: 1px;
+	margin: 0;
+}
+
+#filter-data .filter-input {
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+#filter-data .filter-cost {
+	display: flex;
+	align-items: center;
+// justify-content: space-around;
+}
+
+#filter-data .filter-cost {
+	margin-top: 7px;
+	text-align: center;
+}
+
+#filter-data .filter-input input {
+	outline: none;
+	width: 100%;
+	border: 1px solid black;
+	color: black;
+	font-size: 15px;
+	padding: 4px 5px 4px;
+// border-radius: 2px;
+// text-align: center;
+// background-color: rgba(255, 255, 255, 0.8);
+}
+
+#filter-data .filter-input input:focus {
+	padding: 3px 4px 3px;
+	border: 2px solid black;
+}
+
+#filter-data .filter-input select {
+	outline: none;
+// width: 40%;
+	border: 1px solid black;
+	color: black;
+	font-size: 18px;
+	padding: 4px 10px 4px;
+// background-color: rgba(255, 255, 255, 0.8);
+}
+
+#filter-data .filter-input select:focus {
+	padding: 3px 9px 3px;
+	border: 2px solid black;
+}
+
+#filter-data .filter-find {
+	text-align: center;
+}
+
+#filter-data .filter-find button {
+
+	background-color: black;
+	color: white;
+	outline: none;
+	font-size: 19px;
+	padding: 6px 40px 6px;
+	border: none;
+	transition: all ease-in-out 0.3s;
+}
+
+#filter-data .filter-find button:hover {
+// border: 2px solid transparent;
+	background-color: #d80000;
+}
+
+#open-nav-button {
+	position: fixed; /* Fixed/sticky position */
+	top: 40%; /* Place the button at the bottom of the page */
+	left: -5px; /* Place the button 30px from the right */
+	z-index: 1; /* Make sure it does not overlap */
+	border: none; /* Remove borders */
+	outline: none; /* Remove outline */
+	/*background-color: rgba(0, 0, 0, 0.7); !* Set a background color *!*/
+	/*color: white; !* Text color *!*/
+	color: rgba(0, 0, 0, 0.7);
+	cursor: pointer; /* Add a mouse pointer on hover */
+	/*padding: 25px; !* Some padding *!*/
+	font-size: 21px;
+	/*border-radius: 50%; !* Rounded corners *!*/
+	transition: all ease-in-out 0.3s;
+}
+
+#open-nav-button:hover {
+	color: rgba(0, 0, 0, 0.4); /* Add a dark-grey background on hover */
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+	.filter-nav {padding-top: 15px;}
+	.filter-nav a {font-size: 18px;}
+}
+
+.wrap {
+	display: none;
+	z-index: 1;
+	background-color: black;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0.8;
+}
+
+input[type=search] {
+	outline: none;
+	-webkit-appearance: textfield;
+	-webkit-box-sizing: content-box;
+	font-family: inherit;
+	font-size: 100%;
+	z-index: 9999 !important;
+}
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button {
+	display: none;
+}
+
+
+input[type=search] {
+	background: #ededed url(/resources/images/search-icon.png) no-repeat 9px center;
+	border: none;
+	padding: 9px 10px 9px 32px;
+
+	-webkit-border-radius: 10em;
+	-moz-border-radius: 10em;
+	border-radius: 10em;
+
+	-webkit-transition: all .5s;
+	-moz-transition: all .5s;
+	transition: all .5s;
+}
+input[type=search]:focus {
+	width: 180px;
+	background-color: #fff;
+	border-color: #66CC75;
+	padding: 9px 10px 9px 32px;
+
+	-webkit-box-shadow: 0 0 5px rgba(109,207,246,.5);
+	-moz-box-shadow: 0 0 5px rgba(109,207,246,.5);
+	box-shadow: 0 0 5px rgba(109,207,246,.5);
+}
+
+.navbar input[type=search] {
+	width: 15px;
+	padding-left: 10px;
+	margin-top: 3px;
+	color: transparent;
+	cursor: pointer;
+	background-color: transparent;
+}
+.navbar input[type=search]:hover {
+	color: #fff;
+}
+.navbar input[type=search]:focus {
+	width: 130px;
+	padding-left: 32px;
+	color: #000;
+	background-color: #fff;
+	cursor: auto;
+}
+.navbar input:-moz-placeholder {
+	color: transparent;
+}
+.navbar input::-webkit-input-placeholder {
+	color: transparent;
+}
+
+.ui-autocomplete {
+	-webkit-padding-start: 0;
+}
+
+/*.search-box {*/
+	/*position; absolute;*/
+/*}*/
+
+/*.search-box label {*/
+	/*position: relative;*/
+	/*top: 50%;*/
+	/*left: 50%;*/
+/*}*/
+
+/*.search-box label {*/
+	/*position: relative;*/
+	/*top: 50%;*/
+	/*left: 10%;*/
+/*}*/

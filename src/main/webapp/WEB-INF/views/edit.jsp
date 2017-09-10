@@ -28,12 +28,13 @@
     <div class="container">
         <h4 id="title">Product review</h4>
         <div class="back-button">
-            <c:if test="${product.category.parent.id eq 1}">
-                <a href="/catalog/mens/${product.category.id}"><i class="fa fa-long-arrow-left"></i> Back to the products</a>
-            </c:if>
-            <c:if test="${product.category.parent.id eq 2}">
-                <a href="/catalog/womens/${product.category.id}"><i class="fa fa-long-arrow-left"></i> Back to the products</a>
-            </c:if>
+            <a href="/catalog${product.id}"><i class="fa fa-long-arrow-left"></i> Back to the product</a>
+            <%--<c:if test="${product.category.parent.id eq 1}">--%>
+                <%--<a href="/catalog/mens/${product.category.id}"><i class="fa fa-long-arrow-left"></i> Back to the products</a>--%>
+            <%--</c:if>--%>
+            <%--<c:if test="${product.category.parent.id eq 2}">--%>
+                <%--<a href="/catalog/womens/${product.category.id}"><i class="fa fa-long-arrow-left"></i> Back to the products</a>--%>
+            <%--</c:if>--%>
         </div>
         <div class="row">
             <form:form action="/admin/edit/${product.id}" method="post" enctype="multipart/form-data">

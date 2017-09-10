@@ -16,23 +16,64 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Product service. It is used to product manipulations.
+ */
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    /**
+     * List with top shop products. (the more sales, the higher the rating).
+     */
     private List<Product> tops = new ArrayList<>(10);
 
-    @Autowired
-    private ProductDao productDao;
+    /**
+     * Injected by spring productDao bean
+     */
+    private final ProductDao productDao;
 
-    @Autowired
-    private CategoryDao categoryDao;
+    /**
+     * Injected by spring categoryDao bean
+     */
+    private final CategoryDao categoryDao;
 
-    @Override
-    public List<Product> findAllProducts(boolean adminMode) {
-        if (adminMode) return ascendingSortProductsById(productDao.findAllProducts());
-        else return ascendingSortProductsById(productDao.findNotHiddenProducts());
+    /**
+     * Injecting constructor.
+     * @param productDao that must be injected.
+     * @param categoryDao that must be injected.
+     */
+    @Autowired
+    public ProductServiceImpl(ProductDao productDao, CategoryDao categoryDao) {
+        this.productDao = productDao;
+        this.categoryDao = categoryDao;
     }
 
+    /**
+     * Method finds all products in shop. If activeMode is true,
+     * method will return all found products, otherwise only not hidden
+     * products.
+     *
+     * @param adminMode see above.
+     * @return list of found products.
+     */
+    @Override
+    public List<Product> findAllProducts(boolean adminMode) {
+        if (adminMode) return productDao.findAllProducts();
+        else return productDao.findAllProducts()
+                .stream()
+                .filter(Product::getActive)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Method finds product by his ID.
+     *
+     * @param id        of the product.
+     * @param adminMode - If activeMode is true,
+     *                  method will return found product, if activeMode is false, method will return
+     *                  product if it is not hidden, otherwise null will be returned.
+     * @return null or found product object.
+     */
     @Override
     public Product findProductById(long id, boolean adminMode) {
         Product product = productDao.findProductById(id);
@@ -40,21 +81,48 @@ public class ProductServiceImpl implements ProductService {
         else return product.getActive() ? product : null;
     }
 
+    /**
+     * Method saves products.
+     *
+     * @param product that must be saved in database.
+     * @return reference to a saved product.
+     */
     @Override
     public Product saveProduct(Product product) {
         return productDao.saveProduct(product);
     }
 
+    /**
+     * Method finds size object by his ID.
+     *
+     * @param id of the Size.
+     * @return found Size object.
+     */
     @Override
     public Size findSizeById(long id) {
-       return productDao.findSizeById(id);
+        return productDao.findSizeById(id);
     }
 
+    /**
+     * The method finds the available quantity of a product of a certain size.
+     *
+     * @param sizeId that must be checked.
+     * @return available number of product.
+     */
     @Override
     public int findAvailableAmountOfSize(long sizeId) {
         return productDao.findAvailableAmountOfSize(sizeId);
     }
 
+    /**
+     * Method finds products in certain category. If activeMode is true,
+     * method will return all found products, otherwise only not hidden
+     * found products.
+     *
+     * @param category  where products must be found.
+     * @param adminMode see above.
+     * @return list of found products.
+     */
     @Override
     public List<Product> findProductsByCategory(Category category, boolean adminMode) {
         List<Product> products = new ArrayList<>();
@@ -72,25 +140,24 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList()));
     }
 
+    /**
+     * Method finds top 10 products. If activeMode is true,
+     * method will return all found top products, otherwise only not hidden
+     * top products.
+     *
+     * @param adminMode see above.
+     * @return list of found products.
+     */
     @Override
     public List<Product> findTop10Products(boolean adminMode) {
         return productDao.findTop10Products(adminMode);
     }
 
-    @Override
-    public List<ProductDto> castProductsToDtos(List<Product> products) {
-        List<ProductDto> resultList = new ArrayList<>();
-        for (Product product : products) {
-            ProductDto dto = new ProductDto();
-            dto.setId(product.getId());
-            dto.setName(product.getName());
-            dto.setImage(product.getImage());
-            dto.setPrice(product.getPrice());
-            dto.setNumberOfSales(findTotalSalesById(product.getId()));
-        }
-        return resultList;
-    }
-
+    /**
+     * Method checks if top is changed.
+     *
+     * @return true if is changed and false if not.
+     */
     @Override
     @Transactional
     public boolean isTopProductsChanged() {
@@ -102,23 +169,47 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    /**
+     * Method makes product status(active field) false.
+     * Users cannot see and buy hidden products(but admins can see them).
+     *
+     * @param product that must be hidden.
+     */
     @Override
     public void hideProduct(Product product) {
         product.setActive(false);
         productDao.saveProduct(product);
     }
 
+    /**
+     * Method makes product status(active field) true.
+     * Users cannot see and buy hidden products(but admins can see them).
+     *
+     * @param product that must be hidden.
+     */
     @Override
     public void showProduct(Product product) {
         product.setActive(true);
         productDao.saveProduct(product);
     }
 
+    /**
+     * Method finds total sales of the product by his ID.
+     *
+     * @param id of the Products object.
+     * @return number of sales.
+     */
     @Override
     public long findTotalSalesById(long id) {
         return productDao.findTotalSalesById(id);
     }
 
+    /**
+     * Method converts Product object {@link Product} to ProductDto object {@link ProductDto}.
+     *
+     * @param product that must be converted.
+     * @return ProductDto object as a result of converting.
+     */
     @Override
     public ProductDto convertProductToProductDto(Product product) {
         ProductDto dto = new ProductDto();
@@ -131,6 +222,12 @@ public class ProductServiceImpl implements ProductService {
         return dto;
     }
 
+    /**
+     * Method converts Products list  {@link Product} to ProductsDto list {@link ProductDto}.
+     *
+     * @param products is a list that must be converted.
+     * @return list converted products in dto format. See {@link ProductDto}.
+     */
     @Override
     public List<ProductDto> convertProductsToProductsDto(List<Product> products) {
         List<ProductDto> resultList = new ArrayList<>();
@@ -140,22 +237,45 @@ public class ProductServiceImpl implements ProductService {
         return resultList;
     }
 
+    /**
+     * Method finds top 10 products. If activeMode is true,
+     * method will return all found top products, otherwise only not hidden
+     * top products.
+     *
+     * @param adminMode see above.
+     * @return list of found products in dto format(see {@link ProductDto}).
+     */
     @Override
     public List<ProductDto> findTop10ProductsDto(boolean adminMode) {
         return convertProductsToProductsDto(findTop10Products(adminMode));
     }
 
+
+    /**
+     * Method filter products by their cost(lower cost bound and upper cost bound) and size
+     * in certain category.
+     *
+     * @param lowerCostBound is a filter parameter chosen by user.
+     * @param upperCostBound is a filter parameter chosen by user.
+     * @param size           is a filter parameter chosen by user.
+     * @param categoryId     which must be parent category for the sought products.
+     * @return list of found products.
+     */
     @Override
-    public List<Product> filterProductsByCostAndSize(String cost, String size, String categoryId) {
+    public List<Product> filterProductsByCostAndSize(String lowerCostBound, String upperCostBound, String size, String categoryId) {
         List<Product> products;
         try {
             boolean sizeActive = true;
-            if (cost.equals("")) cost = "0";
-            long costLong = Long.parseLong(cost);
+            long costFromLong, costToLong;
+            if (lowerCostBound.equals("")) costFromLong = Long.parseLong("0");
+            else costFromLong = Long.parseLong(lowerCostBound.substring(1, lowerCostBound.length()));
+            if (upperCostBound.equals("")) costToLong = Long.parseLong("0");
+            else costToLong = Long.parseLong(upperCostBound.substring(1, upperCostBound.length()));
             long id = Long.parseLong(categoryId);
             products = findProductsByCategory(categoryDao.findCategoryById(categoryId), false)
                     .stream()
-                    .filter( p -> (costLong == 0 || Long.parseLong(p.getPrice()) <= costLong)
+                    .filter( p -> (costFromLong == 0 || Long.parseLong(p.getPrice()) >= costFromLong)
+                            && (costToLong == 0 || Long.parseLong(p.getPrice()) <= costToLong)
                             && (size.equals("No matter") || p.getAttributes().getSizes().stream().filter(s -> s.getSize().equals(size)).count() > 0))
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -164,6 +284,15 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
+    /**
+     * Method finds products which names contains term parameter. If activeMode is true,
+     * method will return all found products, otherwise only not hidden
+     * found products.
+     *
+     * @param term      that must be in the names of products.
+     * @param adminMode see above.
+     * @return list of found products in dto forma. See {@link ProductDto}
+     */
     @Override
     public List<ProductDto> findProductsByTerm(String term, boolean adminMode) {
         List<Product> products = findAllProducts(adminMode);
@@ -174,18 +303,32 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method sorts items in ascending order.
+     *
+     * @param products that must be sorted.
+     * @return Sorted products list.
+     */
     @Override
     public List<Product> ascendingSortProductsById(List<Product> products) {
         return products
                 .stream()
-                .sorted(ComparatorUtil.getProductComparator())
+                .sorted(ComparatorUtil.getAscendingProductComparator())
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Simple getter.
+     * @return list of current top products in shop.
+     */
     public List<Product> getTops() {
         return tops;
     }
 
+    /**
+     * Simple setter.
+     * @param tops is value that must be set.
+     */
     public void setTops(List<Product> tops) {
         this.tops = tops;
     }

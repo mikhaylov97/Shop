@@ -32,32 +32,42 @@
     </div>
 </div>
 
+<button onclick="scrollToTop()" id="scroll-to-top-button" title="Go to top"><i class="fa fa-chevron-up fa-lg"></i></button>
+
 <div id="tops-and-new">
     <div class="container">
         <div class="row centered">
             <div class="col-lg-5 col-lg-offset-1">
-                <a href="#">
-                    <div class="link-content">
-                        <div class="photo">
-                            <img src="/resources/images/new.jpg" alt="New">
-                        </div>
-                        <div class="tops-and-new-name">
-                            New Arrivals
+                <div class="link-content">
+                    <div class="photo">
+                        <img src="/resources/images/new.jpg" alt="New">
+                    </div>
+                    <div class="overlay">
+                        <div class="text">
+                            <p>Looking for men's clothes?</p>
+                            <p><a href="/catalog/mens">MEN'S</a></p>
                         </div>
                     </div>
-                </a>
+                </div>
+                <div class="tops-and-new-name">
+                    MEN'S
+                </div>
             </div>
             <div class="col-lg-5">
-                <a href="#">
-                    <div class="link-content">
-                        <div class="photo">
-                            <img src="/resources/images/tops.gif" alt="Tops">
-                        </div>
-                        <div class="tops-and-new-name">
-                            Tops
+                <div class="link-content">
+                    <div class="photo">
+                        <img src="/resources/images/tops.gif" alt="Tops">
+                    </div>
+                    <div class="overlay">
+                        <div class="text">
+                            <p>Looking for women's clothes?</p>
+                            <p><a href="/catalog/womens">WOMEN'S</a></p>
                         </div>
                     </div>
-                </a>
+                </div>
+                <div class="tops-and-new-name">
+                    WOMEN'S
+                </div>
             </div>
         </div>
     </div>

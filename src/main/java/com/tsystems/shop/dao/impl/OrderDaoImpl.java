@@ -3,6 +3,7 @@ package com.tsystems.shop.dao.impl;
 import com.tsystems.shop.dao.api.OrderDao;
 import com.tsystems.shop.model.Order;
 import com.tsystems.shop.model.OrdersProducts;
+import com.tsystems.shop.model.enums.OrderStatusEnum;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,19 +12,27 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
+/**
+ * Class which implements all necessary methods which allow us
+ * to work with database and orders.
+ */
 @Repository
 public class OrderDaoImpl implements OrderDao {
 
+    /**
+     * It's an exemplar created by EntityManagerFactory we created and configured in DatabaseConfig class.
+     * EntityManager provide us special API for working with database.
+     * In particular, we can create different HQL queries. After executing that queries will give us
+     * all necessary data.
+     */
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
 
-    @Override
-    @Transactional
-    public void addNewOrder(Order order) {
-        em.merge(order);
-        em.flush();
-    }
-
+    /**
+     * See {@link OrderDao}
+     * @param email of the user.
+     * @return list of found orders.
+     */
     @Override
     public List<Order> findOrdersByEmail(String email) {
         Query query = em.createQuery("SELECT o FROM Order o WHERE user.email = :email");
@@ -32,6 +41,11 @@ public class OrderDaoImpl implements OrderDao {
         return orders;
     }
 
+    /**
+     * See {@link OrderDao}
+     * @param status of the orders which should be found.
+     * @return list of found orders
+     */
     @Override
     public List<Order> findOrdersByStatusType(String status) {
         Query query = em.createQuery("SELECT o FROM Order o WHERE orderStatus = :status");
@@ -40,6 +54,10 @@ public class OrderDaoImpl implements OrderDao {
         return orders;
     }
 
+    /**
+     * See {@link OrderDao}
+     * @return list of found orders.
+     */
     @Override
     public List<Order> findAllOrders() {
         Query query = em.createQuery("SELECT o FROM Order o");
@@ -47,6 +65,11 @@ public class OrderDaoImpl implements OrderDao {
         return orders;
     }
 
+    /**
+     * See {@link OrderDao}
+     * @param id of the order we want to find
+     * @return reference to an found Order object
+     */
     @Override
     public Order findOrderById(long id) {
         Query query = em.createQuery("SELECT o FROM Order o WHERE id = :id");
@@ -55,32 +78,39 @@ public class OrderDaoImpl implements OrderDao {
         return order;
     }
 
+    /**
+     * See {@link OrderDao}
+     * @param order - directly, the mapped object we need to save.
+     * @return reference to an saved Order object.
+     */
     @Override
     @Transactional
     public Order saveOrder(Order order) {
-        em.merge(order);
+        order = em.merge(order);
         em.flush();
         return order;
     }
 
-    @Override
-    @Transactional
-    public OrdersProducts savePartOfOrder(OrdersProducts ordersProducts) {
-        em.merge(ordersProducts);
-        em.flush();
-        return ordersProducts;
-    }
-
+    /**
+     * See {@link OrderDao}
+     * @return list of found orders.
+     */
     @Override
     public List<Order> findDoneOrders() {
-        Query query = em.createQuery("SELECT o FROM Order o WHERE orderStatus = 'DONE'");
+        Query query = em.createQuery("SELECT o FROM Order o WHERE orderStatus = :status");
+        query.setParameter("status", OrderStatusEnum.DONE.toString());
         List<Order> orders = (List<Order>) query.getResultList();
         return orders;
     }
 
+    /**
+     * See {@link OrderDao}
+     * @return list of found orders.
+     */
     @Override
     public List<Order> findActiveOrders() {
-        Query query = em.createQuery("SELECT o FROM Order o WHERE orderStatus != 'DONE'");
+        Query query = em.createQuery("SELECT o FROM Order o WHERE orderStatus != :status");
+        query.setParameter("status", OrderStatusEnum.DONE.toString());
         List<Order> orders = (List<Order>) query.getResultList();
         return orders;
     }

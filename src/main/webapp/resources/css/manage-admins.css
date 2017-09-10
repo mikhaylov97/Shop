@@ -130,6 +130,7 @@
 .delete-button button {
     color: black;
     border: none;
+    outline: none;
     background-color: transparent;
     transition: all ease-in-out 0.2s;
 }

@@ -4,41 +4,92 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashMap;
 
+/**
+ * Product entity model. This class maps on products Table in our Database.
+ * There we store all information about the product in fields. Hibernate forces us to make class
+ * with fields and getters and setters for all of them, Serializable interface(optional),
+ * and empty constructor if we define custom one.
+ */
 @Entity
 @Table(name = "products")
 public class Product implements Serializable {
 
+    /**
+     * Product ID. It generates by hibernate while inserting.
+     * This filed connects with product_id column in products table.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "product_id")
     private long id;
 
+    /**
+     * Product name.
+     * This filed connected with name column in products table.
+     * Cannot be nullable and must be unique.
+     */
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    /**
+     * Product price.
+     * This filed connected with price column in products table.
+     * Cannot be nullable.
+     */
     @Column(name = "price", nullable = false)
     private String price;
 
+    /**
+     * Product image path.
+     * This filed connected with image column in products table.
+     * Cannot be nullable.
+     */
     @Column(name = "image", nullable = false)
     private String image;
 
+    /**
+     * Product status. If true, guests and users cannot see this product(admins can) and vice versa.
+     * This filed connected with status column in products table.
+     * Cannot be nullable.
+     */
     @Column(name = "status", nullable = false)
     private boolean active;
 
-//    @Column(name = "hidden", nullable = false)
-//    private boolean hidden;
-
+    /**
+     * Category object. We had Category class {@link Category} and every product in store
+     * should be a part of any category. By this reason we should store reference to a category object.
+     * Hibernate allow us to get Size object from OrdersProducts object.
+     * This filed connected with category_id column in products table.
+     */
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
+    /**
+     * Attribute object. We had Attribute class {@link Attribute} and every product in store
+     * has it detailed information(for example, color, size, weight, etc.).
+     * By this reason was created attributes table. See Attribute class declaration for more details {@link Attribute}.
+     * Hibernate allow us to get Attribute object from Product object.
+     * This filed connected with attribute_id column in products table.
+     */
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "attribute_id")
     private Attribute attributes;
 
+    /**
+     * Empty constructor for Hibernate
+     */
     public Product() {
     }
 
+    /**
+     * Our custom constructor to initialize all necessary fields.
+     * @param name - see fields declaration.
+     * @param price - see fields declaration.
+     * @param image - see fields declaration.
+     * @param category - see fields declaration.
+     * @param attributes - see fields declaration.
+     */
     public Product(String name, String price, String image, Category category, Attribute attributes) {
         this.name = name;
         this.price = price;
@@ -48,58 +99,114 @@ public class Product implements Serializable {
         this.active = true;
     }
 
+    /**
+     * Simple getter
+     * @return Product ID value
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Simple setter
+     * @param id is value to set
+     */
     public void setId(long id) {
         this.id = id;
     }
 
+    /**
+     * Simple getter
+     * @return Product name value
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Simple setter
+     * @param name is value to set
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Simple getter
+     * @return Product price value
+     */
     public String getPrice() {
         return price;
     }
 
+    /**
+     * Simple setter
+     * @param price is value to set
+     */
     public void setPrice(String price) {
         this.price = price;
     }
 
+    /**
+     * Simple getter
+     * @return Product image path value
+     */
     public String getImage() {
         return image;
     }
 
+    /**
+     * Simple setter
+     * @param image is value to set
+     */
     public void setImage(String image) {
         this.image = image;
     }
 
+    /**
+     * Simple getter
+     * @return Product category object
+     */
     public Category getCategory() {
         return category;
     }
 
+    /**
+     * Simple setter
+     * @param category is object to set
+     */
     public void setCategory(Category category) {
         this.category = category;
     }
 
+    /**
+     * Simple getter
+     * @return Product attribute object
+     */
     public Attribute getAttributes() {
         return attributes;
     }
 
+    /**
+     * Simple getter
+     * @return Product status value
+     */
     public boolean getActive() {
         return active;
     }
 
+    /**
+     * Simple setter
+     * @param active is value to set
+     */
     public void setActive(boolean active) {
         this.active = active;
     }
 
+    /**
+     * Simple setter
+     * @param attributes is object to set
+     */
     public void setAttributes(Attribute attributes) {
         this.attributes = attributes;
     }

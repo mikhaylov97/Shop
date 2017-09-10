@@ -30,7 +30,7 @@
     <div class="row">
         <div class="col-lg-5 col-lg-offset-1 admins">
             <div class="address-title">List of Admins</div>
-            <%@include file="admins-list.jsp"%>
+            <%@include file="manage-admins-only-items.jsp"%>
         </div>
 
         <div class="col-lg-5">

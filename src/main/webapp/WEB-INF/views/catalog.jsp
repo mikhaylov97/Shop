@@ -24,6 +24,7 @@
 <%@include file="second-header.jsp"%>
 <%@include file="options.jsp"%>
 <%@include file="filter.jsp"%>
+<div class="wrap" onclick="closeFilter()"></div>
 <div id="main-content" class="container center-block">
     <div class="row centered">
         <c:choose>
@@ -38,6 +39,14 @@
                                 <div class="item-name">
                                         ${product.name}
                                 </div>
+                                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                    <div class="item-status">
+                                        <c:choose>
+                                            <c:when test="${product.active}">Status: <i class="fa fa-eye"></i> </c:when>
+                                            <c:otherwise>Status: <i class="fa fa-eye-slash"></i> </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </sec:authorize>
                                 <div class="item-cost">
                                     <i class="fa fa-usd"></i>${product.price}
                                 </div>

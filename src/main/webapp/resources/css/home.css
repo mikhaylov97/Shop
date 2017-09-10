@@ -56,7 +56,7 @@
 }
 
 .secondary-categories a {
-    margin-right: 35px;
+    margin-left: 35px;
     font-weight: 600;
     color: black;
     font-size: 14px;
@@ -80,15 +80,23 @@
 }
 
 .item-name {
-    margin-top: 20px;
-    letter-spacing: 2px;
+    margin-top: 10px;
+    letter-spacing: 1px;
     font-weight: 600;
-    font-size: 18px;
+    font-size: 15px;
+}
+
+.item-status {
+    margin-top: 2px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    font-size: 14px;
+    color: black;
 }
 
 .item-cost {
-    margin-top: 10px;
-    letter-spacing: 1px;
+    margin-top: 3px;
+    letter-spacing: 0;
     font-weight: 600;
     color: #5f5f6e;
     cursor: default;
@@ -96,6 +104,7 @@
 
 #main-content {
     margin-bottom: 60px;
+    transition: margin-left 0.5s;
 }
 
 #main-content a:hover {
@@ -118,6 +127,12 @@
 }
 
 .item {
-    padding-bottom: 45px;
+    margin-bottom: 25px;
+    border: 1px solid transparent;
+    transition: all ease-in-out 0.3s;
+}
+
+.item:hover {
+    border: 1px solid rgba(0, 0, 0, 0.6);
 }
 

@@ -14,8 +14,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Util which provide us a method for building document in pdf format.
+ * It uses our custom PdfAbstractView class {@link #PdfAbstractView}
+ */
 public class PdfBuilderUtil extends PdfAbstractView {
 
+    /**
+     * Directly, method where we put some instructions for creating document
+     * @param model where our data is storing
+     * @param doc - document we received at the output
+     * @param writer - our pdfWriter
+     * @param request handled by our controller
+     * @param response response which will be sent for user with our document
+     * @throws Exception in cases when something going wrong during the method processing
+     */
     @Override
     protected void buildPdfDocument(Map<String, Object> model, Document doc,
                                     PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
@@ -104,6 +117,7 @@ public class PdfBuilderUtil extends PdfAbstractView {
         topProductsCell.setPhrase(new Phrase("Number of Sales", font));
         tableTopProducts.addCell(topProductsCell);
 
+        //Images of the top products
         Map<Long, Byte[]> images = (HashMap<Long, Byte[]>) model.get("imagesMap");
         // write table row data
         for (ProductDto product : productDtoList) {

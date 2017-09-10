@@ -113,7 +113,36 @@
     color: white;
     background-color: black;
 }
+.edit-button {
+    padding: 20px 0 10px;
+}
 
+.edit-button a {
+    color: black;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all ease-in-out 0.2s;
+}
+
+.hide-show-button {
+    padding: 10px 0 10px;
+}
+
+.hide-show-button button,.hide-show-button a {
+    color: black;
+    font-size: 16px;
+    outline: none;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all ease-in-out 0.2s
+}
 
 .bag-button {
     padding-top: 20px;
@@ -131,7 +160,12 @@
     transition: all ease-in-out 0.2s;
 }
 
-.bag-button button:hover {
+.bag-button button:hover,.back-button a:hover {
+    color: #d80000;
+    border-color: #d80000;
+}
+
+.hide-show-button a:hover, .hide-show-button button:hover {
     color: #d80000;
     border-color: #d80000;
 }
@@ -147,7 +181,7 @@
     transition: all ease-in-out 0.2s;
 }
 
-.bag-button a:hover {
+.bag-button, .edit-button a:hover {
     color: #d80000;
     border-color: #d80000;
 }

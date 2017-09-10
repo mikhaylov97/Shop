@@ -12,17 +12,31 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+
+/**
+ * SecurityConfig class is the extension of provided by spring security
+ * WebSecurityConfigAdapter. There we configure our http request rules
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @ComponentScan("com.tsystems.shop")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * Service which represents the implementation of spring's UserDetailsService interface.
+     * And it provide us API for loading userDetails by email. And security module decides
+     * if it should authorise such user using this userDetails object
+     */
     @Autowired
     private UserDetailsService userDetailsService;
 
-    // регистрируем нашу реализацию UserDetailsService
-    // а также PasswordEncoder для приведения пароля в формат SHA1
+    /**
+     * There we register our implementation of UserDetailsService as instrument
+     * for authentication.
+     * @param auth some AuthenticationManagerBuilder which spring provides us
+     * @throws Exception is cases where some setting isn't correct
+     */
     @Autowired
     public void registerGlobalAuthentication(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -30,6 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //.passwordEncoder(getShaPasswordEncoder());
     }
 
+    /**
+     * There is overridden method where we secure our application by provided http parameter
+     * @param http parameter provide us API for configuring all requests in application
+     * @throws Exception in cases when we have some troubles during method processing
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
@@ -46,6 +65,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(false);
     }
 
+    /**
+     * Method register shaPasswordEncoder.
+     * @return ShaPasswordEncoder
+     */
     @Bean
     public ShaPasswordEncoder getShaPasswordEncoder(){
         return new ShaPasswordEncoder();

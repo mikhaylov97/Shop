@@ -1,6 +1,6 @@
 package com.tsystems.shop.controller;
 
-import com.tsystems.shop.model.Product;
+import com.tsystems.shop.model.dto.ProductDto;
 import com.tsystems.shop.service.api.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,33 +10,75 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
+/**
+ * The rest controller who is responsible for advertising.
+ * It contains emitters of all users which is working with
+ * the advertising stand(Second application on 8081 port).
+ */
 @RestController
 @RequestMapping(value = "/advertising")
 public class AdvertisingRestController {
 
+    /**
+     * Set of the emitters. It is used to send messages for all active users.
+     * The message on the client side will refresh the page of the stand.
+     */
     private final Set<SseEmitter> emitters = Collections.synchronizedSet(new HashSet<>());
-    //private Map<Long, SseEmitter> emitters1 = new HashMap<>();
 
+    /**
+     * Product service. It is necessary for working with products.
+     */
+    private final ProductService productService;
+
+    /**
+     * Injecting product service into this controller by spring tools.
+     * @param productService is our service which provide API to work with products and DB
+     */
     @Autowired
-    private ProductService productService;
+    public AdvertisingRestController(ProductService productService) {
+        this.productService = productService;
+    }
 
+    /**
+     * By this URL we can take list of the top product in JSON format.
+     * This method also call sendMessageToUpdate() to notify all browsers about changing
+     * of top products list. See {@link #sendNotificationForAllSubscribers()} ()}
+     * @return List of top products.
+     */
     @RequestMapping(value = "/stand")
-    public List<Map<String, String>> getStandInformation() {
-        List<Product> list = productService.findTop10Products(false);
-        List<Map<String, String>> tops = new ArrayList<>();
-        for (Product product : list) {
-            Map<String, String> item = new HashMap<>();
-            item.put("id", String.valueOf(product.getId()));
-            item.put("name", product.getName());
-            item.put("price", product.getPrice());
-            tops.add(item);
-        }
-        sendMessageToUpdate();
-        return tops;
+//    public List<Map<String, String>> getStandInformation() {
+    public List<ProductDto> getStandInformation() {
+//        List<Product> list = productService.findTop10Products(false);
+        List<ProductDto> list = productService.findTop10ProductsDto(false);
+//        List<Map<String, String>> tops = new ArrayList<>();
+//        for (ProductDto product : list) {
+//            Map<String, String> item = new HashMap<>();
+//            item.put("id", String.valueOf(product.getId()));
+//            item.put("name", product.getName());
+//            item.put("price", product.getPrice());
+//            tops.add(item);
+//        }
+        new Timer(true).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                sendNotificationForAllSubscribers();
+            }
+        }, 5000);
+        return list;
     }
 
 
-
+    /**
+     * By this method, all users who have visited advertising stand subscribe for
+     * notifications from this application. In our case, when our top have changed or
+     * any admin change one of the top products, we send message to the JMS server.
+     * Our second application always listen to this JMS server and when it sees
+     * messages in queue, it try to update tops by available URL (see {@link #getStandInformation}).
+     * After that current application send notifications for all subscribers (browsers or something else)
+     * to refresh their pages and to see updated top products.
+     * @param response - no comments
+     * @return new exemplar of emitter
+     */
     @RequestMapping(value = "/stand/connection")
     public SseEmitter openConnection(HttpServletResponse response) {
         //response.setContentType("text/event-stream");
@@ -55,8 +97,12 @@ public class AdvertisingRestController {
         return emitter;
     }
 
+    /**
+     * URL which allow us to send notification for all subscribed users to refresh their browsers.
+     * It is needed only to demonstrate how emitters work.
+     */
     @RequestMapping(value = "/stand/update")
-    private void sendMessageToUpdate() {
+    private void sendNotificationForAllSubscribers() {
         synchronized (this.emitters) {
             for (SseEmitter emitter : emitters) {
                 try {

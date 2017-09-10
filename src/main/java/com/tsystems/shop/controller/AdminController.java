@@ -10,7 +10,7 @@ import com.tsystems.shop.service.api.ProductService;
 import com.tsystems.shop.service.api.UserService;
 import com.tsystems.shop.util.ByteArrayConverterUtil;
 import com.tsystems.shop.util.DateUtil;
-import com.tsystems.shop.util.ImageSourceUtil;
+import com.tsystems.shop.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
@@ -21,34 +21,48 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.jms.TextMessage;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
+/**
+ * Secured controller for admins(including super admin).
+ * There they can change their own account settings (Name, surname, address data, phone, password).
+ * Users also can see their order history.
+ * Admins instead of this have a list of different actions:
+ * 1) Manage categories.
+ * 2) Manage orders.
+ * 3) Statistics.
+ * 4) Add product.
+ * Super admin has both of simple admin and super admin roles. He has access for actions
+ * above and also has option - manage admins.
+ */
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
 
-    @Autowired
-    private JmsTemplate jmsTemplate;
+    private final JmsTemplate jmsTemplate;
+
+    private final CategoryService categoryService;
+
+    private final ProductService productService;
+
+    private final OrderService orderService;
+
+    private final UserService userService;
 
     @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private OrderService orderService;
-
-    @Autowired
-    private UserService userService;
+    public AdminController(JmsTemplate jmsTemplate, CategoryService categoryService,
+                           ProductService productService, OrderService orderService,
+                           UserService userService) {
+        this.jmsTemplate = jmsTemplate;
+        this.categoryService = categoryService;
+        this.productService = productService;
+        this.orderService = orderService;
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "/products/add")
     public ModelAndView showAddProductPage() {
@@ -79,7 +93,7 @@ public class AdminController {
             modelAndView.addObject("sizes", new SizesDto());
             return modelAndView;
         } else {
-            createImagesDirectoryIfNeeded();
+            ImageUtil.createImagesDirectoryIfNeeded();
             modelAndView.setViewName("redirect:/home");
             Set<Size> sizeSet = new HashSet<>();
             if (sizes.getSizes() != null && !sizes.getSizes().isEmpty()) {
@@ -90,7 +104,7 @@ public class AdminController {
             Attribute attribute = new Attribute(sizeSet, description);
             Product product = new Product(name, price, "image/" + name, categoryService.findCategoryById(category, true), attribute);
             product = productService.saveProduct(product);
-            uploadImage(String.valueOf(product.getId()), image);
+            ImageUtil.uploadImage(String.valueOf(product.getId()), image);
             return modelAndView;
         }
     }
@@ -123,8 +137,8 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         Product product = productService.findProductById(Long.parseLong(id), true);
         if (!image.isEmpty()) {
-            createImagesDirectoryIfNeeded();
-            uploadImage(id, image);
+            ImageUtil.createImagesDirectoryIfNeeded();
+            ImageUtil.uploadImage(id, image);
         }
         Set<Size> sizeSet = new HashSet<>();
         if (sizes.getSizes() != null && !sizes.getSizes().isEmpty()) {
@@ -154,8 +168,10 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView("management");
         modelAndView.addObject("ordersActive", orderService.findActiveOrders());
         modelAndView.addObject("ordersDone", orderService.findDoneOrders());
-        modelAndView.addObject("orderStatuses", OrderStatusEnum.values());
-        modelAndView.addObject("paymentStatuses", PaymentStatusEnum.values());
+        modelAndView.addObject("orderStatuses",
+                Arrays.stream(OrderStatusEnum.values()).map(Enum::toString).collect(Collectors.toList()));
+        modelAndView.addObject("paymentStatuses",
+                Arrays.stream(PaymentStatusEnum.values()).map(Enum::toString).collect(Collectors.toList()));
 
         return modelAndView;
     }
@@ -166,10 +182,10 @@ public class AdminController {
                                              @RequestParam(name = "order-status") String orderStatus) {
         ModelAndView modelAndView = new ModelAndView("redirect:/admin/orders");
         Order order = orderService.findOrderById(id);
-        if (paymentStatus.equalsIgnoreCase(PaymentStatusEnum.PAID.name())
-                && orderStatus.equalsIgnoreCase(OrderStatusEnum.DELIVERED.name())) {
+        if (paymentStatus.equalsIgnoreCase(PaymentStatusEnum.PAID.toString())
+                && orderStatus.equalsIgnoreCase(OrderStatusEnum.DELIVERED.toString())) {
             order.getPayment().setPaymentStatus(paymentStatus);
-            order.setOrderStatus(OrderStatusEnum.DONE.name());
+            order.setOrderStatus(OrderStatusEnum.DONE.toString());
             order.setDate(DateUtil.getLocalDateNowInDtfFormat());
         } else {
             order.getPayment().setPaymentStatus(paymentStatus);
@@ -185,7 +201,7 @@ public class AdminController {
                                     @RequestParam(name = "status") String status) {
         Order order = orderService.findOrderById(id);
         order.setOrderStatus(status);
-        if (!status.equals(OrderStatusEnum.AWAITING_PAYMENT.name())) order.getPayment().setPaymentStatus(PaymentStatusEnum.PAID.name());
+        if (!status.equals(OrderStatusEnum.AWAITING_PAYMENT.toString())) order.getPayment().setPaymentStatus(PaymentStatusEnum.PAID.toString());
         orderService.saveOrder(order);
         return "redirect:/admin/orders";
     }
@@ -210,7 +226,7 @@ public class AdminController {
         modelAndView.addObject("incomePerMonth", orderService.findIncomePerLastMonth());
         Map<Long, Byte[]> imageMap = new HashMap<>();
         for (Product product : productService.findTop10Products(true)) {
-            File serverFile = new File(ImageSourceUtil.getImagesDirectoryAbsolutePath() + product.getId());
+            File serverFile = new File(ImageUtil.getImagesDirectoryAbsolutePath() + product.getId());
             imageMap.put(product.getId(), ByteArrayConverterUtil.convertBytes(Files.readAllBytes(serverFile.toPath())));
         }
         modelAndView.addObject("imagesMap", imageMap);
@@ -268,7 +284,7 @@ public class AdminController {
     @RequestMapping(value = "/hide/{id}", method = RequestMethod.POST)
     public ModelAndView hideProduct(@PathVariable(name = "id") String id,
                                     @RequestParam(name = "redirect") String redirect) {
-        ModelAndView modelAndView = new ModelAndView("redirect:" + redirect);
+        ModelAndView modelAndView = new ModelAndView("redirect:/catalog/" + id);
         productService.hideProduct(productService.findProductById(Long.parseLong(id), true));
 
         return modelAndView;
@@ -281,23 +297,6 @@ public class AdminController {
         productService.showProduct(productService.findProductById(Long.parseLong(id), true));
 
         return modelAndView;
-    }
-
-    private void createImagesDirectoryIfNeeded() {
-        if (!ImageSourceUtil.getImagesDirectory().exists()) {
-            ImageSourceUtil.getImagesDirectory().mkdirs();
-        }
-    }
-
-    private void uploadImage(String name, MultipartFile file) {
-        try {
-            File image = new File(ImageSourceUtil.getImagesDirectoryAbsolutePath() + name);
-            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(image));
-            stream.write(file.getBytes());
-            stream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void sendMessage(final String queueName, final String message) throws JmsException {

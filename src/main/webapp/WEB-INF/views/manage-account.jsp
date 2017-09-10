@@ -17,6 +17,7 @@
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
     <script src="/resources/js/jquery-ui.min.js"></script>
     <script src="/resources/js/main.js"></script>
+    <script src="/resources/js/manage-account.js"></script>
 </head>
 <body>
 <%@include file="header.jsp"%>
@@ -28,12 +29,12 @@
     </div>
     <div class="row main-context">
         <div class="col-lg-8">
-            <form class="account-info" action="/account/settings" method="POST">
+            <form class="account-info" id="account-info-form" method="post">
                 <div class="col-lg-6">
                     <div class="address-title">Manage your address</div>
                     <hr>
                     <!-- <form class="account-info" action="#" method="POST"> -->
-                    <div class="Country">
+                    <div class="country">
                         <div class="placeholder">
                             Country
                         </div>
@@ -41,7 +42,7 @@
                             <input type="text" name="country" value="${user.address.country}">
                         </div>
                     </div>
-                    <div class="City">
+                    <div class="city">
                         <div class="placeholder">
                             City
                         </div>
@@ -49,7 +50,7 @@
                             <input type="text" name="city" value="${user.address.city}">
                         </div>
                     </div>
-                    <div class="Street">
+                    <div class="street">
                         <div class="placeholder">
                             Street
                         </div>
@@ -57,7 +58,7 @@
                             <input type="text" name="street" value="${user.address.street}">
                         </div>
                     </div>
-                    <div class="House">
+                    <div class="house">
                         <div class="placeholder">
                             House
                         </div>
@@ -65,7 +66,7 @@
                             <input type="text" name="house" value="${user.address.house}">
                         </div>
                     </div>
-                    <div class="Apartment">
+                    <div class="apartment">
                         <div class="placeholder">
                             Apartment
                         </div>
@@ -73,7 +74,7 @@
                             <input type="text" name="apartment" value="${user.address.apartment}">
                         </div>
                     </div>
-                    <div class="Postcode">
+                    <div class="postcode">
                         <div class="placeholder">
                             Postcode
                         </div>
@@ -118,15 +119,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12 message success-message">
-                    <c:if test="${status2 eq 'success'}">
-                        ${msg2}
-                    </c:if>
+                <div class="col-lg-12 message account-info-success-message success-message hidden">
+                    Your account information was successfully changed
                 </div>
-                <div class="col-lg-12 message error-message">
-                    <c:if test="${status2 eq 'error'}">
-                        ${msg2}
-                    </c:if>
+                <div class="col-lg-12 message account-info-error-message error-message hidden">
+                    You are somewhere wrong, check the fields
                 </div>
                 <div class="col-lg-12">
                     <div class="manage-address-button">
@@ -136,7 +133,7 @@
             </form>
         </div>
         <div class="col-lg-4">
-            <form class="account-info" action="/account/settings/password" method="POST">
+            <form class="account-info" id="password-form" method="post">
                 <div class="address-title">Manage your password</div>
                 <hr>
                 <div class="old-password">
@@ -155,15 +152,11 @@
                         <input type="password" name="new-password" required>
                     </div>
                 </div>
-                <div class="message success-message">
-                    <c:if test="${status eq 'success'}">
-                        ${msg}
-                    </c:if>
+                <div class="message password-success-message success-message hidden">
+                    Your password was successfully changed
                 </div>
-                <div class="message error-message">
-                    <c:if test="${status eq 'error'}">
-                        ${msg}
-                    </c:if>
+                <div class="message password-error-message error-message hidden">
+                    You typed incorrect old password
                 </div>
                 <div class="manage-address-button">
                     <button type="submit">Change</button>
@@ -174,6 +167,6 @@
 </div>
 <%@include file="footer.jsp"%>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="/resourcesjs/bootstrap.min.js"></script>
+<script src="/resources/js/bootstrap.min.js"></script>
 </body>
 </html>

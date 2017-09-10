@@ -7,7 +7,7 @@ import com.tsystems.shop.model.dto.BagProductDto;
 import com.tsystems.shop.model.dto.ProductDto;
 import com.tsystems.shop.model.enums.UserRoleEnum;
 import com.tsystems.shop.service.api.*;
-import com.tsystems.shop.util.ImageSourceUtil;
+import com.tsystems.shop.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-//@SessionAttributes(value = "bag")
 public class CommonController {
 
     @Autowired
@@ -53,9 +52,6 @@ public class CommonController {
 
     @Autowired
     private SizeService sizeService;
-
-//    @ModelAttribute("bag")
-//    List<Product> createBag() { return new ArrayList<>(); }
 
     @RequestMapping(value = "/")
     public ModelAndView redirectToHomePage() {
@@ -121,7 +117,7 @@ public class CommonController {
         ModelAndView modelAndView = new ModelAndView("bag");
         modelAndView.addObject("bag", request.getSession().getAttribute("bag"));
         modelAndView.addObject("totalPrice",
-                bagService.figureOutTotalPrice((List<BagProductDto>)request.getSession().getAttribute("bag")));
+                bagService.calculateTotalPrice((List<BagProductDto>)request.getSession().getAttribute("bag")));
         return modelAndView;
     }
 
@@ -271,11 +267,12 @@ public class CommonController {
     }
 
     @RequestMapping(value = "/filter", method = RequestMethod.POST)
-    public ModelAndView getCatalogOnlyItems(@RequestParam(value = "cost") String cost,
-                                                          @RequestParam(value = "size") String size,
-                                                          @RequestParam(value = "category") String categoryId) {
+    public ModelAndView getCatalogOnlyItems(@RequestParam(value = "cost-from") String lowerCostBound,
+                                            @RequestParam(value = "cost-to") String upperCostBound,
+                                            @RequestParam(value = "size") String size,
+                                            @RequestParam(value = "category") String categoryId) {
         ModelAndView modelAndView = new ModelAndView("catalog-only-items");
-        modelAndView.addObject("catalog", productService.filterProductsByCostAndSize(cost, size, categoryId));
+        modelAndView.addObject("catalog", productService.filterProductsByCostAndSize(lowerCostBound, upperCostBound, size, categoryId));
         Category currentCategory = categoryService.findCategoryById(categoryId, false);
         Category parentCategory = currentCategory.getParent();
         if (parentCategory != null) {
@@ -296,7 +293,12 @@ public class CommonController {
 
     @RequestMapping(value = "/products/json")
     public @ResponseBody List<ProductDto> getProductsJson(@RequestParam(name = "term") String term) {
-        return productService.findProductsByTerm(term, false);
+        boolean adminMode = false;
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(new SimpleGrantedAuthority(UserRoleEnum.ROLE_ADMIN.name()))) {
+            adminMode = true;
+        }
+        return productService.findProductsByTerm(term, adminMode);
     }
 
     private boolean isCurrentAuthenticationAnonymous() {
@@ -319,7 +321,7 @@ public class CommonController {
     public byte[] getImage(@PathVariable(value = "imageId") String imageId) throws IOException {
        // createImagesDirectoryIfNeeded();
 
-        File serverFile = new File(ImageSourceUtil.getImagesDirectoryAbsolutePath() + imageId); //+ ".jpg");
+        File serverFile = new File(ImageUtil.getImagesDirectoryAbsolutePath() + imageId); //+ ".jpg");
 
         return Files.readAllBytes(serverFile.toPath());
     }

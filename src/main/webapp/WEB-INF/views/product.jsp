@@ -77,20 +77,27 @@
                             </div>
                         </sec:authorize>
                         <sec:authorize access="hasRole('ROLE_ADMIN')">
-                            <div class="bag-button">
+                            <div class="edit-button">
                                 <a href="/admin/edit/${product.id}">Edit<i class="fa fa-pencil fa-lg"></i></a>
                             </div>
                             <form method="post">
                                 <c:choose>
                                     <c:when test="${product.active}">
-                                        <div class="bag-button">
-                                            <button type="submit" formaction="/admin/hide/${product.id}">Hide<i class="fa fa-eye-slash fa-lg"></i></button>
+                                        <div class="hide-show-button">
+                                            This product now is visible for users - <button type="submit" formaction="/admin/hide/${product.id}">Hide<i class="fa fa-eye-slash fa-lg"></i></button>
                                         </div>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="bag-button">
-                                            <button type="submit" formaction="/admin/show/${product.id}">Show<i class="fa fa-eye fa-lg"></i></button>
-                                        </div>
+                                        <c:if test="${product.category.active}">
+                                            <div class="hide-show-button">
+                                                This product now is hidden for users - <button type="submit" formaction="/admin/show/${product.id}">Show<i class="fa fa-eye fa-lg"></i></button>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${not product.category.active}">
+                                            <div class="hide-show-button">
+                                                This product now is hidden for users. Cause: <a href="/admin/categories">${product.category.name}</a> is hidden!
+                                            </div>
+                                        </c:if>
                                     </c:otherwise>
                                 </c:choose>
                                 <c:if test="${product.category.parent.id eq 1}">
