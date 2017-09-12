@@ -9,9 +9,12 @@ import com.tsystems.shop.model.dto.ProductDto;
 import com.tsystems.shop.service.api.ProductService;
 import com.tsystems.shop.util.ComparatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.JmsException;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.jms.TextMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +29,12 @@ public class ProductServiceImpl implements ProductService {
      * List with top shop products. (the more sales, the higher the rating).
      */
     private List<Product> tops = new ArrayList<>(10);
+
+    /**
+     * This injected object allow us to send messages to the JMS server
+     * without any difficulties through sendMessage() API.
+     */
+    private final JmsTemplate jmsTemplate;
 
     /**
      * Injected by spring productDao bean
@@ -43,9 +52,10 @@ public class ProductServiceImpl implements ProductService {
      * @param categoryDao that must be injected.
      */
     @Autowired
-    public ProductServiceImpl(ProductDao productDao, CategoryDao categoryDao) {
+    public ProductServiceImpl(ProductDao productDao, CategoryDao categoryDao, JmsTemplate jmsTemplate) {
         this.productDao = productDao;
         this.categoryDao = categoryDao;
+        this.jmsTemplate = jmsTemplate;
     }
 
     /**
@@ -101,6 +111,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Size findSizeById(long id) {
         return productDao.findSizeById(id);
+    }
+
+    /**
+     * Method should try to send message to the ActiveMQ server.
+     * If advertising stand application is available it will receive this message
+     * and will make an attempt to update top products list.
+     */
+    @Override
+    public void sendUpdateMessageToJmsServer() throws JmsException{
+        sendMessage();
     }
 
     /**
@@ -160,12 +180,10 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public boolean isTopProductsChanged() {
-        if(tops.containsAll(productDao.findTop10Products(false))) {
-            return false;
-        } else {
+    public void updateTopIfItHaveChanged() throws JmsException {
+        if(!tops.containsAll(productDao.findTop10Products(false))) {
             tops = productDao.findTop10Products(false);
-            return true;
+            sendMessage();
         }
     }
 
@@ -331,5 +349,18 @@ public class ProductServiceImpl implements ProductService {
      */
     public void setTops(List<Product> tops) {
         this.tops = tops;
+    }
+
+    /**
+     * This method push message to the ActiveMQ server. When the second application will see this message,
+     * it will send GET request http://localhost:8080/advertising/stand (see AdvertisingRestController).
+     * @throws JmsException when, for example, don't have connection with JMS server
+     */
+    private void sendMessage() throws JmsException {
+        jmsTemplate.send("advertising.stand", session -> {
+            TextMessage msg = session.createTextMessage();
+            msg.setText("update");
+            return msg;
+        });
     }
 }

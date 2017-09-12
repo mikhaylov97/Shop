@@ -8,7 +8,7 @@
             <div class="filter-cost">
                 <div class="filter-input">
                     <h5>Lower bound</h5>
-                    <input type="text" placeholder="Cost to, $" maxlength="6"
+                    <input type="text" placeholder="Cost from, $" maxlength="6"
                            name="cost-from"
                            onkeydown="checkNumeric(event)"
                            onkeyup="checkNumeric(event)"
@@ -16,7 +16,7 @@
                 </div>
                 <div class="filter-input">
                     <h5>Upper bound</h5>
-                    <input type="text" placeholder="Cost from, $" maxlength="6"
+                    <input type="text" placeholder="Cost to, $" maxlength="6"
                            name="cost-to"
                            onkeydown="checkNumeric(event)"
                            onkeyup="checkNumeric(event)"
@@ -27,9 +27,11 @@
                 <h5>Required size</h5>
                 <select name="size">
                     <option value="No matter">No matter</option
+                    <c:if test="${fn:length(sizes) > 0}">
                         <c:forEach var="size" items="${sizes}">
                             <option value="${size}">${size}</option>
                         </c:forEach>
+                    </c:if>
                 </select>
             </div>
             <c:choose>

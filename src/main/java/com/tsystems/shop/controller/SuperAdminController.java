@@ -3,6 +3,7 @@ package com.tsystems.shop.controller;
 import com.tsystems.shop.model.User;
 import com.tsystems.shop.model.enums.UserRoleEnum;
 import com.tsystems.shop.service.api.UserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,11 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping(value = "/super/admin")
 public class SuperAdminController {
+
+    /**
+     * Apache log4j object is used to logging all important info.
+     */
+    private static final Logger log = Logger.getLogger(SuperAdminController.class);
 
     /**
      * User service. It is necessary for working with users.
@@ -36,8 +42,15 @@ public class SuperAdminController {
      */
     @RequestMapping(value = "/management")
     public ModelAndView showManageAdminsPage() {
+        //view
         ModelAndView modelAndView = new ModelAndView("manage-admins");
+
+        //model
         modelAndView.addObject("admins", userService.findSimpleAdmins());
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has visited admin management page.");
 
         return modelAndView;
     }
@@ -57,10 +70,21 @@ public class SuperAdminController {
                                   @RequestParam(name = "email") String email,
                                   @RequestParam(name = "password") String password) {
         if (!userService.isEmailFree(email)) {
+            //log
+            User user = userService.findUserFromSecurityContextHolder();
+            log.info(user.getEmail() + " with " + user.getRole() + " has tried to add new admin." +
+                    " But email is not free.");
+
             return "declined";
         } else {
             User admin = new User(UserRoleEnum.ROLE_ADMIN.name(), name, surname, email, password);
             userService.saveNewUser(admin);
+
+            //log
+            User user = userService.findUserFromSecurityContextHolder();
+            log.info(user.getEmail() + " with " + user.getRole() + " has added new admin." +
+                    "Email - " + admin.getEmail());
+
             return "saved";
         }
     }
@@ -72,8 +96,12 @@ public class SuperAdminController {
      */
     @RequestMapping(value = "/management/get/admins", method = RequestMethod.POST)
     public ModelAndView getAdminsListPostRequest() {
+        //view
         ModelAndView modelAndView = new ModelAndView("manage-admins-only-items");
+
+        //model
         modelAndView.addObject("admins", userService.findSimpleAdmins());
+
         return modelAndView;
     }
 
@@ -87,8 +115,15 @@ public class SuperAdminController {
     @RequestMapping(value = "/management/delete/{id}", method = RequestMethod.POST)
     public ModelAndView deleteAdminByIdPostRequest(@PathVariable(name = "id") String id) {
         userService.deleteUser(Long.parseLong(id));
+        //view
         ModelAndView modelAndView = new ModelAndView("manage-admins-only-items");
+
+        //model
         modelAndView.addObject("admins", userService.findSimpleAdmins());
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has deleted admin.");
 
         return modelAndView;
     }

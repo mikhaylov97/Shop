@@ -7,6 +7,7 @@ import com.tsystems.shop.model.Address;
 import com.tsystems.shop.model.User;
 import com.tsystems.shop.model.dto.UserDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -118,6 +119,12 @@ public interface UserService {
      */
     void changePasswordFromSecurityContextHolder(String oldPassword, String newPassword)
             throws IncorrectPasswordException;
+
+    /**
+     * Task of the method is to authenticate registered user and to give him simple user rights.
+     * @param email of the registered user.
+     */
+    void authenticateUserAndSetSession(String email, HttpServletRequest request);
 
     /**
      * Every user have their own SecurityContextHolder which is connected with session.

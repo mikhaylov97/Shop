@@ -3,8 +3,10 @@ package com.tsystems.shop.controller;
 import com.tsystems.shop.exception.IncorrectAccountInfoException;
 import com.tsystems.shop.exception.IncorrectPasswordException;
 import com.tsystems.shop.model.Address;
+import com.tsystems.shop.model.User;
 import com.tsystems.shop.service.api.OrderService;
 import com.tsystems.shop.service.api.UserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,11 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping(value = "/account")
 public class AccountController {
+
+    /**
+     * Apache log4j object is used to logging all important info.
+     */
+    private static final Logger log = Logger.getLogger(AccountController.class);
 
     /**
      * User service. It is necessary for working with users.
@@ -66,6 +73,10 @@ public class AccountController {
         modelAndView.addObject("orders",
                 orderService.findOrdersByEmail(userService.findUserEmailFromSecurityContextHolder()));
 
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info("User(" + user.getEmail() + ") with " + user.getRole() + " has visited account page.");
+
         return modelAndView;
     }
 
@@ -83,8 +94,15 @@ public class AccountController {
         try {
             userService.changePasswordFromSecurityContextHolder(oldPassword, newPassword);
         } catch (IncorrectPasswordException e) {
+            //log
+            User user = userService.findUserFromSecurityContextHolder();
+            log.info(user.getEmail() + " has tried to change password. Info message for user: \'" + e.getMessage() + "\'.");
             return e.getMessage();
         }
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " has changed his password.");
         return "saved";
     }
 
@@ -101,6 +119,10 @@ public class AccountController {
         //model
         modelAndView.addObject("user",
                 userService.findUserFromSecurityContextHolder());
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " has visited settings page.");
 
         return modelAndView;
     }
@@ -135,8 +157,18 @@ public class AccountController {
         try {
             userService.changeInformationFromSecurityContextHolder(phone, birthday, name, surname, address);
         } catch (IncorrectAccountInfoException e) {
+            //log
+            User user = userService.findUserFromSecurityContextHolder();
+            log.info(user.getEmail() + " has tried to change his account settings. The message" +
+                    "he has received: \'" + e.getMessage() + "\'.");
+
             return e.getMessage();
         }
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " have changed his some account settings.");
+
         return "saved";
     }
 }

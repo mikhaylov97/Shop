@@ -8,13 +8,12 @@ import com.tsystems.shop.model.dto.ProductDto;
 import com.tsystems.shop.model.enums.UserRoleEnum;
 import com.tsystems.shop.service.api.*;
 import com.tsystems.shop.util.ImageUtil;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -28,30 +27,69 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Unsecured controller for all users(means guests, admins and super-admins) while them unauthorised.
+ * There they can browse catalogs, see detail product information, add them to bag
+ * and ,of course, they can sign up or log in.
+ */
 @Controller
 public class CommonController {
 
-    @Autowired
-    private
-    UserDetailsService userDetailsService;
+    /**
+     * Apache log4j object is used to logging all important info.
+     */
+    private static final Logger log = Logger.getLogger(CommonController.class);
 
-    @Autowired
-    private UserService userService;
+    /**
+     * UserDetailsService service. It is necessary for working with Spring Security.
+     */
+    private final UserDetailsService userDetailsService;
 
-    @Autowired
-    private ProductService productService;
+    /**
+     * User service. It is necessary for working with users.
+     */
+    private final UserService userService;
 
-    @Autowired
-    private BagService bagService;
+    /**
+     * Product service. It is necessary for working with products.
+     */
+    private final ProductService productService;
 
-    @Autowired
-    private OrderService orderService;
+    /**
+     * Bag service. It is necessary for working with bag.
+     */
+    private final BagService bagService;
 
-    @Autowired
-    private CategoryService categoryService;
+    /**
+     * Category service. It is necessary for working with categories.
+     */
+    private final CategoryService categoryService;
 
+    /**
+     * Size service. It is necessary for working with product sizes.
+     */
+    private final SizeService sizeService;
+
+    /**
+     * Injecting different services into this controller by spring tools.
+     * @param userService - is our service which provide API to work with users and DB.
+     * @param productService is our service which provide API to work with products and DB.
+     * @param bagService is our service which provide API to work with bag.
+     * @param userDetailsService is our service which provide API to work with Spring Security.
+     * @param categoryService is our service which provide API to work with categories and DB.
+     * @param sizeService is our service which provide API to work with product sizes.
+     */
     @Autowired
-    private SizeService sizeService;
+    public CommonController(UserDetailsService userDetailsService, UserService userService,
+                            ProductService productService, BagService bagService,
+                            CategoryService categoryService, SizeService sizeService) {
+        this.userDetailsService = userDetailsService;
+        this.userService = userService;
+        this.productService = productService;
+        this.bagService = bagService;
+        this.categoryService = categoryService;
+        this.sizeService = sizeService;
+    }
 
     @RequestMapping(value = "/")
     public ModelAndView redirectToHomePage() {
@@ -84,7 +122,7 @@ public class CommonController {
                          HttpServletRequest request) {
         User user = new User(email, name, surname, password);
         userService.saveNewUser(user);
-        authenticateUserAndSetSession(email, password, request);
+        userService.authenticateUserAndSetSession(email, request);
         return "redirect:/home";
     }
 
@@ -112,20 +150,44 @@ public class CommonController {
         return "redirect:/home";
     }
 
+    /**
+     * This method shows bag page. There users can remove product from the bag or
+     * edit amount/size of any one. Also returned page provide checkout button which will
+     * redirect to checkout page if user is authorised or will ask to login(or sign up).
+     * @return ModelAndView object with bag.jsp view.
+     */
     @RequestMapping(value = "/bag")
     public ModelAndView showBagPage(HttpServletRequest request) {
+        //view
         ModelAndView modelAndView = new ModelAndView("bag");
+        //model
         modelAndView.addObject("bag", request.getSession().getAttribute("bag"));
         modelAndView.addObject("totalPrice",
                 bagService.calculateTotalPrice((List<BagProductDto>)request.getSession().getAttribute("bag")));
+
+        //log
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info(name + " has visited bag page.");
+
         return modelAndView;
     }
 
+    /**
+     * POST request. Method returns available amount of some product size.
+     * @param sizeId which amount must be returned.
+     * @return answer(available amount of product size by size ID) in JSON format for requester.
+     */
     @RequestMapping(value = "/get/amount", method = RequestMethod.POST)
     public @ResponseBody int getAvailableAmountOfSize(@RequestParam(name = "sizeId") String sizeId) {
         return productService.findAvailableAmountOfSize(Long.parseLong(sizeId));
     }
 
+    /**
+     * POST request. Method allows to delete any product by ID from user's bag.
+     * @param sizeId of the product that must be deleted from the bag.
+     * @param id of the product.
+     * @return
+     */
     @RequestMapping(value = "/bag/delete/{id}", method = RequestMethod.POST)
     public String deleteFromBag(@RequestParam(name = "sizeId") String sizeId,
                                 @PathVariable(value = "id") String id,
@@ -134,17 +196,18 @@ public class CommonController {
         bagService.deleteFromBag(Long.parseLong(id),
                 Long.parseLong(sizeId),
                 bag);
+
+        //log
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info(name + " has deleted product[ID=" + id + "] ffrom the bag.");
+
         return "redirect:/bag";
     }
 
-//    @RequestMapping(value = "/catalog")
-//    public ModelAndView showCatalogPage() {
-//        ModelAndView modelAndView = new ModelAndView("catalog");
-//        modelAndView.addObject("catalog",productService.findProductsByCategory(productService.));
-//
-//        return modelAndView;
-//    }
-
+    /**
+     * Method shows catalog page with men clothes.
+     * @return ModelAndView object with catalog.jsp view.
+     */
     @RequestMapping(value = "/catalog/mens")
     public ModelAndView showMensPage() {
         ModelAndView modelAndView = new ModelAndView("catalog");
@@ -162,6 +225,11 @@ public class CommonController {
         return modelAndView;
     }
 
+    /**
+     * Method shows catalog page with men clothes in certain category by ID of the last.
+     * @param id of the category.
+     * @return ModelAndView object with catalog.jsp page.
+     */
     @RequestMapping(value = "/catalog/mens/{id}")
     public ModelAndView showSectionPageFromMens(@PathVariable(name = "id") String id) {
         ModelAndView modelAndView = new ModelAndView("catalog");
@@ -184,6 +252,11 @@ public class CommonController {
         return modelAndView;
     }
 
+    /**
+     * Method shows catalog page with women's clothes in certain category.
+     * @param id of the category.
+     * @return ModelAndView object with catalog.jsp view.
+     */
     @RequestMapping(value = "/catalog/womens/{id}")
     public ModelAndView showSectionPageFromWomens(@PathVariable(name = "id") String id) {
         ModelAndView modelAndView = new ModelAndView("catalog");
@@ -206,6 +279,10 @@ public class CommonController {
         return modelAndView;
     }
 
+    /**
+     * Method shows catalog page with all(products in all women's categories) women's clothes.
+     * @return ModelAndView object with catalog.jsp view.
+     */
     @RequestMapping(value = "/catalog/womens")
     public ModelAndView showWomensPage() {
         ModelAndView modelAndView = new ModelAndView("catalog");
@@ -225,6 +302,11 @@ public class CommonController {
     }
 
 
+    /**
+     * Method shows product page by ID of the last.
+     * @param id of the product that must be shown.
+     * @return ModelAndView object with product.jsp view.
+     */
     @RequestMapping(value = "/catalog/{id}")
     public ModelAndView showProductPage(@PathVariable(name = "id") long id) {
         ModelAndView modelAndView = new ModelAndView("product");
@@ -247,25 +329,39 @@ public class CommonController {
         return modelAndView;
     }
 
+    /**
+     * Method shows page with 404 error.
+     * @return View - nothing-found.jsp.
+     */
     @RequestMapping(value = "/404")
     public String show404Page() {
         return "nothing-found";
     }
 
+    /**
+     * Method shows error page when user disabled javascript on his browser.
+     * Application depends on javascript because a lot of validation and
+     * different actions is done by javascript. But the main problem is ajax request.
+     * Because more than half of all business logic was constructed with the help of ajax requests.
+     * @return View - javascript-disabled.jsp.
+     */
     @RequestMapping(value = "/javascript/disabled")
     public String showDisabledJavascriptPage() {
+        //log
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info(name + " has visited shop and was redirected to the javascript-disabled page.");
+
         return "javascript-disabled";
     }
 
-    private void authenticateUserAndSetSession(String email, String password, HttpServletRequest request) {
-        // generate session if one doesn't exist
-        request.getSession();
-
-        UserDetails user = userDetailsService.loadUserByUsername(email);
-        Authentication authenticatedUser = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
-    }
-
+    /**
+     * POST request. Method allow us to get filtered product by
+     * the next parameters: lower cost bound, upper cost bound, product size.
+     * Also controller receives category hidden parameter. It is used for filtering product
+     * by parameters above in certain category where user was when clicked filter button.
+     * @param categoryId which products must be filtered.
+     * @return ModelAndView object which represents fragment (catalog-only-items.jsp) of the catalog page.
+     */
     @RequestMapping(value = "/filter", method = RequestMethod.POST)
     public ModelAndView getCatalogOnlyItems(@RequestParam(value = "cost-from") String lowerCostBound,
                                             @RequestParam(value = "cost-to") String upperCostBound,
@@ -289,8 +385,12 @@ public class CommonController {
         return modelAndView;
     }
 
-//    @RequestMapping(value = "/")
-
+    /**
+     * Method returns found products in shop which names contains certain term entered by user.
+     * This controller is used in search actions.
+     * @param term filled by user.
+     * @return List of products in Dto format {@link ProductDto} in JSON format for the requester.
+     */
     @RequestMapping(value = "/products/json")
     public @ResponseBody List<ProductDto> getProductsJson(@RequestParam(name = "term") String term) {
         boolean adminMode = false;
@@ -306,20 +406,14 @@ public class CommonController {
         return authentication instanceof AnonymousAuthenticationToken;
     }
 
-    public void setBagSizeToModelAndView(HttpSession session, ModelAndView mav) {
-        Object bag = session.getAttribute("bag");
-        if (bag == null)  {
-            session.setAttribute("bag", new ArrayList<BagProductDto>());
-            mav.addObject("bagSize", 0);
-        } else {
-            mav.addObject("bagSize", ((List<BagProductDto>) bag).size());
-        }
-    }
-
+    /**
+     * Method allows us to get Image as a byte array which stored inside
+     * server memory(in our case in tomcat home images folder).
+     * @param imageId that must be returned.
+     * @return byte representation of found image.
+     */
     @RequestMapping(value = "/image/{imageId}")
-    @ResponseBody
-    public byte[] getImage(@PathVariable(value = "imageId") String imageId) throws IOException {
-       // createImagesDirectoryIfNeeded();
+    public @ResponseBody byte[] getImage(@PathVariable(value = "imageId") String imageId) throws IOException {
 
         File serverFile = new File(ImageUtil.getImagesDirectoryAbsolutePath() + imageId); //+ ".jpg");
 

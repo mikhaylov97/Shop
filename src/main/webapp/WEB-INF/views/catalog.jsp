@@ -23,12 +23,14 @@
 <%@include file="header.jsp"%>
 <%@include file="second-header.jsp"%>
 <%@include file="options.jsp"%>
-<%@include file="filter.jsp"%>
-<div class="wrap" onclick="closeFilter()"></div>
+<c:if test="${fn:length(catalog) != 0}">
+    <%@include file="filter.jsp"%>
+    <div class="wrap" onclick="closeFilter()"></div>
+</c:if>
 <div id="main-content" class="container center-block">
     <div class="row centered">
         <c:choose>
-            <c:when test="${fn:length(catalog) > 0}">
+            <c:when test="${fn:length(catalog) != 0}">
                 <c:forEach var="product" items="${catalog}">
                     <div class="col-lg-3">
                         <div class="item">

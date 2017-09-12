@@ -2,6 +2,7 @@ package com.tsystems.shop.controller;
 
 import com.tsystems.shop.model.dto.ProductDto;
 import com.tsystems.shop.service.api.ProductService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,11 @@ import java.util.*;
 @RestController
 @RequestMapping(value = "/advertising")
 public class AdvertisingRestController {
+
+    /**
+     * Apache log4j object is used to logging all important info.
+     */
+    private static final Logger log = Logger.getLogger(AdvertisingRestController.class);
 
     /**
      * Set of the emitters. It is used to send messages for all active users.
@@ -46,25 +52,28 @@ public class AdvertisingRestController {
      * @return List of top products.
      */
     @RequestMapping(value = "/stand")
-//    public List<Map<String, String>> getStandInformation() {
-    public List<ProductDto> getStandInformation() {
-//        List<Product> list = productService.findTop10Products(false);
+    public List<Map<String, String>> getStandInformation() {
         List<ProductDto> list = productService.findTop10ProductsDto(false);
-//        List<Map<String, String>> tops = new ArrayList<>();
-//        for (ProductDto product : list) {
-//            Map<String, String> item = new HashMap<>();
-//            item.put("id", String.valueOf(product.getId()));
-//            item.put("name", product.getName());
-//            item.put("price", product.getPrice());
-//            tops.add(item);
-//        }
+        List<Map<String, String>> tops = new ArrayList<>();
+        for (ProductDto product : list) {
+            Map<String, String> item = new HashMap<>();
+            item.put("id", String.valueOf(product.getId()));
+            item.put("name", product.getName());
+            item.put("price", product.getPrice());
+            item.put("numberOfSales", String.valueOf(product.getNumberOfSales()));
+            tops.add(item);
+        }
         new Timer(true).schedule(new TimerTask() {
             @Override
             public void run() {
                 sendNotificationForAllSubscribers();
             }
-        }, 5000);
-        return list;
+        }, 10000);
+
+        //log
+        log.info("Someone has requested stand information. Application is returning list of top products.");
+
+        return tops;
     }
 
 
@@ -113,6 +122,9 @@ public class AdvertisingRestController {
                 }
             }
         }
+        //log
+        log.info("All stand viewers have received message to refresh page in browser.");
+
     }
 
 }

@@ -11,16 +11,15 @@ import com.tsystems.shop.service.api.UserService;
 import com.tsystems.shop.util.ByteArrayConverterUtil;
 import com.tsystems.shop.util.DateUtil;
 import com.tsystems.shop.util.ImageUtil;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.JmsException;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.jms.TextMessage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,35 +42,84 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/admin")
 public class AdminController {
 
-    private final JmsTemplate jmsTemplate;
+    /**
+     * Apache log4j object is used to logging all important info.
+     */
+    private static final Logger log = Logger.getLogger(AdminController.class);
 
+    /**
+     * Category service. See {@link com.tsystems.shop.service.impl.CategoryServiceImpl}.
+     * It is necessary for working with shop categories.
+     */
     private final CategoryService categoryService;
 
+    /**
+     * Product service. See {@link com.tsystems.shop.service.impl.ProductServiceImpl}.
+     * It is necessary for working with products.
+     */
     private final ProductService productService;
 
+    /**
+     * Order service. See {@link com.tsystems.shop.service.impl.OrderServiceImpl}.
+     * It is necessary for working with orders.
+     *
+     */
     private final OrderService orderService;
 
+    /**
+     * User service. See {@link com.tsystems.shop.service.impl.UserServiceImpl}.
+     * It is necessary for working with users.
+     */
     private final UserService userService;
 
+    /**
+     * Injecting different services into this controller by spring tools.
+     * @param categoryService - is our service which provide API to work with categories and DB.
+     * @param productService - is our service which provide API to work with products and DB.
+     * @param orderService - is our service which provide API to work with orders and DB.
+     * @param userService - is our service which provide API to work with users and DB.
+     */
     @Autowired
-    public AdminController(JmsTemplate jmsTemplate, CategoryService categoryService,
+    public AdminController(CategoryService categoryService,
                            ProductService productService, OrderService orderService,
                            UserService userService) {
-        this.jmsTemplate = jmsTemplate;
         this.categoryService = categoryService;
         this.productService = productService;
         this.orderService = orderService;
         this.userService = userService;
     }
 
+    /**
+     * This method shows page where admin can add new product to the shop by filling all important data.
+     * @return ModelAndView object with add-product.jsp view.
+     */
     @RequestMapping(value = "/products/add")
     public ModelAndView showAddProductPage() {
+        //view
         ModelAndView modelAndView = new ModelAndView("add-product");
+
+        //model
         modelAndView.addObject("options", categoryService.findCategoriesByHierarchyNumber("2", true));
         modelAndView.addObject("sizes", new SizesDto());
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has visited page for adding new products.");
+
         return modelAndView;
     }
 
+    /**
+     * POST request. This method tries to upload new product with all necessary parameters.
+     * They will be described below.
+     * @param sizes set with all available sizes for current product.
+     * @param name of the future product.
+     * @param price of the future product.
+     * @param image path of the future product.
+     * @param category where future product will be stored.
+     * @param description of the future product.
+     * @return ModelAndView object with add-product.jsp view.
+     */
     @RequestMapping(value = "/products/add/upload", method = RequestMethod.POST)
     public ModelAndView uploadProduct(@ModelAttribute("sizes") SizesDto sizes,
                                       BindingResult result,
@@ -91,6 +139,11 @@ public class AdminController {
             modelAndView.addObject("errorMessage", "You didn't choose the image");
             modelAndView.addObject("options", categoryService.findCategoriesByHierarchyNumber("2", true));
             modelAndView.addObject("sizes", new SizesDto());
+
+            //log
+            User user = userService.findUserFromSecurityContextHolder();
+            log.info(user.getEmail() + " with " + user.getRole() + " has tried to add new product.");
+
             return modelAndView;
         } else {
             ImageUtil.createImagesDirectoryIfNeeded();
@@ -105,10 +158,21 @@ public class AdminController {
             Product product = new Product(name, price, "image/" + name, categoryService.findCategoryById(category, true), attribute);
             product = productService.saveProduct(product);
             ImageUtil.uploadImage(String.valueOf(product.getId()), image);
+
+            //log
+            //log
+            User user = userService.findUserFromSecurityContextHolder();
+            log.info(user.getEmail() + " with " + user.getRole() + " has added new product. Name = \'" + name + "\'.");
+
             return modelAndView;
         }
     }
 
+    /**
+     * This method shows page where admins can edit every product int the shop.
+     * @param id of the product.
+     * @return ModelAndView object with edit.jsp view.
+     */
     @RequestMapping(value = "/edit/{id}")
     public ModelAndView showEditPage(@PathVariable(name = "id") String id) {
         ModelAndView modelAndView = new ModelAndView("edit");
@@ -122,9 +186,26 @@ public class AdminController {
         modelAndView.addObject("options", categoryService.findChilds(parentCategory, true));
         modelAndView.addObject("activeOptionId", currentCategory.getId());
 
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has tried to edit "
+                + productService.findProductById(Long.parseLong(id), true).getName() + " product.");
+
         return modelAndView;
     }
 
+    /**
+     * POST request. Method should receive all necessary data of the product(any old auto-filled data
+     * or any changed by admin data). If every field is correct, method will update product data and save to the DB.
+     * @param sizes of the product which now is available for selling.
+     * @param id of the product.
+     * @param name with old or updated value.
+     * @param price - with old or updated value.
+     * @param image - image with old or updated value.
+     * @param category of the product.
+     * @param description - with old or updated value.
+     * @return ModelAndView object with redirecting view.
+     */
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
     public ModelAndView editProduct(@ModelAttribute("sizes") SizesDto sizes,
                                     BindingResult result,
@@ -154,18 +235,31 @@ public class AdminController {
         product.setImage("/image/" + id);
         productService.saveProduct(product);
         modelAndView.setViewName("redirect:/catalog/" + id);
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has updated product. New name - \'" + name + "\'.");
 
         try {
-            sendMessage("advertising.stand", "update");
+            productService.sendUpdateMessageToJmsServer();
+            //log
+            log.info("System has sent message to ActiveMQ.");
         } catch (JmsException e) {
-            e.printStackTrace();
+            //log
+            log.info("System has tried to send message to ActiveMQ server, but something was wrong.", e);
         }
         return modelAndView;
     }
 
+    /**
+     * This method shows page with all existed orders.
+     * @return ModelAndView object with management.jsp view.
+     */
     @RequestMapping(value = "/orders")
     public ModelAndView showOrdersPage() {
+        //view
         ModelAndView modelAndView = new ModelAndView("management");
+
+        //model
         modelAndView.addObject("ordersActive", orderService.findActiveOrders());
         modelAndView.addObject("ordersDone", orderService.findDoneOrders());
         modelAndView.addObject("orderStatuses",
@@ -173,9 +267,22 @@ public class AdminController {
         modelAndView.addObject("paymentStatuses",
                 Arrays.stream(PaymentStatusEnum.values()).map(Enum::toString).collect(Collectors.toList()));
 
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has visited orders management page.");
+
         return modelAndView;
     }
 
+    /**
+     * POST request. Method tries to update order status to chosen by admin new value.
+     * Admin can change payment status and order status. When payment status is PAID and
+     * order status is delivered then such order becomes DONE and must be added to archive.
+     * @param id of the order.
+     * @param paymentStatus chosen by admin.
+     * @param orderStatus chosen by admin.
+     * @return ModelAndView object with redirecting view.
+     */
     @RequestMapping(value = "/orders/save/{id}", method = RequestMethod.POST)
     public ModelAndView saveNewOrderInstance(@PathVariable(name = "id") String id,
                                              @RequestParam(name = "payment-status") String paymentStatus,
@@ -192,20 +299,35 @@ public class AdminController {
             order.setOrderStatus(orderStatus);
         }
         orderService.saveOrder(order);
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has changed order(ID=" + id + ") status.");
 
         return modelAndView;
     }
 
-    @RequestMapping(value = "/orders", method = RequestMethod.POST)
-    public String changeOrderStatus(@RequestParam(name = "id") String id,
-                                    @RequestParam(name = "status") String status) {
-        Order order = orderService.findOrderById(id);
-        order.setOrderStatus(status);
-        if (!status.equals(OrderStatusEnum.AWAITING_PAYMENT.toString())) order.getPayment().setPaymentStatus(PaymentStatusEnum.PAID.toString());
-        orderService.saveOrder(order);
-        return "redirect:/admin/orders";
-    }
+//    /**
+//     *
+//     * @param id
+//     * @param status
+//     * @return
+//     */
+//    @RequestMapping(value = "/orders", method = RequestMethod.POST)
+//    public String changeOrderStatus(@RequestParam(name = "id") String id,
+//                                    @RequestParam(name = "status") String status) {
+//        Order order = orderService.findOrderById(id);
+//        order.setOrderStatus(status);
+//        if (!status.equals(OrderStatusEnum.AWAITING_PAYMENT.toString())) order.getPayment().setPaymentStatus(PaymentStatusEnum.PAID.toString());
+//        orderService.saveOrder(order);
+//        return "redirect:/admin/orders";
+//    }
 
+    /**
+     * Method shows statistics page for admin. There admin can see
+     * shop income for the last week and for the last month. Also there will
+     * be available top 10 products and top 10 users(The more money user spent the higher rating he has)
+     * @return ModelAndView object with statistics.jsp view.
+     */
     @RequestMapping(value = "/statistics")
     public ModelAndView showStatisticsPage() {
         ModelAndView modelAndView = new ModelAndView("statistics");
@@ -214,9 +336,19 @@ public class AdminController {
         modelAndView.addObject("incomePerWeek", orderService.findIncomePerLastWeek());
         modelAndView.addObject("incomePerMonth", orderService.findIncomePerLastMonth());
 
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has visited statistics page.");
+
         return modelAndView;
     }
 
+    /**
+     * This Method allows to see and if admin wants to download document
+     * with all statistics in pdf format.
+     * @return ModelAndView object which represents pdf document.
+     * @throws IOException in cases when document is broken.
+     */
     @RequestMapping(value = "/statistics/download/pdf")
     public ModelAndView showOrDownloadStatisticsPdf() throws IOException {
         ModelAndView modelAndView = new ModelAndView("pdfView");
@@ -231,41 +363,105 @@ public class AdminController {
         }
         modelAndView.addObject("imagesMap", imageMap);
         // return a view which will be resolved by an excel view resolver
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has gotten statistics pdf document.");
+
         return modelAndView;
     }
 
+    /**
+     * This method shows categories management page. There admin can add new category
+     * and hide or make category and products inside visible again.
+     * @return ModelAndView object with manage-categories.jsp view.
+     */
     @RequestMapping(value = "/categories")
     public ModelAndView showCategoriesManagementPage() {
+        //view
         ModelAndView modelAndView = new ModelAndView("manage-categories");
+
+        //model
         modelAndView.addObject("categories", categoryService.findChildsDtoById(1, true));
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has visited categories management page.");
 
         return modelAndView;
     }
 
+    /**
+     * POST request. This method allows admins to add new categories.
+     * If all filled inputs are correct and name is free, such category will be created.
+     * @param name of the future category.
+     * @param id of the parent category.
+     * @return answer in JSON format for the requester.
+     */
     @RequestMapping(value = "/categories/add", method = RequestMethod.POST)
     public @ResponseBody String saveNewCategory(@RequestParam(name = "name") String name,
                                   @RequestParam(name = "parent") String id) {
         if (categoryService.checkIsCategoryNameFree(name, categoryService.findCategoryById(id, true))) {
             Category category = new Category(name, "2", categoryService.findCategoryById(id, true));
             categoryService.saveNewCategory(category);
+
+            //log
+            User user = userService.findUserFromSecurityContextHolder();
+            log.info(user.getEmail() + " with " + user.getRole() + " has added new category.");
+
             return "saved";
         } else {
+            //log
+            User user = userService.findUserFromSecurityContextHolder();
+            log.info(user.getEmail() + " with " + user.getRole() + " has tried to add new category." +
+                    "But such name of category is already exists");
+
             return "declined";
         }
     }
 
+    /**
+     * POST request. Method allows admins to hide any category with products inside.
+     * Guests and authorised users will not see such categories and products.
+     * But admins can see them and can make them visible again.
+     * @param id of the category that must be hidden.
+     * @return answer in JSON format for the requester.
+     */
     @RequestMapping(value = "/categories/hide/{id}", method = RequestMethod.POST)
     public @ResponseBody String hideCategory(@PathVariable(name = "id") String id) {
         categoryService.hideCategory(categoryService.findCategoryById(id, true));
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has hidden \'"
+                + categoryService.findCategoryById(id, true).getName() + "\' category.");
+
         return "hidden";
     }
 
+    /**
+     * POST request. Method allows admins to make hidden categories visible again.
+     * Guests and authorised users after that is able to see these categories and products there.
+     * @param id of the category that must become visible.
+     * @return answer in JSON format for the requester.
+     */
     @RequestMapping(value = "/categories/show/{id}", method = RequestMethod.POST)
     public @ResponseBody String showCategory(@PathVariable(name = "id") String id) {
         categoryService.showCategory(categoryService.findCategoryById(id, true));
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has made \'"
+                + categoryService.findCategoryById(id, true).getName() + "\' category visible.");
+
         return "shown";
     }
 
+    /**
+     * POST request. Allows authorised users(admins in our case) to get categories list by parent name.
+     * @param active - parent category name.
+     * @return ModelAndView object which represents fragment of the page(manage-categories-only-items.jsp).
+     */
     @RequestMapping(value = "/get/categories", method = RequestMethod.POST)
     public ModelAndView getCategoriesList(@RequestParam(name = "active") String active) {
         ModelAndView modelAndView = new ModelAndView("manage-categories-only-items");
@@ -281,6 +477,13 @@ public class AdminController {
         return modelAndView;
     }
 
+    /**
+     * POST request. Method allows admins to hide any product in the shop.
+     * All guests and authorised users will not see hidden products.
+     * Admin always can make product visible again.
+     * @param id of the product that must be hidden.
+     * @return ModelAndView object with redirecting view to the current product page.
+     */
     @RequestMapping(value = "/hide/{id}", method = RequestMethod.POST)
     public ModelAndView hideProduct(@PathVariable(name = "id") String id,
                                     @RequestParam(name = "redirect") String redirect) {
@@ -290,6 +493,13 @@ public class AdminController {
         return modelAndView;
     }
 
+    /**
+     * POST request. Method allows admins to make hidden products visible.
+     * All guests and authorised users will see them.
+     * Admin always can make product hidden again.
+     * @param id of the product that must become visible.
+     * @return ModelAndView object with redirecting view to the current product page.
+     */
     @RequestMapping(value = "/show/{id}", method = RequestMethod.POST)
     public ModelAndView showProduct(@PathVariable(name = "id") String id,
                                     @RequestParam(name = "redirect") String redirect) {
@@ -297,14 +507,6 @@ public class AdminController {
         productService.showProduct(productService.findProductById(Long.parseLong(id), true));
 
         return modelAndView;
-    }
-
-    public void sendMessage(final String queueName, final String message) throws JmsException {
-        jmsTemplate.send(queueName, session -> {
-            TextMessage msg = session.createTextMessage();
-            msg.setText(message);
-            return msg;
-        });
     }
 
 

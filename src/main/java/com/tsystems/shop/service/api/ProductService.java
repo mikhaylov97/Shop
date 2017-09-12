@@ -21,10 +21,16 @@ public interface ProductService {
     Size findSizeById(long id);
 
     /**
-     * Method checks if top is changed.
-     * @return true if is changed and false if not.
+     * Method should try to send message to the ActiveMQ server.
+     * If advertising stand application is available it will receive this message
+     * and will make an attempt to update top products list.
      */
-    boolean isTopProductsChanged();
+    void sendUpdateMessageToJmsServer();
+
+    /**
+     * Method checks if top is changed.
+     */
+     void updateTopIfItHaveChanged();
 
     /**
      * Method finds total sales of the product by his ID.

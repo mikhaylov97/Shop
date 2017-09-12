@@ -1,13 +1,14 @@
 package com.tsystems.shop.controller;
 
+import com.tsystems.shop.model.User;
 import com.tsystems.shop.model.dto.BagProductDto;
 import com.tsystems.shop.service.api.BagService;
 import com.tsystems.shop.service.api.OrderService;
 import com.tsystems.shop.service.api.ProductService;
 import com.tsystems.shop.service.api.UserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.JmsException;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.jms.TextMessage;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -28,10 +28,9 @@ import java.util.List;
 public class UserController {
 
     /**
-     * This injected object allow us to send messages to the JMS server
-     * without any difficulties through sendMessage() API.
+     * Apache log4j object is used to logging all important info.
      */
-    private final JmsTemplate jmsTemplate;
+    private static final Logger log = Logger.getLogger(UserController.class);
 
     /**
      * User service. It is necessary for working with users.
@@ -55,17 +54,15 @@ public class UserController {
 
     /**
      * Injecting different services into this controller by spring tools.
-     * @param jmsTemplate - give us sendMessage() method to publish messages in ActiveMQ server.
      * @param userService - is our service which provide API to work with users and DB.
      * @param productService is our service which provide API to work with products and DB.
      * @param bagService is our service which provide API to work with bag.
      * @param orderService is our service which provide API to work with orders and DB.
      */
     @Autowired
-    public UserController(JmsTemplate jmsTemplate, UserService userService,
+    public UserController(UserService userService,
                           ProductService productService, BagService bagService,
                           OrderService orderService) {
-        this.jmsTemplate = jmsTemplate;
         this.userService = userService;
         this.productService = productService;
         this.bagService = bagService;
@@ -89,6 +86,10 @@ public class UserController {
                 userService.findUserFromSecurityContextHolder());
         modelAndView.addObject("bagTotalPrice",
                 bagService.calculateTotalPrice((List<BagProductDto>)session.getAttribute("bag")));
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + "have visited checkout page.");
 
         return modelAndView;
     }
@@ -122,14 +123,18 @@ public class UserController {
         List<BagProductDto> bag = (List<BagProductDto>) session.getAttribute("bag");
         orderService.saveOrder(methodCost, country, city, street, postcode,
                 house, apartment, phone, bag, false);
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " have bought " + bag.size() + "products. Payment type: cash.");
+
         bag.clear();
 
-        if(productService.isTopProductsChanged()) {
-            try {
-                sendMessage();
-            } catch (JmsException e) {
-                e.printStackTrace();
-            }
+        try {
+            productService.updateTopIfItHaveChanged();
+        } catch (JmsException e) {
+            log.error("Something wrong with JMS server. " +
+                    "Application cannot send update message to the stand.", e);
         }
 
         return "saved";
@@ -164,28 +169,19 @@ public class UserController {
         List<BagProductDto> bag = (List<BagProductDto>) session.getAttribute("bag");
         orderService.saveOrder(methodCost, country, city, street, postcode,
                 house, apartment, phone, bag, true);
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " have bought " + bag.size() + "products. Payment type: credit card.");
+
         bag.clear();
 
-        if(productService.isTopProductsChanged()) {
-            try {
-                sendMessage();
-            } catch (JmsException e) {
-                e.printStackTrace();
-            }
+        try {
+            productService.updateTopIfItHaveChanged();
+        } catch (JmsException e) {
+            log.error("Something wrong with JMS server. " +
+                    "Application cannot send update message to the stand.", e);
         }
         return "saved";
-    }
-
-    /**
-     * This method push message to the ActiveMQ server. When the second application will see this message,
-     * it will send GET request http://localhost:8080/advertising/stand (see AdvertisingRestController).
-     * @throws JmsException when, for example, don't have connection with JMS server
-     */
-    private void sendMessage() throws JmsException {
-        jmsTemplate.send("advertising.stand", session -> {
-            TextMessage msg = session.createTextMessage();
-            msg.setText("update");
-            return msg;
-        });
     }
 }
