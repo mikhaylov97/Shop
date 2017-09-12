@@ -28,7 +28,7 @@ public class Address implements Serializable{
      * May be null, may be repeated.
      */
     @Column(name = "city")
-    private String city;
+    private String city = "";
 
     /**
      * Address country name.
@@ -36,7 +36,7 @@ public class Address implements Serializable{
      * May be null, may be repeated.
      */
     @Column(name = "country")
-    private String country;
+    private String country = "";
 
     /**
      * Address postcode number.
@@ -44,7 +44,7 @@ public class Address implements Serializable{
      * May be null, may be repeated.
      */
     @Column(name = "postcode")
-    private String postcode;
+    private String postcode = "";
 
     /**
      * Address street name.
@@ -52,7 +52,7 @@ public class Address implements Serializable{
      * May be null, may be repeated.
      */
     @Column(name = "street")
-    private String street;
+    private String street = "";
 
     /**
      * Address house name.
@@ -60,7 +60,7 @@ public class Address implements Serializable{
      * May be null, may be repeated.
      */
     @Column(name = "house")
-    private String house;
+    private String house = "";
 
     /**
      * Address apartment number.
@@ -68,7 +68,7 @@ public class Address implements Serializable{
      * May be null, may be repeated.
      */
     @Column(name = "apartment")
-    private String apartment;
+    private String apartment = "";
 
     /**
      * Empty constructor for hibernate.
@@ -233,12 +233,12 @@ public class Address implements Serializable{
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        boolean countryExpr = country != null && country.length() != 0;
-        boolean cityExpr = city != null && city.length() != 0;
-        boolean postcodeExpr = postcode != null && postcode.length() != 0;
-        boolean streetExpr = street != null && street.length() != 0;
-        boolean houseExpr = house != null && house.length() != 0;
-        boolean apartmentExpr = apartment != null && apartment.length() != 0;
+        boolean countryExpr = country.length() != 0;
+        boolean cityExpr = city.length() != 0;
+        boolean postcodeExpr = postcode.length() != 0;
+        boolean streetExpr = street.length() != 0;
+        boolean houseExpr = house.length() != 0;
+        boolean apartmentExpr = apartment.length() != 0;
 
         if (countryExpr) sb.append(country);
         if (sb.length() > 0 && cityExpr) sb.append(", ");

@@ -10,6 +10,7 @@ import org.springframework.web.servlet.view.AbstractView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
@@ -88,9 +89,7 @@ public abstract class PdfAbstractView extends AbstractView {
      * @param request handled by our controller
      * @throws DocumentException in cases when we have some troubles during the method processing
      */
-    protected void prepareWriter(Map<String, Object> model, PdfWriter writer, HttpServletRequest request)
-            throws DocumentException {
-
+    protected void prepareWriter(Map<String, Object> model, PdfWriter writer, HttpServletRequest request) {
         writer.setViewerPreferences(getViewerPreferences());
     }
 
@@ -105,22 +104,15 @@ public abstract class PdfAbstractView extends AbstractView {
     /**
      * Method build some necessary metadata
      * @param model where out data is storing
-     * @param document
-     * @param request
      */
     protected void buildPdfMetadata(Map<String, Object> model, Document document, HttpServletRequest request) {
+
     }
 
     /**
      * Method the developer will have to implement for using iText library.
      * There should be some instructions what the following document will be represented by itself
-     * @param model
-     * @param document
-     * @param writer
-     * @param request
-     * @param response
-     * @throws Exception
      */
     protected abstract void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer,
-                                             HttpServletRequest request, HttpServletResponse response) throws Exception;
+                                             HttpServletRequest request, HttpServletResponse response) throws DocumentException, IOException;
 }

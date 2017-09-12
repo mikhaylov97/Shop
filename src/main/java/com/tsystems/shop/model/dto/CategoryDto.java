@@ -3,11 +3,13 @@ package com.tsystems.shop.model.dto;
 
 import com.tsystems.shop.model.Category;
 
+import java.io.Serializable;
+
 /**
  * Class which represents simplified view of Category model.
  * See {@link com.tsystems.shop.model.Category}
  */
-public class CategoryDto {
+public class CategoryDto implements Serializable {
 
     /**
      * Category id

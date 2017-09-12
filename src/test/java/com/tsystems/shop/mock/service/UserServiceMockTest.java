@@ -13,18 +13,17 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceMockTest {
 
-    public User user = new User();
-    public Address userAddress = new Address();
+    private User user = new User();
+    private Address userAddress = new Address();
 
     @Mock
     UserDaoImpl userDao;
@@ -34,8 +33,6 @@ public class UserServiceMockTest {
 
     @Before
     public void setup() {
-        //userAddress = mock(Address.class,  Mockito.RETURNS_DEEP_STUBS);
-        //user = mock(User.class,  Mockito.RETURNS_DEEP_STUBS);
         userAddress.setId(1L);
         userAddress.setApartment("271");
         userAddress.setHouse("15");
@@ -56,9 +53,9 @@ public class UserServiceMockTest {
     }
 
     @Test
-    public void testMockFindUserByEmail() {
+    public void findUserByEmailMockTest1() {
         //prepare
-        when(userDao.findUserByEmail("mi.mi.mikhaylov97@gmail.com")).thenReturn(user);
+        when(userDao.findUserByEmail(user.getEmail())).thenReturn(user);
         //do
         userService.findUserByEmail(user.getEmail());
         //check
@@ -66,45 +63,186 @@ public class UserServiceMockTest {
     }
 
     @Test
-    public void testMockIsEmailFree1() {
-        //prepare
-        when(userDao.findUserByEmail(user.getEmail())).thenReturn(user);
+    public void findUserByEmailMockTest2() {
         //do
-        boolean result = userService.isEmailFree(user.getEmail());
+        User result = userService.findUserByEmail(null);
         //check
+        assertNull(result);
+    }
+
+    @Test
+    public void findUserByEmailMockTest3() {
+        //do
+        User result = userService.findUserByEmail("");
+        //check
+        assertNull(result);
+    }
+
+    @Test
+    public void saveNewUserMockTest1() {
+        //do
+        userService.saveNewUser(user);
+        //check
+        verify(userDao).saveUser(user);
+    }
+
+    @Test
+    public void saveNewUserMockTest2() {
+        //do
+        userService.saveNewUser(null);
+        //check
+        verifyZeroInteractions(userDao);
+    }
+
+    @Test
+    public void findAllAdminsMockTest1() {
+        List<User> users = new ArrayList<>();
+        //prepare
+        when(userDao.findAllAdmins()).thenReturn(users);
+        //do
+        userService.findAllAdmins();
+        //check
+        verify(userDao).findAllAdmins();
+    }
+
+    @Test
+    public void findSimpleAdminsMockTest1() {
+        List<User> users = new ArrayList<>();
+        //prepare
+        when(userDao.findSimpleAdmins()).thenReturn(users);
+        //do
+        userService.findSimpleAdmins();
+        //check
+        verify(userDao).findSimpleAdmins();
+    }
+
+    @Test
+    public void isEmailFreeMockTest1() {
+        //prepare
+        when(userDao.findUserByEmail("mi.mi.mikhaylov97@gmail.com")).thenReturn(user);
+        //do
+        boolean result = userService.isEmailFree("mi.mi.mikhaylov97@gmail.com");
+        //check
+        verify(userDao).findUserByEmail("mi.mi.mikhaylov97@gmail.com");
         assertFalse(result);
     }
 
     @Test
-    public void testMockIsEmailFree2() {
+    public void isEmailFreeMockTest2() {
         //prepare
-        when(userDao.findUserByEmail("test@gmail.com")).thenReturn(null);
+        when(userDao.findUserByEmail("mi.mi.mikhaylov97@gmail.com")).thenReturn(null);
         //do
-        boolean result = userService.isEmailFree("test@gmail.com");
+        boolean result = userService.isEmailFree("mi.mi.mikhaylov97@gmail.com");
         //check
+        verify(userDao).findUserByEmail("mi.mi.mikhaylov97@gmail.com");
         assertTrue(result);
     }
 
     @Test
-    public void testMockFindTop10Users() {
-        //prepare
-        when(userDao.findTopNUsers(10)).thenReturn(new ArrayList<>());
+    public void isEmailFreeMockTest3() {
         //do
-        List<User> result = userService.findTop10Users();
+        boolean result = userService.isEmailFree("");
+        //check
+        verifyZeroInteractions(userDao);
+        assertFalse(result);
+    }
+
+    @Test
+    public void isEmailFreeMockTest4() {
+        //do
+        boolean result = userService.isEmailFree(null);
+        //check
+        verifyZeroInteractions(userDao);
+        assertFalse(result);
+    }
+
+    @Test
+    public void deleteUserMockTest1() {
+        //do
+        userService.deleteUser(1L);
+        //check
+        verify(userDao).deleteUser(1L);
+    }
+
+    @Test
+    public void findTop10UsersMockTest1() {
+        List<User> users = new ArrayList<>();
+        //prepare
+        when(userDao.findTopNUsers(10)).thenReturn(users);
+        //do
+        userService.findTop10Users();
         //check
         verify(userDao).findTopNUsers(10);
     }
 
     @Test
-    public void testMockFindTop10UsersDto() {
+    public void findTopNUsersMockTest1() {
+        List<User> users = new ArrayList<>();
         //prepare
-        List<User> topList = new ArrayList<>();
-        when(userDao.findTopNUsers(10)).thenReturn(topList);
+        when(userDao.findTopNUsers(11)).thenReturn(users);
         //do
-        List<UserDto> result = userService.findTop10UsersDto();
+        userService.findTopNUsers(11);
         //check
-        verify(userDao).findTopNUsers(10);
+        verify(userDao).findTopNUsers(11);
+    }
 
+    @Test
+    public void findTotalCashByIdMockTest1() {
+        //prepare
+        when(userDao.findTotalCashById(1L)).thenReturn(109L);
+        //do
+        long result = userService.findTotalCashById(1L);
+        //check
+        verify(userDao).findTotalCashById(1L);
+        assertEquals(109L, result);
+    }
+
+    @Test
+    public void convertUsersToUsersDtoMockTest1() {
+        //prepare
+        when(userDao.findTotalCashById(user.getId())).thenReturn(109L);
+        //do
+        List<UserDto> result = userService.convertUsersToUsersDto(new ArrayList<>(Collections.singletonList(user)));
+        //check
+        verify(userDao).findTotalCashById(user.getId());
+        assertTrue(result.get(0).getEmail().equals(user.getEmail()));
+        assertTrue(result.get(0).getTotalCash().equals(String.valueOf(109L)));
+        assertTrue(result.get(0).getBirthday().equals(user.getBirthday()));
+        assertTrue(result.get(0).getAddress().equals(user.getAddress().toString()));
+        assertTrue(result.get(0).getPhone().equals(user.getPhone()));
+    }
+
+    @Test
+    public void convertUsersToUsersDtoMockTest2() {
+        //do
+        List<UserDto> result = userService.convertUsersToUsersDto(new ArrayList<>());
+        //check
+        verifyZeroInteractions(userDao);
+        assertNotNull(result);
+        assertTrue(result.size() == 0);
+    }
+
+    @Test
+    public void convertUserToUserDtoMockTest1() {
+        //prepare
+        when(userDao.findTotalCashById(1L)).thenReturn(109L);
+        //do
+        UserDto userDto = userService.convertUserToUserDto(user);
+        //check
+        verify(userDao).findTotalCashById(1L);
+        assertTrue(userDto.getEmail().equals(user.getEmail()));
+        assertTrue(userDto.getName().equals(user.getName()));
+        assertTrue(userDto.getTotalCash().equals(String.valueOf(109L)));
+        assertTrue(userDto.getBirthday().equals(user.getBirthday()));
+    }
+
+    @Test
+    public void convertUserToUserDtoMockTest2() {
+        //do
+        UserDto result = userService.convertUserToUserDto(null);
+        //check
+        verifyZeroInteractions(userDao);
+        assertNull(result);
     }
 
 }

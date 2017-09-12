@@ -32,15 +32,6 @@ public class WebConfig extends WebMvcConfigurerAdapter{
         registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
     }
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        LocaleChangeInterceptor localeInterceptor = new LocaleChangeInterceptor();
-//        localeInterceptor.setParamName("lang");
-//
-//
-//        registry.addInterceptor(localeInterceptor);
-//    }
-
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
@@ -85,24 +76,4 @@ public class WebConfig extends WebMvcConfigurerAdapter{
         resolver.setMaxUploadSize(100000);
         return resolver;
     }
-
-//    @Bean(name = "messageSource")
-//    public MessageSource getMessageResource()  {
-//        ReloadableResourceBundleMessageSource messageResource= new ReloadableResourceBundleMessageSource();
-//
-//        messageResource.setBasename("classpath:/locales/messages");
-//        messageResource.setDefaultEncoding("UTF-8");
-//        return messageResource;
-//    }
-//
-//    @Bean(name = "localeResolver")
-//    public LocaleResolver getLocaleResolver()  {
-//        CookieLocaleResolver resolver= new CookieLocaleResolver();
-//        resolver.setCookieName("myAppLocaleCookie");
-//        // 60 minutes
-//
-//        resolver.setDefaultLocale(new Locale("en"));
-//        resolver.setCookieMaxAge(60*60);
-//        return resolver;
-//    }
 }

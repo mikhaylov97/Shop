@@ -28,7 +28,7 @@ public class Size implements Serializable{
      * Cannot be nullable.
      */
     @Column(name = "size", nullable = false)
-    private String size;
+    private String sizeName;
 
     /**
      * Available number of product with this size.
@@ -50,7 +50,7 @@ public class Size implements Serializable{
      * @param availableNumber of current size. See in fields declaration.
      */
     public Size(String size, String availableNumber) {
-        this.size = size;
+        this.sizeName = size;
         this.availableNumber = availableNumber;
     }
 
@@ -75,7 +75,7 @@ public class Size implements Serializable{
      * @return Size name value
      */
     public String getSize() {
-        return size;
+        return sizeName;
     }
 
     /**
@@ -84,7 +84,7 @@ public class Size implements Serializable{
      * is value to set
      */
     public void setSize(String size) {
-        this.size = size;
+        this.sizeName = size;
     }
 
     /**

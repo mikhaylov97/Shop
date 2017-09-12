@@ -10,6 +10,7 @@ import com.tsystems.shop.model.dto.UserDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class PdfBuilderUtil extends PdfAbstractView {
     @Override
     protected void buildPdfDocument(Map<String, Object> model, Document doc,
                                     PdfWriter writer, HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
+            throws DocumentException, IOException {
         // get data model which is passed by the Spring container
         List<ProductDto> productDtoList = (List<ProductDto>) model.get("listProducts");
         List<UserDto> userDtoList = (List<UserDto>) model.get("listUsers");

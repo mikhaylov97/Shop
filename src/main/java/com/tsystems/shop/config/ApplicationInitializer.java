@@ -24,7 +24,7 @@ public class ApplicationInitializer implements WebApplicationInitializer{
     /**
      * The name of our dispatcher servlet
      */
-    private final static String DISPATCHER = "dispatcher";
+    private static final String DISPATCHER = "dispatcher";
 
     /**
      * Method we had to implement for correct working of out application.

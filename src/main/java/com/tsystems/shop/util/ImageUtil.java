@@ -12,6 +12,12 @@ import java.io.FileOutputStream;
  * server physical memory inside apache tomcat catalog
  */
 public class ImageUtil {
+
+    /**
+     * Apache log4j object is used to logging all important info.
+     */
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ImageUtil.class);
+
     /**
      * Name of the folder where image will be saved
      */
@@ -43,18 +49,24 @@ public class ImageUtil {
     private static final String IMAGES_DIR_ABSOLUTE_PATH = IMAGES_DIR.getAbsolutePath() + File.separator;
 
     /**
+     * Empty constructor
+     */
+    private ImageUtil() {
+
+    }
+
+    /**
      * Method saves some file into images folder(it is assumed the this will be a picture)
      * @param name - Future name of the saving file
      * @param file - Directly, the file itself
      */
     public static void uploadImage(String name, MultipartFile file) {
-        try {
-            File image = new File(IMAGES_DIR_ABSOLUTE_PATH + name);
-            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(image));
+        File image = new File(IMAGES_DIR_ABSOLUTE_PATH + name);
+        try(BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(image))) {
             stream.write(file.getBytes());
             stream.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Something was wrong during uploading image.", e);
         }
     }
 

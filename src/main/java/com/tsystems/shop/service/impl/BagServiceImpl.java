@@ -70,16 +70,11 @@ public class BagServiceImpl implements BagService {
      */
     @Override
     public void addOrIncreaseIfExist(List<BagProductDto> products, Product product) {
-        boolean isExist = false;
         for (BagProductDto bagProduct : products) {
             if (bagProduct.getId() == product.getId()){
                 bagProduct.setAmount(bagProduct.getAmount() + 1);
-                isExist = true;
                 break;
             }
-        }
-        if (!isExist) {
-//            products.add(createBagProductFromProduct(product));
         }
     }
 
@@ -94,11 +89,10 @@ public class BagServiceImpl implements BagService {
      */
     @Override
     public BagProductDto createBagProductFromProduct(Product product, long sizeId) {
-        BagProductDto bagProduct = new BagProductDto(product.getId(),product.getName(),
+        return new BagProductDto(product.getId(),product.getName(),
                 product.getImage(), 1L,
                 Long.parseLong(product.getPrice()), sizeId,
                 productDao.findSizeById(sizeId).getSize());
-        return  bagProduct;
     }
 
     /**
@@ -111,6 +105,7 @@ public class BagServiceImpl implements BagService {
      */
     @Override
     public Product convertBagProductDtoToProduct(BagProductDto bagProduct) {
+        if (bagProduct == null) return null;
         return productDao.findProductById(bagProduct.getId());
     }
 

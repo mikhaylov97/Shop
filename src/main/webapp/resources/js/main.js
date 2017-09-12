@@ -17,7 +17,6 @@ function filterProducts() {
         data: $('#filter-data').serialize(),
         async: true,
         success: function (response) {
-            var a = response;
             $('#main-content').html(response);
         }
     });

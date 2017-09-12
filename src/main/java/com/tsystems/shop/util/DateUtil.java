@@ -11,6 +11,13 @@ import java.time.format.DateTimeFormatter;
 public class DateUtil {
 
     /**
+     * Empty constructor
+     */
+    private DateUtil() {
+
+    }
+
+    /**
      * DateFormatter field with prepared date pattern - dd-MM-yyyy(14-09-1997) - 14 September 1997
      */
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");

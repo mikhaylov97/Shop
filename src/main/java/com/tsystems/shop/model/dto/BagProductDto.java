@@ -1,11 +1,13 @@
 package com.tsystems.shop.model.dto;
 
+import java.io.Serializable;
+
 /**
  * Class which represents simplified view of Product model.
  * This dto is used in Bag mechanism
  * See {@link com.tsystems.shop.model.Product}
  */
-public class BagProductDto {
+public class BagProductDto implements Serializable {
     /**
      * Product id
      */
@@ -34,6 +36,12 @@ public class BagProductDto {
      * Size name of the product
      */
     private String size;
+
+    /**
+     * Empty constructor
+     */
+    public BagProductDto() {
+    }
 
     /**
      * Simple constructor.

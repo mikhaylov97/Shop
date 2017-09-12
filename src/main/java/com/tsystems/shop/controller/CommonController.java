@@ -10,8 +10,6 @@ import com.tsystems.shop.service.api.*;
 import com.tsystems.shop.util.ImageUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,10 +38,6 @@ public class CommonController {
      */
     private static final Logger log = Logger.getLogger(CommonController.class);
 
-    /**
-     * UserDetailsService service. It is necessary for working with Spring Security.
-     */
-    private final UserDetailsService userDetailsService;
 
     /**
      * User service. It is necessary for working with users.
@@ -75,7 +69,6 @@ public class CommonController {
      * @param userService - is our service which provide API to work with users and DB.
      * @param productService is our service which provide API to work with products and DB.
      * @param bagService is our service which provide API to work with bag.
-     * @param userDetailsService is our service which provide API to work with Spring Security.
      * @param categoryService is our service which provide API to work with categories and DB.
      * @param sizeService is our service which provide API to work with product sizes.
      */
@@ -83,7 +76,6 @@ public class CommonController {
     public CommonController(UserDetailsService userDetailsService, UserService userService,
                             ProductService productService, BagService bagService,
                             CategoryService categoryService, SizeService sizeService) {
-        this.userDetailsService = userDetailsService;
         this.userService = userService;
         this.productService = productService;
         this.bagService = bagService;
@@ -93,8 +85,7 @@ public class CommonController {
 
     @RequestMapping(value = "/")
     public ModelAndView redirectToHomePage() {
-        ModelAndView modelAndView = new ModelAndView("title");
-        return modelAndView;
+        return new ModelAndView("title");
     }
 
     @RequestMapping(value = "/home")
@@ -133,7 +124,7 @@ public class CommonController {
         Product product = productService.findProductById(Long.parseLong(id), false);
         Object bag = request.getSession().getAttribute("bag");
         if (bag == null) {
-            List<BagProductDto> bagProducts = new ArrayList<>();
+            ArrayList<BagProductDto> bagProducts = new ArrayList<>();
            bagService.addToBag(product.getId(),
                     Integer.parseInt(amount),
                     Long.parseLong(sizeId),
@@ -401,11 +392,6 @@ public class CommonController {
         return productService.findProductsByTerm(term, adminMode);
     }
 
-    private boolean isCurrentAuthenticationAnonymous() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication instanceof AnonymousAuthenticationToken;
-    }
-
     /**
      * Method allows us to get Image as a byte array which stored inside
      * server memory(in our case in tomcat home images folder).
@@ -415,7 +401,7 @@ public class CommonController {
     @RequestMapping(value = "/image/{imageId}")
     public @ResponseBody byte[] getImage(@PathVariable(value = "imageId") String imageId) throws IOException {
 
-        File serverFile = new File(ImageUtil.getImagesDirectoryAbsolutePath() + imageId); //+ ".jpg");
+        File serverFile = new File(ImageUtil.getImagesDirectoryAbsolutePath() + imageId);
 
         return Files.readAllBytes(serverFile.toPath());
     }

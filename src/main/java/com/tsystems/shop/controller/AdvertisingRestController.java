@@ -90,7 +90,6 @@ public class AdvertisingRestController {
      */
     @RequestMapping(value = "/stand/connection")
     public SseEmitter openConnection(HttpServletResponse response) {
-        //response.setContentType("text/event-stream");
         response.setCharacterEncoding("UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "http://localhost:8081");
         final SseEmitter emitter = new SseEmitter(20000L);
@@ -117,8 +116,11 @@ public class AdvertisingRestController {
                 try {
                     emitter.send("update");
                     emitter.complete();
-                } catch (Exception e) {
-                    //e.printStackTrace();
+                } catch (Exception ignored) {
+                    //we should ignore this exception
+                    //because sometimes we have two similar connections to one user.
+                    //One of them complete(timeout), another is active.
+                    //After this catch block, completed exemplar will be removed.
                 }
             }
         }

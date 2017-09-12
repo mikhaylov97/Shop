@@ -3,6 +3,7 @@ package com.tsystems.shop.model.dto;
 
 import com.tsystems.shop.model.Size;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  * To set unpredictable number of sizes which admin will decide to set for the product.
  * See {@link com.tsystems.shop.model.Size}
  */
-public class SizesDto {
+public class SizesDto implements Serializable {
 
     /**
      * Directly, list of sizes which out product should contains inside.

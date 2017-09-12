@@ -13,6 +13,12 @@ import java.util.Comparator;
 public class ComparatorUtil {
 
     /**
+     * Empty constructor
+     */
+    private ComparatorUtil() {
+    }
+
+    /**
      * Comparator for sorting products by ID from smallest to largest
      */
     private static Comparator<Product> ascendingProductComparator = (p1, p2) -> {

@@ -35,9 +35,9 @@ public class CategoryDaoImpl implements CategoryDao{
     @Override
     @Transactional
     public Category saveCategory(Category category) {
-        category = em.merge(category);
+        Category saved = em.merge(category);
         em.flush();
-        return category;
+        return saved;
     }
 
     /**

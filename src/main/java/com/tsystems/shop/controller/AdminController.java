@@ -306,22 +306,6 @@ public class AdminController {
         return modelAndView;
     }
 
-//    /**
-//     *
-//     * @param id
-//     * @param status
-//     * @return
-//     */
-//    @RequestMapping(value = "/orders", method = RequestMethod.POST)
-//    public String changeOrderStatus(@RequestParam(name = "id") String id,
-//                                    @RequestParam(name = "status") String status) {
-//        Order order = orderService.findOrderById(id);
-//        order.setOrderStatus(status);
-//        if (!status.equals(OrderStatusEnum.AWAITING_PAYMENT.toString())) order.getPayment().setPaymentStatus(PaymentStatusEnum.PAID.toString());
-//        orderService.saveOrder(order);
-//        return "redirect:/admin/orders";
-//    }
-
     /**
      * Method shows statistics page for admin. There admin can see
      * shop income for the last week and for the last month. Also there will
@@ -400,7 +384,7 @@ public class AdminController {
      */
     @RequestMapping(value = "/categories/add", method = RequestMethod.POST)
     public @ResponseBody String saveNewCategory(@RequestParam(name = "name") String name,
-                                  @RequestParam(name = "parent") String id) {
+                                                @RequestParam(name = "parent") String id) {
         if (categoryService.checkIsCategoryNameFree(name, categoryService.findCategoryById(id, true))) {
             Category category = new Category(name, "2", categoryService.findCategoryById(id, true));
             categoryService.saveNewCategory(category);
@@ -465,13 +449,10 @@ public class AdminController {
     @RequestMapping(value = "/get/categories", method = RequestMethod.POST)
     public ModelAndView getCategoriesList(@RequestParam(name = "active") String active) {
         ModelAndView modelAndView = new ModelAndView("manage-categories-only-items");
-        switch (active) {
-            case "mens":
-                modelAndView.addObject("categories", categoryService.findChildsDtoById(1, true));
-                break;
-            case "womens":
-                modelAndView.addObject("categories", categoryService.findChildsDtoById(2, true));
-                break;
+        if (active.equals("mens")) {
+            modelAndView.addObject("categories", categoryService.findChildsDtoById(1, true));
+        } else {
+            modelAndView.addObject("categories", categoryService.findChildsDtoById(2, true));
         }
 
         return modelAndView;

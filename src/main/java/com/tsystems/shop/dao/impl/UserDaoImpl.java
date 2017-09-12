@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.ArrayList;
@@ -39,12 +38,9 @@ public class UserDaoImpl implements UserDao {
     public User findUserByEmail(String email) {
         Query query = em.createQuery("SELECT u FROM User u WHERE email = :email");
         query.setParameter("email", email);
-        try {
-            User user = (User) query.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-        return (User) query.getSingleResult();
+        List<User> result = (List<User>)query.getResultList();
+        if (result.isEmpty()) return null;
+        else return result.get(0);
     }
 
     /**
@@ -56,7 +52,6 @@ public class UserDaoImpl implements UserDao {
     public User findUserById(long id) {
         Query query = em.createQuery("SELECT u FROM User u WHERE id = :id");
         query.setParameter("id", id);
-//        User user = (User) query.getSingleResult();
         return (User) query.getSingleResult();
     }
 
@@ -80,8 +75,7 @@ public class UserDaoImpl implements UserDao {
         Query query = em.createQuery("SELECT u FROM User u WHERE role = :role1 OR role = :role2");
         query.setParameter("role1", UserRoleEnum.ROLE_ADMIN.name());
         query.setParameter("role2", UserRoleEnum.ROLE_SUPER_ADMIN.name());
-        List<User> result = (List<User>) query.getResultList();
-        return result;
+        return (List<User>) query.getResultList();
     }
 
     /**
@@ -92,8 +86,7 @@ public class UserDaoImpl implements UserDao {
     public List<User> findSimpleAdmins() {
         Query query = em.createQuery("SELECT u FROM User u WHERE role = :role");
         query.setParameter("role", UserRoleEnum.ROLE_ADMIN.name());
-        List<User> result = (List<User>) query.getResultList();
-        return result;
+        return (List<User>) query.getResultList();
     }
 
     /**
@@ -132,7 +125,6 @@ public class UserDaoImpl implements UserDao {
     public long findTotalCashById(long id) {
         Query totalCashQuery = em.createQuery("SELECT SUM(CAST(o.payment.totalPrice as long)) FROM Order o WHERE o.user.id = :id");
         totalCashQuery.setParameter("id", id);
-        long cash = (Long)totalCashQuery.getSingleResult();
-        return cash;
+        return (long) (Long)totalCashQuery.getSingleResult();
     }
 }

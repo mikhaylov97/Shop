@@ -15,7 +15,7 @@ public interface SizeService {
      * @param sizeId that amount method must return.
      * @return available amount of size;
      */
-    int getAvaiableAmountOfSize(int sizeId);
+    int getAvailableAmountOfSize(int sizeId);
 
     /**
      * Method find unique size names in products list.

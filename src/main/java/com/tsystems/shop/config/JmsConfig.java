@@ -20,15 +20,15 @@ public class JmsConfig {
     /**
      * URL where our JMS server is available
      */
-    private String BROKER_URL = "tcp://localhost:61616";
+    private static final String BROKER_URL = "tcp://localhost:61616";
     /**
      * Username for our JMS server
      */
-    private String BROKER_USERNAME = "admin";
+    private static final String BROKER_USERNAME = "admin";
     /**
      * Password for our JMS server
      */
-    private String BROKER_PASSWORD = "admin";
+    private static final String BROKER_PASSWORD = "admin";
 
     /**
      * Method register ActiveMQConnectionFactory in spring context.

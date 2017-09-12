@@ -7,6 +7,13 @@ package com.tsystems.shop.util;
 public class ByteArrayConverterUtil {
 
     /**
+     * Empty constructor
+     */
+    private ByteArrayConverterUtil() {
+
+    }
+
+    /**
      * This method converts Byte[] to byte[]
      * @param bytes - method gets boxed Byte array
      * @return converted primitive byte array

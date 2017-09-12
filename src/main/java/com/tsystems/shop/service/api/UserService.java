@@ -117,8 +117,7 @@ public interface UserService {
      * @throws IncorrectPasswordException when entered old password doesn't math the old value
      * or password(old or new) doesn't satisfy password patter.
      */
-    void changePasswordFromSecurityContextHolder(String oldPassword, String newPassword)
-            throws IncorrectPasswordException;
+    void changePasswordFromSecurityContextHolder(String oldPassword, String newPassword);
 
     /**
      * Task of the method is to authenticate registered user and to give him simple user rights.
@@ -134,6 +133,7 @@ public interface UserService {
      * @throws IncorrectAccountInfoException when in any field was entered incorrect data.
      */
     void changeInformationFromSecurityContextHolder(String phone, String birthday, String name,
-                                     String surname, Address address)
-            throws IncorrectAccountInfoException;
+                                     String surname, Address address);
+
+    Address changeAddressFieldsToAnotherAddressFields(Address toChange, Address fromWhereChange);
 }

@@ -1,13 +1,15 @@
 package com.tsystems.shop.model.dto;
 
 
+import java.io.Serializable;
+
 /**
  * Class which represents necessary form of the User model.
  * This dto is used almost in all controllers, cause it contains all
  * necessary information about user and money that he spent in our store.
  * See {@link com.tsystems.shop.model.User}
  */
-public class UserDto {
+public class UserDto implements Serializable {
     /**
      * User ID
      */

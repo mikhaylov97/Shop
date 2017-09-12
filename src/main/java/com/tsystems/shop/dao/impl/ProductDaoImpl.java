@@ -37,8 +37,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public List<Product> findAllProducts() {
         Query query = em.createQuery("SELECT p FROM Product p");
-        List<Product> products = (List<Product>) query.getResultList();
-        return products;
+        return (List<Product>) query.getResultList();
     }
 
     /**
@@ -48,8 +47,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public List<Product> findNotHiddenProducts() {
         Query productsListQuery = em.createQuery("SELECT p FROM Product p WHERE p.active=true");
-        List<Product> products = (List<Product>) productsListQuery.getResultList();
-        return products;
+        return (List<Product>) productsListQuery.getResultList();
     }
 
     /**
@@ -72,9 +70,9 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     @Transactional
     public Product saveProduct(Product product) {
-        product = em.merge(product);
+        Product saved = em.merge(product);
         em.flush();
-        return product;
+        return saved;
     }
 
     /**
@@ -155,8 +153,7 @@ public class ProductDaoImpl implements ProductDao {
                 + " (" + subQuery +") GROUP BY o.product.id");
         totalSalesQuery.setParameter("id", id);
         try {
-            long sales = (Long) totalSalesQuery.getSingleResult();
-            return sales;
+            return (long) totalSalesQuery.getSingleResult();
         } catch (NoResultException e) {
             return  0L;
         }

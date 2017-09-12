@@ -119,7 +119,7 @@ public class ProductServiceImpl implements ProductService {
      * and will make an attempt to update top products list.
      */
     @Override
-    public void sendUpdateMessageToJmsServer() throws JmsException{
+    public void sendUpdateMessageToJmsServer() {
         sendMessage();
     }
 
@@ -180,7 +180,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public void updateTopIfItHaveChanged() throws JmsException {
+    public void updateTopIfItHaveChanged() {
         if(!tops.containsAll(productDao.findTop10Products(false))) {
             tops = productDao.findTop10Products(false);
             sendMessage();
@@ -283,13 +283,12 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> filterProductsByCostAndSize(String lowerCostBound, String upperCostBound, String size, String categoryId) {
         List<Product> products;
         try {
-            boolean sizeActive = true;
-            long costFromLong, costToLong;
+            long costToLong;
+            long costFromLong;
             if (lowerCostBound.equals("")) costFromLong = Long.parseLong("0");
             else costFromLong = Long.parseLong(lowerCostBound.substring(1, lowerCostBound.length()));
             if (upperCostBound.equals("")) costToLong = Long.parseLong("0");
             else costToLong = Long.parseLong(upperCostBound.substring(1, upperCostBound.length()));
-            long id = Long.parseLong(categoryId);
             products = findProductsByCategory(categoryDao.findCategoryById(categoryId), false)
                     .stream()
                     .filter( p -> (costFromLong == 0 || Long.parseLong(p.getPrice()) >= costFromLong)
@@ -313,8 +312,6 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<ProductDto> findProductsByTerm(String term, boolean adminMode) {
-        List<Product> products = findAllProducts(adminMode);
-        List<ProductDto> productDtos = convertProductsToProductsDto(products);
         return convertProductsToProductsDto(findAllProducts(adminMode))
                 .stream()
                 .filter(p -> p.getName().toLowerCase().contains(term.toLowerCase()))
@@ -356,7 +353,7 @@ public class ProductServiceImpl implements ProductService {
      * it will send GET request http://localhost:8080/advertising/stand (see AdvertisingRestController).
      * @throws JmsException when, for example, don't have connection with JMS server
      */
-    private void sendMessage() throws JmsException {
+    private void sendMessage() {
         jmsTemplate.send("advertising.stand", session -> {
             TextMessage msg = session.createTextMessage();
             msg.setText("update");

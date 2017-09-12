@@ -48,6 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Category saveNewCategory(Category category) {
+        if (category == null) return null;
         return categoryDao.saveCategory(category);
     }
 

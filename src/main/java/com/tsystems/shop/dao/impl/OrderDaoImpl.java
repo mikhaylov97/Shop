@@ -2,7 +2,6 @@ package com.tsystems.shop.dao.impl;
 
 import com.tsystems.shop.dao.api.OrderDao;
 import com.tsystems.shop.model.Order;
-import com.tsystems.shop.model.OrdersProducts;
 import com.tsystems.shop.model.enums.OrderStatusEnum;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,8 +36,7 @@ public class OrderDaoImpl implements OrderDao {
     public List<Order> findOrdersByEmail(String email) {
         Query query = em.createQuery("SELECT o FROM Order o WHERE user.email = :email");
         query.setParameter("email", email);
-        List<Order> orders = (List<Order>) query.getResultList();
-        return orders;
+        return (List<Order>) query.getResultList();
     }
 
     /**
@@ -50,8 +48,7 @@ public class OrderDaoImpl implements OrderDao {
     public List<Order> findOrdersByStatusType(String status) {
         Query query = em.createQuery("SELECT o FROM Order o WHERE orderStatus = :status");
         query.setParameter("status", status);
-        List<Order> orders = (List<Order>) query.getResultList();
-        return orders;
+        return (List<Order>) query.getResultList();
     }
 
     /**
@@ -61,8 +58,7 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public List<Order> findAllOrders() {
         Query query = em.createQuery("SELECT o FROM Order o");
-        List<Order> orders = (List<Order>) query.getResultList();
-        return orders;
+        return (List<Order>) query.getResultList();
     }
 
     /**
@@ -74,8 +70,7 @@ public class OrderDaoImpl implements OrderDao {
     public Order findOrderById(long id) {
         Query query = em.createQuery("SELECT o FROM Order o WHERE id = :id");
         query.setParameter("id", id);
-        Order order = (Order) query.getSingleResult();
-        return order;
+        return (Order) query.getSingleResult();
     }
 
     /**
@@ -86,9 +81,9 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     @Transactional
     public Order saveOrder(Order order) {
-        order = em.merge(order);
+        Order saved = em.merge(order);
         em.flush();
-        return order;
+        return saved;
     }
 
     /**
@@ -99,8 +94,7 @@ public class OrderDaoImpl implements OrderDao {
     public List<Order> findDoneOrders() {
         Query query = em.createQuery("SELECT o FROM Order o WHERE orderStatus = :status");
         query.setParameter("status", OrderStatusEnum.DONE.toString());
-        List<Order> orders = (List<Order>) query.getResultList();
-        return orders;
+        return (List<Order>) query.getResultList();
     }
 
     /**
@@ -111,7 +105,6 @@ public class OrderDaoImpl implements OrderDao {
     public List<Order> findActiveOrders() {
         Query query = em.createQuery("SELECT o FROM Order o WHERE orderStatus != :status");
         query.setParameter("status", OrderStatusEnum.DONE.toString());
-        List<Order> orders = (List<Order>) query.getResultList();
-        return orders;
+        return (List<Order>) query.getResultList();
     }
 }

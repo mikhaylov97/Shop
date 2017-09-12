@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public User findUserByEmail(String email) {
+        if (email == null || email.isEmpty()) return null;
         return userDao.findUserByEmail(email);
     }
 
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public void saveNewUser(User user) {
-        userDao.saveUser(user);
+        if (user != null) userDao.saveUser(user);
     }
 
     /**
@@ -99,6 +100,7 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public boolean isEmailFree(String email) {
+        if (email == null || email.isEmpty()) return false;
         return userDao.findUserByEmail(email) == null;
     }
 
@@ -190,6 +192,7 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public UserDto convertUserToUserDto(User user) {
+        if (user == null) return null;
         UserDto dto = new UserDto();
         dto.setId(user.getId());
         dto.setAddress(user.getAddress() == null ? "" : user.getAddress().toString());
@@ -211,7 +214,6 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public User findUserFromSecurityContextHolder() {
-        User user = findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
@@ -239,8 +241,7 @@ public class UserServiceImpl implements UserService{
      *                                    or password(old or new) doesn't satisfy password patter.
      */
     @Override
-    public void changePasswordFromSecurityContextHolder(String oldPassword, String newPassword)
-            throws IncorrectPasswordException {
+    public void changePasswordFromSecurityContextHolder(String oldPassword, String newPassword) {
         String passwordRegexp = "^[A-Za-z1-9]{6,10}$";
         User user = findUserFromSecurityContextHolder();
         if (user.getPassword().equals(oldPassword)) {
@@ -267,12 +268,9 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public void changeInformationFromSecurityContextHolder(String phone, String birthday, String name,
-                                                           String surname, Address address)
-            throws IncorrectAccountInfoException {
+                                                           String surname, Address address) {
         String phoneRegexp = "^\\d(\\-)?[0-9]{3}\\-?[0-9]{3}\\-?[0-9]{2}-?[0-9]{2}$";
         String charactersRegexp = "^[A-Za-z]{1,10}(\\s|\\.|-)?[A-Za-z]{0,10}(\\s|-)?[A-Za-z]{0,10}$";
-        String houseAndApartmentRegexp = "^[1-9]{1,6}[A-Za-z]?$";
-        String postcodeRegexp = "^[1-9]{6,8}$";
         User user = findUserFromSecurityContextHolder();
         if (!phone.matches(phoneRegexp)) throw new IncorrectAccountInfoException("Entered incorrect phone number");
         user.setPhone(phone);
@@ -289,30 +287,42 @@ public class UserServiceImpl implements UserService{
             throw new IncorrectAccountInfoException("Entered incorrect surname");
         }
         user.setSurname(surname);
-        if (!address.getCountry().equals("") && !address.getCountry().matches(charactersRegexp)) {
+
+        changeAddressFieldsToAnotherAddressFields(user.getAddress(), address);
+
+        userDao.saveUser(user);
+    }
+
+    @Override
+    public Address changeAddressFieldsToAnotherAddressFields(Address toChange, Address fromWhereChange) {
+        String charactersRegexp = "^[A-Za-z]{1,10}(\\s|\\.|-)?[A-Za-z]{0,10}(\\s|-)?[A-Za-z]{0,10}$";
+        String houseAndApartmentRegexp = "^[1-9]{1,6}[A-Za-z]?$";
+        String postcodeRegexp = "^[1-9]{6,8}$";
+        if (!fromWhereChange.getCountry().equals("") && !fromWhereChange.getCountry().matches(charactersRegexp)) {
             throw new IncorrectAccountInfoException("Entered incorrect country name");
         }
-        user.getAddress().setCountry(address.getCountry());
-        if (!address.getCity().equals("") && !address.getCity().matches(charactersRegexp)) {
+        toChange.setCountry(fromWhereChange.getCountry());
+        if (!fromWhereChange.getCity().equals("") && !fromWhereChange.getCity().matches(charactersRegexp)) {
             throw new IncorrectAccountInfoException("Entered incorrect city name");
         }
-        user.getAddress().setCity(address.getCity());
-        if (!address.getHouse().equals("") && !address.getHouse().matches(houseAndApartmentRegexp)) {
+        toChange.setCity(fromWhereChange.getCity());
+        if (!fromWhereChange.getHouse().equals("") && !fromWhereChange.getHouse().matches(houseAndApartmentRegexp)) {
             throw new IncorrectAccountInfoException("Entered incorrect house number");
         }
-        user.getAddress().setHouse(address.getHouse());
-        if (!address.getStreet().equals("") && !address.getStreet().matches(charactersRegexp)) {
+        toChange.setHouse(fromWhereChange.getHouse());
+        if (!fromWhereChange.getStreet().equals("") && !fromWhereChange.getStreet().matches(charactersRegexp)) {
             throw new IncorrectAccountInfoException("Entered incorrect street name");
         }
-        user.getAddress().setStreet(address.getStreet());
-        if (!address.getPostcode().equals("") && !address.getPostcode().matches(postcodeRegexp)) {
+        toChange.setStreet(fromWhereChange.getStreet());
+        if (!fromWhereChange.getPostcode().equals("") && !fromWhereChange.getPostcode().matches(postcodeRegexp)) {
             throw new IncorrectAccountInfoException("Entered incorrect postcode number");
         }
-        user.getAddress().setPostcode(address.getPostcode());
-        if (!address.getApartment().equals("") && !address.getApartment().matches(houseAndApartmentRegexp)) {
+        toChange.setPostcode(fromWhereChange.getPostcode());
+        if (!fromWhereChange.getApartment().equals("") && !fromWhereChange.getApartment().matches(houseAndApartmentRegexp)) {
             throw new IncorrectAccountInfoException("Entered incorrect apartment number");
         }
-        user.getAddress().setApartment(address.getApartment());
-        userDao.saveUser(user);
+        toChange.setApartment(fromWhereChange.getApartment());
+
+        return toChange;
     }
 }

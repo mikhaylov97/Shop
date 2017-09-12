@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var currentShipMethodPrice = parseInt($('#price1').html());
-    var bagPrict = parseInt($('.bag-total-price').html());
+
     $('.shipping-price').html(currentShipMethodPrice);
     $('.total-price').html(parseInt($('.bag-total-price').html()) + currentShipMethodPrice);
 

@@ -1,12 +1,14 @@
 package com.tsystems.shop.model.dto;
 
+import java.io.Serializable;
+
 /**
  * Class represents modernised view of Product model.
  * It shows all necessary data from Product object and in addition
  * different fields with information we should calculate.
  * See {@link com.tsystems.shop.model.Product}
  */
-public class ProductDto {
+public class ProductDto implements Serializable {
     /**
      * Product ID
      */

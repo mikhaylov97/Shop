@@ -54,7 +54,6 @@ $(document).ready(function () {
 
 function showHideCategory(e, href) {
     e.preventDefault();
-    var href2 = href;
     $.ajax({
         url: href,
         type: 'post',
