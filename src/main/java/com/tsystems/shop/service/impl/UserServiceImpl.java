@@ -11,14 +11,9 @@ import com.tsystems.shop.model.enums.UserRoleEnum;
 import com.tsystems.shop.service.api.UserService;
 import com.tsystems.shop.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,18 +29,11 @@ public class UserServiceImpl implements UserService{
     private final UserDao userDao;
 
     /**
-     * Injected by spring userDetailsService bean.
-     */
-    private final UserDetailsService userDetailsService;
-
-    /**
      * Injecting controller.
      * @param userDao that must be injected.
-     * @param userDetailsService that must be injected.
      */
     @Autowired
-    public UserServiceImpl(UserDao userDao, UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public UserServiceImpl(UserDao userDao) {
         this.userDao = userDao;
     }
 
@@ -169,19 +157,6 @@ public class UserServiceImpl implements UserService{
             resultList.add(convertUserToUserDto(user));
         }
         return resultList;
-    }
-
-    /**
-     * Task of the method is to authenticate registered user and to give him simple user rights.
-     * @param email of the registered user.
-     */
-    public void authenticateUserAndSetSession(String email, HttpServletRequest request) {
-        // generate session if one doesn't exist
-        request.getSession();
-
-        UserDetails user = userDetailsService.loadUserByUsername(email);
-        Authentication authenticatedUser = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
     }
 
     /**

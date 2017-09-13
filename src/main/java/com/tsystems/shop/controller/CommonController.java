@@ -10,8 +10,11 @@ import com.tsystems.shop.service.api.*;
 import com.tsystems.shop.util.ImageUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +58,11 @@ public class CommonController {
     private final BagService bagService;
 
     /**
+     * User details service. It is necessary for working with security.
+     */
+    private final UserDetailsService userDetailsService;
+
+    /**
      * Category service. It is necessary for working with categories.
      */
     private final CategoryService categoryService;
@@ -73,9 +81,10 @@ public class CommonController {
      * @param sizeService is our service which provide API to work with product sizes.
      */
     @Autowired
-    public CommonController(UserDetailsService userDetailsService, UserService userService,
+    public CommonController(UserService userService, UserDetailsService userDetailsService,
                             ProductService productService, BagService bagService,
                             CategoryService categoryService, SizeService sizeService) {
+        this.userDetailsService = userDetailsService;
         this.userService = userService;
         this.productService = productService;
         this.bagService = bagService;
@@ -113,7 +122,7 @@ public class CommonController {
                          HttpServletRequest request) {
         User user = new User(email, name, surname, password);
         userService.saveNewUser(user);
-        userService.authenticateUserAndSetSession(email, request);
+        authenticateUserAndSetSession(email, request);
         return "redirect:/home";
     }
 
@@ -404,5 +413,18 @@ public class CommonController {
         File serverFile = new File(ImageUtil.getImagesDirectoryAbsolutePath() + imageId);
 
         return Files.readAllBytes(serverFile.toPath());
+    }
+
+    /**
+     * Task of the method is to authenticate registered user and to give him simple user rights.
+     * @param email of the registered user.
+     */
+    public void authenticateUserAndSetSession(String email, HttpServletRequest request) {
+        // generate session if one doesn't exist
+        request.getSession();
+
+        UserDetails user = userDetailsService.loadUserByUsername(email);
+        Authentication authenticatedUser = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
     }
 }
