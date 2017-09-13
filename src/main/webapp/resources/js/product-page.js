@@ -11,6 +11,7 @@ $(document).ready(function() {
     });
 
     if ($('.item-size select').val() === null) {
+        $('.item-size select').prepend('<option selected>No available sizes</option>');
         $('.bag-button button').html("Sold out").attr("disabled", "true").addClass("disabled");
     }
 

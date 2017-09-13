@@ -10,6 +10,7 @@ import com.tsystems.shop.service.api.BagService;
 import com.tsystems.shop.service.api.OrderService;
 import com.tsystems.shop.service.api.ProductService;
 import com.tsystems.shop.service.api.UserService;
+import com.tsystems.shop.util.ComparatorUtil;
 import com.tsystems.shop.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -128,6 +130,43 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findOrderByStatusType(String status) {
         return orderDao.findOrdersByStatusType(status);
+    }
+
+    /**
+     * Method filters orders by custom admins parameters.
+     *
+     * @param dateFrom      - left bound of order creating date.
+     * @param dateTo        - right bound of order creating date.
+     * @param paymentStatus of orders which must be found.
+     * @param orderStatus   of orders which must be found.
+     * @return filtered list with found orders.
+     */
+    @Override
+    public List<Order> filterActiveOrdersByParameters(String type, String dateFrom, String dateTo, String paymentStatus, String orderStatus) {
+        LocalDate from = null;
+        LocalDate to = null;
+        if (!dateFrom.isEmpty()) from = LocalDate.parse(dateFrom, DateUtil.getDefaultDateFormatter());
+        if (!dateTo.isEmpty()) to = LocalDate.parse(dateTo, DateUtil.getDefaultDateFormatter());
+
+        List<Order> result = new ArrayList<>();
+
+        List<Order> ordersToFilter;
+        if (type.equals("active")) ordersToFilter = orderDao.findActiveOrders();
+        else ordersToFilter = orderDao.findDoneOrders();
+
+        for (Order order : ordersToFilter) {
+            LocalDate orderDate = DateUtil.getLocalDateFromString(order.getDate());
+            if ((from == null || orderDate.isAfter(from) || orderDate.isEqual(from))
+                    && (to == null || orderDate.isBefore(to) || orderDate.isEqual(to))
+                    && (paymentStatus.equals("No matter") || paymentStatus.equals(order.getPayment().getPaymentStatus()))
+                    && (orderStatus.equals("No matter") || orderStatus.equals(order.getOrderStatus()))) {
+                result.add(order);
+            }
+        }
+        return result
+                .stream()
+                .sorted(ComparatorUtil.getAscendingOrderComparator())
+                .collect(Collectors.toList());
     }
 
     /**

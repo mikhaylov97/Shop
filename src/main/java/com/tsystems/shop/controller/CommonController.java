@@ -320,6 +320,8 @@ public class CommonController {
             return new ModelAndView("redirect:/404");
         }
 
+        modelAndView.addObject("suggestions", productService.suggest4RandomProducts());
+
         modelAndView.addObject("product", productService.findProductById(id, adminMode));
         Category currentCategory = categoryService.findCategoryById(String.valueOf(productService.findProductById(id, adminMode).getCategory().getId()), adminMode);
         Category parentCategory = currentCategory.getParent();

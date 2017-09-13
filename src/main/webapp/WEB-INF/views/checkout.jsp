@@ -34,7 +34,7 @@
                         ${successMsg}
                     </div>
                     <div class="continue-button">
-                        <a href="/home"><i class="fa fa-long-arrow-left"></i>Continue Shopping</a>
+                        <a href="/catalog/mens"><i class="fa fa-long-arrow-left"></i>Continue Shopping</a>
                     </div>
                 </div>
             </c:when>
@@ -245,7 +245,7 @@
                             </div>
                         </div>
                         <div class="continue-button">
-                            <a href="/home">Continue Shopping</a>
+                            <a href="/catalog/mens">Continue Shopping</a>
                         </div>
                     </div>
                     <hr>

@@ -223,3 +223,48 @@
     cursor: not-allowed;
     transition: none;
 }
+
+#suggestions {
+    margin-bottom: 100px;
+}
+
+#suggestions .title {
+    margin-bottom: 20px;
+}
+
+#suggestions .title h4 {
+    color: #121212;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+#suggestions .image {
+    padding: 0;
+}
+
+#suggestions .name {
+    margin-top: 5px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 1px;
+
+}
+
+#suggestions .cost {
+    margin: 0;
+    color: #5f5f6e;
+    font-size: 15px;
+}
+
+#suggestions a {
+    color: #131313;
+}
+
+#suggestions a:hover {
+    color: #d80000;
+}
+
+#suggestions .item {
+    padding: 7px;
+}

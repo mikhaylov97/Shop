@@ -86,6 +86,12 @@ public interface ProductService {
     List<Product> findTop10Products(boolean adminMode);
 
     /**
+     * Method finds 4 products for suggested block inside product page.
+     * @return list with suggested products.
+     */
+    List<Product> suggest4RandomProducts();
+
+    /**
      * Method finds product by his ID.
      * @param id of the product.
      * @param adminMode - If activeMode is true,

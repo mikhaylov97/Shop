@@ -9,7 +9,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="/home" id="navbar-brand" class="navbar-brand">BLACK LI<img src="/resources/images/logo.png" alt="logo">N</a>
+            <a href="/catalog/mens" id="navbar-brand" class="navbar-brand">BLACK LI<img src="/resources/images/logo.png" alt="logo">N</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">

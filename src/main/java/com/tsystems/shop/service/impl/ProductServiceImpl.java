@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.jms.TextMessage;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -171,6 +173,39 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findTop10Products(boolean adminMode) {
         return productDao.findTop10Products(adminMode);
+    }
+
+    /**
+     * Method finds 4 products for suggested block inside product page.
+     *
+     * @return list with suggested products.
+     */
+    @Override
+    public List<Product> suggest4RandomProducts() {
+        List<Product> suggestions = new ArrayList<>(4);
+        List<Product> top = productDao.findTop10Products(false);
+        Collections.shuffle(top);
+        List<Product> notTop = productDao.findNotHiddenProducts();
+        notTop.removeAll(top);
+        Collections.shuffle(notTop);
+
+        int topSize = top.size();
+        int nonTopSize = notTop.size();
+        if (nonTopSize >= 2 && topSize >= 2) {
+            suggestions.addAll(Arrays.asList(top.stream().findFirst().get(),
+                    top.stream().skip(topSize/2).findFirst().get(),
+                    notTop.stream().findFirst().get(),
+                    notTop.stream().skip(nonTopSize/2).findFirst().get()));
+        } else if (topSize >= 4){
+            suggestions.addAll(Arrays.asList(top.stream().findFirst().get(),
+                    top.stream().skip(topSize/4).findFirst().get(),
+                    top.stream().skip(topSize/4).findFirst().get(),
+                    top.stream().skip(topSize/4).findFirst().get()));
+        } else {
+            suggestions.addAll(tops);
+        }
+        Collections.shuffle(suggestions);
+        return suggestions;
     }
 
     /**

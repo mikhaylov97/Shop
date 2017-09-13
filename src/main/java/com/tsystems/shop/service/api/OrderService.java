@@ -90,6 +90,16 @@ public interface OrderService {
     List<Order> findOrderByStatusType(String status);
 
     /**
+     * Method filters orders by custom admins parameters.
+     * @param dateFrom - left bound of order creating date.
+     * @param dateTo - right bound of order creating date.
+     * @param paymentStatus of orders which must be found.
+     * @param orderStatus of orders which must be found.
+     * @return filtered list with found orders.
+     */
+    List<Order> filterActiveOrdersByParameters(String type, String dateFrom, String dateTo, String paymentStatus, String orderStatus);
+
+    /**
      * Method saves new orders with necessary parameters.
      * @param shippingCost - order shipping cost
      * @param country - delivery country name

@@ -12,7 +12,8 @@
 }
 
 .item-in-bag {
-    padding-top: 25px;
+    padding-top: 0;
+    margin-bottom: 25px;
 }
 
 .item-image img {

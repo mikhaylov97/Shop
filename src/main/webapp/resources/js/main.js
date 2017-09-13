@@ -33,7 +33,7 @@ function openFilter() {
 }
 
 $(document).ready(function() {
-    $("#filter-data .filter-input input").blur(function() {
+    $("#filter-data .filter-input input[type=text]").blur(function() {
         var val = $(this).val();
         if (val !== '' && val.indexOf('$') === -1) {
             $(this).val('$' + val);

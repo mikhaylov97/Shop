@@ -2,6 +2,7 @@ package com.tsystems.shop.util;
 
 
 import com.tsystems.shop.model.Category;
+import com.tsystems.shop.model.Order;
 import com.tsystems.shop.model.Product;
 
 import java.util.Comparator;
@@ -17,6 +18,24 @@ public class ComparatorUtil {
      */
     private ComparatorUtil() {
     }
+
+    /**
+     * Comparator for sorting orders by ID from smallest to largest
+     */
+    private static Comparator<Order> ascendingOrderComparator = (o1, o2) -> {
+        if (o1.getId() < o2.getId()) return -1;
+        if (o1.getId() > o2.getId()) return 1;
+        return 0;
+    };
+
+    /**
+     * Comparator for sorting orders by ID from largest to smallest
+     */
+    private static Comparator<Order> descendingOrderComparator = (o1, o2) -> {
+        if (o1.getId() > o2.getId()) return -1;
+        if (o1.getId() < o2.getId()) return 1;
+        return 0;
+    };
 
     /**
      * Comparator for sorting products by ID from smallest to largest
@@ -55,6 +74,22 @@ public class ComparatorUtil {
     };
 
     /**
+     * Getter of the ascendingOrderComparator static field
+     * @return ascendingOrderComparator
+     */
+    public static Comparator<Order> getAscendingOrderComparator() {
+        return ascendingOrderComparator;
+    }
+
+    /**
+     * Getter of the descendingOrderComparator static field
+     * @return descendingOrderComparator
+     */
+    public static Comparator<Order> getDescendingOrderComparator() {
+        return descendingOrderComparator;
+    }
+
+    /**
      * Getter of the ascendingProductComparator static field
      * @return ascendingProductComparator
      */
@@ -85,4 +120,6 @@ public class ComparatorUtil {
     public static Comparator<Category> getDescendingCategoryComparator() {
         return descendingCategoryComparator;
     }
+
+
 }

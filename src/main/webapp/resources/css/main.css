@@ -339,9 +339,9 @@ hr {
 	font-size: 20px;
 	position: absolute;
 	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	-ms-transform: translate(-50%, -50%);
+	left: 40%;
+	transform: translate(-30%, -30%);
+	-ms-transform: translate(-30%, -30%);
 }
 
 .text a {
@@ -418,8 +418,8 @@ hr {
 
 #filter-data {
 	margin-top: 100px;
-	margin-left: 20px;
-	margin-right: 20px;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 #filter-data h5 {
@@ -450,7 +450,7 @@ hr {
 
 #filter-data .filter-input input {
 	outline: none;
-	width: 100%;
+	width: 140px;
 	border: 1px solid black;
 	color: black;
 	font-size: 15px;

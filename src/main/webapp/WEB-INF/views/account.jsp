@@ -176,6 +176,9 @@
                         <a href="/admin/products/add"><i class="fa fa-plus fa-lg"></i> Add Product</a>
                     </div>
                     <div class="col-lg-12 action">
+                        <a href="/admin/archive"><i class="fa fa-book fa-lg"></i> Archive</a>
+                    </div>
+                    <div class="col-lg-12 action">
                         <!-- <a href=""><i class="fa fa-calendar"></i> Statistics</a> -->
                         <a href="/admin/statistics"><i class="fa fa-bar-chart"></i> Statistics</a>
                     </div>

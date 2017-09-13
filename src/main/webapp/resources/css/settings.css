@@ -224,3 +224,7 @@
     padding-bottom: 2px;
     border-color: #d80000;
 }
+
+.actions .action i {
+    width: 25px;
+}

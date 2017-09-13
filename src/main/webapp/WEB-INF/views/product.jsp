@@ -117,6 +117,32 @@
         </div>
     </div>
 </div>
+<div id="suggestions">
+    <div class="container">
+        <div class="row centered">
+            <div class="title col-lg-12">
+                <h4>Suggested</h4>
+            </div>
+            <div class="col-lg-10 col-lg-offset-1">
+                <c:forEach var="product" items="${suggestions}">
+                    <div class="col-lg-3 item">
+                        <a href="/catalog/${product.id}">
+                            <div class="image">
+                                <img src="/image/${product.id}" alt="Suggested product">
+                            </div>
+                            <div class="name">
+                                ${product.name}
+                            </div>
+                            <div class="cost">
+                                <i class="fa fa-usd"></i>${product.price}
+                            </div>
+                        </a>
+                    </div>
+                </c:forEach>
+            </div>
+        </div>
+    </div>
+</div>
 <%@include file="footer.jsp"%>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="/resources/js/bootstrap.min.js"></script>

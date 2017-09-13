@@ -260,8 +260,8 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView("management");
 
         //model
-        modelAndView.addObject("ordersActive", orderService.findActiveOrders());
-        modelAndView.addObject("ordersDone", orderService.findDoneOrders());
+        modelAndView.addObject("orders", orderService.findActiveOrders());
+        //modelAndView.addObject("ordersDone", orderService.findDoneOrders());
         modelAndView.addObject("orderStatuses",
                 Arrays.stream(OrderStatusEnum.values()).map(Enum::toString).collect(Collectors.toList()));
         modelAndView.addObject("paymentStatuses",
@@ -376,6 +376,26 @@ public class AdminController {
     }
 
     /**
+     * This method shows archived orders page.
+     * @return ModelAndView object with manage-categories.jsp view.
+     */
+    @RequestMapping(value = "/archive")
+    public ModelAndView showArchivePage() {
+        //view
+        ModelAndView modelAndView = new ModelAndView("archive");
+
+        //model
+        modelAndView.addObject("orders",
+                orderService.findDoneOrders());
+
+        //log
+        User user = userService.findUserFromSecurityContextHolder();
+        log.info(user.getEmail() + " with " + user.getRole() + " has visited archive page.");
+
+        return modelAndView;
+    }
+
+    /**
      * POST request. This method allows admins to add new categories.
      * If all filled inputs are correct and name is free, such category will be created.
      * @param name of the future category.
@@ -455,6 +475,34 @@ public class AdminController {
             modelAndView.addObject("categories", categoryService.findChildsDtoById(2, true));
         }
 
+        return modelAndView;
+    }
+
+    /**
+     * POST request. Method allow us to get filtered orders by
+     * the next parameters: order date from, order date to, order status and payment status.
+     * @return ModelAndView object which represents fragment (catalog-only-items.jsp) of the catalog page.
+     */
+    @RequestMapping(value = "/filter/{activeOrDone}", method = RequestMethod.POST)
+    public ModelAndView getCatalogOnlyItems(@PathVariable(name = "activeOrDone") String type,
+                                            @RequestParam(value = "date-from") String dateFrom,
+                                            @RequestParam(value = "date-to") String dateTo,
+                                            @RequestParam(value = "payment-status", required = false, defaultValue = "No matter") String paymentStatus,
+                                            @RequestParam(value = "order-status", required = false, defaultValue = "No matter") String orderStatus) {
+        ModelAndView modelAndView;
+        if (type.equals("active")) {
+            modelAndView = new ModelAndView("management-only-items");
+            modelAndView.addObject("orders",
+                    orderService.filterActiveOrdersByParameters(type, dateFrom, dateTo, paymentStatus, orderStatus));
+            modelAndView.addObject("orderStatuses",
+                    Arrays.stream(OrderStatusEnum.values()).map(Enum::toString).collect(Collectors.toList()));
+            modelAndView.addObject("paymentStatuses",
+                    Arrays.stream(PaymentStatusEnum.values()).map(Enum::toString).collect(Collectors.toList()));
+        } else {
+            modelAndView = new ModelAndView("archive-only-items");
+            modelAndView.addObject("orders",
+                    orderService.filterActiveOrdersByParameters(type, dateFrom, dateTo, paymentStatus, orderStatus));
+        }
         return modelAndView;
     }
 

@@ -3,50 +3,48 @@
     <a href="javascript:void(0)" class="close-button" onclick="closeFilter()"><i class="fa fa-times"></i></a>
     <div id="filter">
         <form id="filter-data">
-            <h4>Products filter</h4>
+            <h4>Orders filter</h4>
             <h5>Cost</h5>
             <div class="filter-cost">
                 <div class="filter-input">
-                    <h5>Lower bound</h5>
-                    <input type="text" placeholder="Cost from, $" maxlength="6"
-                           name="cost-from"
-                           onkeydown="checkNumeric(event)"
-                           onkeyup="checkNumeric(event)"
-                           oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength)">
+                    <h5>Date from</h5>
+                    <input name="date-from" type="date">
                 </div>
                 <div class="filter-input">
-                    <h5>Upper bound</h5>
-                    <input type="text" placeholder="Cost to, $" maxlength="6"
-                           name="cost-to"
-                           onkeydown="checkNumeric(event)"
-                           onkeyup="checkNumeric(event)"
-                           oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength)">
+                    <h5>Date to</h5>
+                    <input name="date-to" type="date">
                 </div>
             </div>
-            <div class="filter-input">
-                <h5>Required size</h5>
-                <select name="size">
-                    <option value="No matter">No matter</option
-                    <c:if test="${fn:length(sizes) > 0}">
-                        <c:forEach var="size" items="${sizes}">
-                            <option value="${size}">${size}</option>
-                        </c:forEach>
-                    </c:if>
-                </select>
-            </div>
-            <c:choose>
-                <c:when test="${not empty activeOptionId}">
-                    <input type="hidden" name="category" value="${activeOptionId}">
-                </c:when>
-                <c:when test="${not empty isWomensActive}">
-                    <input type="hidden" name="category" value="2">
-                </c:when>
-                <c:when test="${not empty isMensActive}">
-                    <input type="hidden" name="category" value="1">
-                </c:when>
-            </c:choose>
+            <c:if test="${not empty paymentStatuses}">
+                <div class="filter-input">
+                    <h5>Payment status</h5>
+                    <select name="payment-status">
+                        <option value="No matter">No matter</option
+                        <c:if test="${fn:length(paymentStatuses) > 0}">
+                            <c:forEach var="status" items="${paymentStatuses}">
+                                <option value="${status}">${status}</option>
+                            </c:forEach>
+                        </c:if>
+                    </select>
+                </div>
+            </c:if>
+            <c:if test="${not empty orderStatuses}">
+                <div class="filter-input">
+                    <h5>Payment status</h5>
+                    <select name="order-status">
+                        <option value="No matter">No matter</option
+                        <c:if test="${fn:length(orderStatuses) > 0}">
+                            <c:forEach var="status" items="${orderStatuses}">
+                                <c:if test="${status ne 'Done'}">
+                                    <option value="${status}">${status}</option>
+                                </c:if>
+                            </c:forEach>
+                        </c:if>
+                    </select>
+                </div>
+            </c:if>
             <div class="filter-find">
-                <button type="button" onclick="filterProducts()">Find</button>
+                <button type="button" onclick="filterOrders()">Find</button>
             </div>
         </form>
     </div>
