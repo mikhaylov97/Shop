@@ -22,7 +22,7 @@
 <body>
 <%@ include file="header.jsp"%>
 <%@include file="second-header.jsp"%>
-<%@include file="filter.jsp"%>
+<%@include file="filter-products.jsp"%>
 <div id="main-content" class="container center-block">
     <h4 class="centered"><a href="#">New Arrivals</a></h4>
     <div class="row centered">

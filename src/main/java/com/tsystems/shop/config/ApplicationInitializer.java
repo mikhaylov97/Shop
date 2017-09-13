@@ -1,16 +1,14 @@
 package com.tsystems.shop.config;
 
 
+import com.tsystems.shop.listener.SessionListener;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
+import javax.servlet.*;
 
 /**
  * Application initializer which registers dispatcher servlet
@@ -39,6 +37,8 @@ public class ApplicationInitializer implements WebApplicationInitializer{
         ctx.register(SecurityConfig.class);
         ctx.register(JmsConfig.class);
         servletContext.addListener(new ContextLoaderListener(ctx));
+
+        servletContext.addListener(new SessionListener());
 
         ServletRegistration.Dynamic servlet = servletContext.addServlet(DISPATCHER, new DispatcherServlet(ctx));
         servlet.setAsyncSupported(true);

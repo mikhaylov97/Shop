@@ -247,3 +247,12 @@
     padding-bottom: 2px;
     border-color: #d80000;
 }
+
+.name a {
+    color: #444;
+    transition: all ease-in-out 0.2s;
+}
+
+.name a:hover {
+    color: #d80000;
+}

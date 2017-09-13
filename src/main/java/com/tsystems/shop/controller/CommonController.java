@@ -147,8 +147,9 @@ public class CommonController {
                     Long.parseLong(product.getPrice()),
                     (List<BagProductDto>) bag);
         }
-        return "redirect:/home";
+        return "redirect:/catalog/" + id;
     }
+
 
     /**
      * This method shows bag page. There users can remove product from the bag or

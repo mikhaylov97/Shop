@@ -30,7 +30,7 @@
     </div>
     <%--<div class="logout-button"><a href="/logout"><i class="fa fa-sign-out"></i>Log Out</a></div>--%>
     <div class="row main-context">
-        <div class="col-lg-8 col-lg-offset-2">
+        <div class="col-lg-10 col-lg-offset-1">
             <div class="history-title">Active orders</div>
             <hr>
             <!-- <div class="info-message-history">
@@ -132,7 +132,7 @@
                                     <div class="col-lg-10 bag-item-info">
                                         <div class="col-lg-6 main-info">
                                             <div class="name">
-                                                    ${product.product.name}
+                                                <a href="/catalog/${product.product.id}">${product.product.name}</a>
                                             </div>
                                             <div class="size">
                                                 Size: ${product.size.size}
@@ -157,7 +157,7 @@
                 </c:forEach>
             </div>
         </div>
-        <div class="col-lg-8 col-lg-offset-2">
+        <div class="col-lg-10 col-lg-offset-1">
             <div class="history-title">Orders History</div>
             <hr>
             <!-- <div class="info-message-history">
@@ -225,7 +225,7 @@
                                 <div class="col-lg-10 bag-item-info">
                                     <div class="col-lg-6 main-info">
                                         <div class="name">
-                                            ${product.product.name}
+                                            <a href="/catalog/${product.product.id}">${product.product.name}</a>
                                         </div>
                                         <div class="size">
                                             Size: ${product.size.size}

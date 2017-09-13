@@ -24,7 +24,7 @@
 <%@include file="second-header.jsp"%>
 <%@include file="options.jsp"%>
 <c:if test="${fn:length(catalog) != 0}">
-    <%@include file="filter.jsp"%>
+    <%@include file="filter-products.jsp"%>
     <div class="wrap" onclick="closeFilter()"></div>
 </c:if>
 <div id="main-content" class="container center-block">
