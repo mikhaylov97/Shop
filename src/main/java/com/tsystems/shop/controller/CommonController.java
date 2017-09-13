@@ -123,7 +123,7 @@ public class CommonController {
         User user = new User(email, name, surname, password);
         userService.saveNewUser(user);
         authenticateUserAndSetSession(email, request);
-        return "redirect:/home";
+        return "redirect:/account";
     }
 
     @RequestMapping(value = "/bag/add/{id}", method = RequestMethod.POST)

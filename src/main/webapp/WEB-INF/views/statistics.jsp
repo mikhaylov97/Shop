@@ -107,7 +107,7 @@
                 </div>
                 <div class="documents col-lg-12">
                     <div class="pdf">
-                        <a href="/admin/statistics/download/pdf">Download PDF</a>
+                        <a href="/admin/statistics/download/pdf" target="_blank">Download PDF</a>
                     </div>
                 </div>
             </div>
