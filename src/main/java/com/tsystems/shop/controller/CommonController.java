@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Unsecured controller for all users(means guests, admins and super-admins) while them unauthorised.
@@ -222,6 +223,8 @@ public class CommonController {
         modelAndView.addObject("options", categoryService.findChilds(categoryService.findCategoryById("1", adminMode), adminMode));
         modelAndView.addObject("isMensActive", true);
         modelAndView.addObject("sizes", sizeService.findSizesFromProducts(products));
+        modelAndView.addObject("pages", 5);
+        modelAndView.addObject("currentPage", 3);
 
         return modelAndView;
     }
@@ -369,9 +372,29 @@ public class CommonController {
     public ModelAndView getCatalogOnlyItems(@RequestParam(value = "cost-from") String lowerCostBound,
                                             @RequestParam(value = "cost-to") String upperCostBound,
                                             @RequestParam(value = "size") String size,
-                                            @RequestParam(value = "category") String categoryId) {
+                                            @RequestParam(value = "category") String categoryId,
+                                            @RequestParam(value = "status", required = false, defaultValue = "No matter") String status) {
         ModelAndView modelAndView = new ModelAndView("catalog-only-items");
-        modelAndView.addObject("catalog", productService.filterProductsByCostAndSize(lowerCostBound, upperCostBound, size, categoryId));
+        boolean adminMode = false;
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(new SimpleGrantedAuthority(UserRoleEnum.ROLE_ADMIN.name()))) {
+            adminMode = true;
+        }
+        List<Product> filtered = productService.filterProductsByCostAndSize(adminMode, lowerCostBound, upperCostBound, size, categoryId);
+        switch (status) {
+            case "visible":
+                modelAndView.addObject("catalog",
+                        filtered.stream().filter(Product::getActive).collect(Collectors.toList()));
+                break;
+            case "hidden":
+                modelAndView.addObject("catalog",
+                        filtered.stream().filter(p -> !p.getActive()).collect(Collectors.toList()));
+                break;
+            default:
+                modelAndView.addObject("catalog", filtered);
+                break;
+        }
+
         Category currentCategory = categoryService.findCategoryById(categoryId, false);
         Category parentCategory = currentCategory.getParent();
         if (parentCategory != null) {

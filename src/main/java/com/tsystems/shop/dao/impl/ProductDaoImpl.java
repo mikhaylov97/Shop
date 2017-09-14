@@ -13,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class which implements all necessary methods which allow us
@@ -85,6 +86,19 @@ public class ProductDaoImpl implements ProductDao {
         Query query = em.createQuery("SELECT s FROM Size s WHERE id = :id");
         query.setParameter("id", id);
         return (Size) query.getSingleResult();
+    }
+
+    /**
+     * When admin change available sizes of product we don't need anymore
+     * to store this sizes and this method delete them from database.
+     *
+     * @param sizeSet that must be deleted.
+     */
+    @Override
+    @Transactional
+    public void deleteSizesSet(Set<Size> sizeSet) {
+        sizeSet.forEach(size -> em.remove(em.contains(size) ? size : em.merge(size)));
+        em.flush();
     }
 
     /**

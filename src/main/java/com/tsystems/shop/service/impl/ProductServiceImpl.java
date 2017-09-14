@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.jms.TextMessage;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -163,6 +160,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * Method deletes unnecessary sizes.
+     *
+     * @param sizeSet that must be deleted.
+     */
+    @Override
+    public void deleteSizesSet(Set<Size> sizeSet) {
+        productDao.deleteSizesSet(sizeSet);
+    }
+
+    /**
      * Method finds top 10 products. If activeMode is true,
      * method will return all found top products, otherwise only not hidden
      * top products.
@@ -173,6 +180,38 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findTop10Products(boolean adminMode) {
         return productDao.findTop10Products(adminMode);
+    }
+
+    /**
+     * Method finds products in certain page.
+     *
+     * @return list of found products.
+     */
+    @Override
+    public List<Product> findProductsInPage(int page, Category category, boolean adminMode) {
+        List<Product> allProductsInCategory = findProductsByCategory(category, adminMode);
+
+        return allProductsInCategory
+                .stream()
+                .skip(4*page)
+                .limit(4)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Method calculates number of product pages in certain category.
+     * AdminMode is used as well.
+     *
+     * @return number of pages.
+     */
+    @Override
+    public int findNumberOfPages(Category category, boolean adminMode) {
+        List<Product> allProductsInCategory = findProductsByCategory(category, adminMode);
+        int allProductsSize = allProductsInCategory.size();
+        int pagesNumber;
+        if (allProductsSize % 4 == 0) pagesNumber = allProductsSize / 4;
+        else pagesNumber = (allProductsSize / 4) + 1;
+        return pagesNumber;
     }
 
     /**
@@ -315,7 +354,7 @@ public class ProductServiceImpl implements ProductService {
      * @return list of found products.
      */
     @Override
-    public List<Product> filterProductsByCostAndSize(String lowerCostBound, String upperCostBound, String size, String categoryId) {
+    public List<Product> filterProductsByCostAndSize(boolean adminMode, String lowerCostBound, String upperCostBound, String size, String categoryId) {
         List<Product> products;
         try {
             long costToLong;
@@ -324,14 +363,14 @@ public class ProductServiceImpl implements ProductService {
             else costFromLong = Long.parseLong(lowerCostBound.substring(1, lowerCostBound.length()));
             if (upperCostBound.equals("")) costToLong = Long.parseLong("0");
             else costToLong = Long.parseLong(upperCostBound.substring(1, upperCostBound.length()));
-            products = findProductsByCategory(categoryDao.findCategoryById(categoryId), false)
+            products = findProductsByCategory(categoryDao.findCategoryById(categoryId), adminMode)
                     .stream()
                     .filter( p -> (costFromLong == 0 || Long.parseLong(p.getPrice()) >= costFromLong)
                             && (costToLong == 0 || Long.parseLong(p.getPrice()) <= costToLong)
                             && (size.equals("No matter") || p.getAttributes().getSizes().stream().filter(s -> s.getSize().equals(size)).count() > 0))
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            return findProductsByCategory(categoryDao.findCategoryById(categoryId), false);
+            return findProductsByCategory(categoryDao.findCategoryById(categoryId), adminMode);
         }
         return products;
     }

@@ -2,6 +2,7 @@ package com.tsystems.shop.service.api;
 
 
 import com.tsystems.shop.model.Order;
+import com.tsystems.shop.model.User;
 import com.tsystems.shop.model.dto.BagProductDto;
 
 import java.util.List;
@@ -54,6 +55,12 @@ public interface OrderService {
      * @return list with found orders.
      */
     List<Order> findActiveOrders();
+
+    /**
+     * This method sends message to the customer email.
+     */
+    void sendMessage(Order order, User user, List<BagProductDto> bag, String address,
+                     String source, String target, String title);
 
     /**
      * Method finds orders for the last week.

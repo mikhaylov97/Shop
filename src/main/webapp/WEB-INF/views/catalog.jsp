@@ -18,6 +18,7 @@
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
     <script src="/resources/js/jquery-ui.min.js"></script>
     <script src="/resources/js/main.js"></script>
+    <script src="/resources/js/catalog-page.js"></script>
 </head>
 <body>
 <%@include file="header.jsp"%>
@@ -61,6 +62,9 @@
                 <div class="info-message col-lg-12">Nothing found</div>
             </c:otherwise>
         </c:choose>
+        <%--<div class="see-more-button">--%>
+            <%--<a href="" onclick="seeMore()">More</a>--%>
+        <%--</div>--%>
     </div>
 </div>
 <%@include file="footer.jsp"%><!-- Include all compiled plugins (below), or include individual files as needed -->

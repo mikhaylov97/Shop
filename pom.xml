@@ -32,6 +32,8 @@
         <itextpdf.version>5.5.12</itextpdf.version>
         <mockito-all.version>1.10.19</mockito-all.version>
         <selenium.version>2.25.0</selenium.version>
+        <mail.version>1.6.0</mail.version>
+        <spring-context-support.version>4.3.10.RELEASE</spring-context-support.version>
     </properties>
 
     <dependencies>
@@ -195,6 +197,17 @@
             <version>${itextpdf.version}</version>
         </dependency>
 
+        <!-- Java Mail API -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${mail.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring-context-support.version}</version>
+        </dependency>
 
 
     </dependencies>

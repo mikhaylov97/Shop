@@ -222,6 +222,7 @@ public class AdminController {
             ImageUtil.uploadImage(id, image);
         }
         Set<Size> sizeSet = new HashSet<>();
+        Set<Size> oldSet = product.getAttributes().getSizes();
         if (sizes.getSizes() != null && !sizes.getSizes().isEmpty()) {
             for (Size size : sizes.getSizes()) {
                 sizeSet.add(new Size(size.getSize(), size.getAvailableNumber()));
@@ -234,6 +235,12 @@ public class AdminController {
         product.setCategory(categoryService.findCategoryById(category, true));
         product.setImage("/image/" + id);
         productService.saveProduct(product);
+        oldSet.removeAll(product.getAttributes().getSizes());
+        try {
+            productService.deleteSizesSet(oldSet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         modelAndView.setViewName("redirect:/catalog/" + id);
         //log
         User user = userService.findUserFromSecurityContextHolder();

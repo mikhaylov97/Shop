@@ -606,18 +606,23 @@ input[type=search]:focus {
 	-webkit-padding-start: 0;
 }
 
-/*.search-box {*/
-	/*position; absolute;*/
-/*}*/
+#pagination {
+	margin-bottom: 50px;
+}
 
-/*.search-box label {*/
-	/*position: relative;*/
-	/*top: 50%;*/
-	/*left: 50%;*/
-/*}*/
+#pagination a {
+	margin: 0 5px 0;
+	color: black;
+	font-weight: 600;
+	font-size: 19px;
+	transition: all ease-in-out 0.2s;
+}
 
-/*.search-box label {*/
-	/*position: relative;*/
-	/*top: 50%;*/
-	/*left: 10%;*/
-/*}*/
+#pagination a:hover {
+	color: #d80000;
+}
+
+#pagination .active {
+	color: #d80000;
+	border-bottom: 1px solid #d80000;
+}

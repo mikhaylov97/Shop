@@ -28,7 +28,7 @@
     <div class="container">
         <h4 id="title">Product review</h4>
         <div class="back-button">
-            <a href="/catalog${product.id}"><i class="fa fa-long-arrow-left"></i> Back to the product</a>
+            <a href="/catalog/${product.id}"><i class="fa fa-long-arrow-left"></i> Back to the product</a>
             <%--<c:if test="${product.category.parent.id eq 1}">--%>
                 <%--<a href="/catalog/mens/${product.category.id}"><i class="fa fa-long-arrow-left"></i> Back to the products</a>--%>
             <%--</c:if>--%>

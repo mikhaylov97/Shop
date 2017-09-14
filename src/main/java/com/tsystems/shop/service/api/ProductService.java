@@ -7,6 +7,7 @@ import com.tsystems.shop.model.Size;
 import com.tsystems.shop.model.dto.ProductDto;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -86,6 +87,19 @@ public interface ProductService {
     List<Product> findTop10Products(boolean adminMode);
 
     /**
+     * Method finds products in certain page.
+     * @return list of found products.
+     */
+    List<Product> findProductsInPage(int page, Category category, boolean adminMode);
+
+    /**
+     * Method calculates number of product pages in certain category.
+     * AdminMode is used as well.
+     * @return number of pages.
+     */
+    int findNumberOfPages(Category category, boolean adminMode);
+
+    /**
      * Method finds 4 products for suggested block inside product page.
      * @return list with suggested products.
      */
@@ -152,6 +166,12 @@ public interface ProductService {
     List<Product> findProductsByCategory(Category category, boolean adminMode);
 
     /**
+     * Method deletes unnecessary sizes.
+     * @param sizeSet that must be deleted.
+     */
+    void deleteSizesSet(Set<Size> sizeSet);
+
+    /**
      * Method filter products by their cost(lower cost bound and upper cost bound) and size
      * in certain category.
      * @param lowerCostBound is a filter parameter chosen by user.
@@ -160,5 +180,5 @@ public interface ProductService {
      * @param categoryId which must be parent category for the sought products.
      * @return list of found products.
      */
-    List<Product> filterProductsByCostAndSize(String lowerCostBound, String upperCostBound, String size, String categoryId);
+    List<Product> filterProductsByCostAndSize(boolean adminMode, String lowerCostBound, String upperCostBound, String size, String categoryId);
 }

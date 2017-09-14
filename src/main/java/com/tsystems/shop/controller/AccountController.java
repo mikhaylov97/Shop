@@ -64,6 +64,7 @@ public class AccountController {
      */
     @RequestMapping(value = "")
     public ModelAndView showAccountPage() {
+
         //view
         ModelAndView modelAndView = new ModelAndView("account");
 

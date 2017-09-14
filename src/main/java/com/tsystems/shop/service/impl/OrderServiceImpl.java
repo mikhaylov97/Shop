@@ -13,6 +13,8 @@ import com.tsystems.shop.service.api.UserService;
 import com.tsystems.shop.util.ComparatorUtil;
 import com.tsystems.shop.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,6 +28,10 @@ import java.util.stream.Collectors;
  */
 @Service
 public class OrderServiceImpl implements OrderService {
+
+
+    @Autowired
+    private MailSender mailSender;
 
     /**
      * Injected by spring orderDao bean.
@@ -250,6 +256,34 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findActiveOrders() {
         return orderDao.findActiveOrders();
+    }
+
+    @Override
+    public void sendMessage(Order order, User user, List<BagProductDto> bag,
+                            String address, String source, String target, String title) {
+        SimpleMailMessage msg = new SimpleMailMessage();
+
+        StringBuilder products = new StringBuilder();
+        int counter = 0;
+        for (BagProductDto productDto : bag) {
+            products.append(++counter).append(") ")
+                    .append(productDto.getName()).append(" - ")
+                    .append(productDto.getAmount()).append(" items.").append(" Price - $")
+                    .append(productDto.getTotalPrice()).append(".").append(System.lineSeparator());
+        }
+
+        String message = "Hi, " + user.getName() + "!" + System.lineSeparator()
+                + "Your order[ID=" + order.getId() + "] is confirmed." + System.lineSeparator()
+                + "List of products: " + System.lineSeparator()
+                + products.toString() + System.lineSeparator()
+                + "Delivery address: " + address + System.lineSeparator() + System.lineSeparator()
+                + "Thank you for choosing us!";
+
+        msg.setFrom(source);
+        msg.setTo(target);
+        msg.setSubject(title);
+        msg.setText(message);
+        mailSender.send(msg);
     }
 
     /**

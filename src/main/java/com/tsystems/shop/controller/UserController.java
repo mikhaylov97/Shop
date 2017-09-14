@@ -1,5 +1,7 @@
 package com.tsystems.shop.controller;
 
+import com.tsystems.shop.config.MailConfig;
+import com.tsystems.shop.model.Order;
 import com.tsystems.shop.model.User;
 import com.tsystems.shop.model.dto.BagProductDto;
 import com.tsystems.shop.service.api.BagService;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -111,7 +112,7 @@ public class UserController {
      * @return String in JSON format with the result of method processing.
      */
     @RequestMapping(value = "/checkout/cash", method = RequestMethod.POST)
-    public @ResponseBody String checkoutWithCash(@RequestParam(name = "country") String country,
+    public ModelAndView checkoutWithCash(@RequestParam(name = "country") String country,
                                                  @RequestParam(name = "postcode") String postcode,
                                                  @RequestParam(name = "city") String city,
                                                  @RequestParam(name = "house") String house,
@@ -120,13 +121,19 @@ public class UserController {
                                                  @RequestParam(name = "phone") String phone,
                                                  @RequestParam(name = "shipping-method") String methodCost,
                                                  HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("checkout");
+        modelAndView.addObject("successMsg", "Your order was successfully confirmed.");
         List<BagProductDto> bag = (List<BagProductDto>) session.getAttribute("bag");
-        orderService.saveOrder(methodCost, country, city, street, postcode,
+        Order order = orderService.saveOrder(methodCost, country, city, street, postcode,
                 house, apartment, phone, bag, false);
 
         //log
         User user = userService.findUserFromSecurityContextHolder();
         log.info(user.getEmail() + " have bought " + bag.size() + "products. Payment type: cash.");
+
+        String address = country + ", " + city + " (" + postcode + "), "
+                + street + " " + house + ", " + apartment;
+        orderService.sendMessage(order, user, bag, address, MailConfig.USERNAME, user.getEmail(), "Black Lion");
 
         bag.clear();
 
@@ -137,7 +144,7 @@ public class UserController {
                     "Application cannot send update message to the stand.", e);
         }
 
-        return "saved";
+        return modelAndView;
     }
 
     /**
@@ -157,7 +164,7 @@ public class UserController {
      * @return String in JSON format with the result of method processing.
      */
     @RequestMapping(value = "/checkout/card", method = RequestMethod.POST)
-    public @ResponseBody String checkoutWithCard(@RequestParam(name = "country") String country,
+    public ModelAndView checkoutWithCard(@RequestParam(name = "country") String country,
                                          @RequestParam(name = "postcode") String postcode,
                                          @RequestParam(name = "city") String city,
                                          @RequestParam(name = "house") String house,
@@ -166,13 +173,19 @@ public class UserController {
                                          @RequestParam(name = "phone") String phone,
                                          @RequestParam(name = "shipping-method") String methodCost,
                                          HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("checkout");
+        modelAndView.addObject("successMsg", "Your order was successfully confirmed.");
         List<BagProductDto> bag = (List<BagProductDto>) session.getAttribute("bag");
-        orderService.saveOrder(methodCost, country, city, street, postcode,
+        Order order = orderService.saveOrder(methodCost, country, city, street, postcode,
                 house, apartment, phone, bag, true);
 
         //log
         User user = userService.findUserFromSecurityContextHolder();
         log.info(user.getEmail() + " have bought " + bag.size() + "products. Payment type: credit card.");
+
+        String address = country + ", " + city + " (" + postcode + "), "
+                + street + " " + house + ", " + apartment;
+        orderService.sendMessage(order, user, bag, address, MailConfig.USERNAME, user.getEmail(), "Black Lion");
 
         bag.clear();
 
@@ -182,6 +195,6 @@ public class UserController {
             log.error("Something wrong with JMS server. " +
                     "Application cannot send update message to the stand.", e);
         }
-        return "saved";
+        return modelAndView;
     }
 }

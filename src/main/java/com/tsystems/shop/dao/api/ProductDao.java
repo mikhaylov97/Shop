@@ -6,6 +6,7 @@ import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.Size;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * This interface provide us API through which we will communicate with database.
@@ -18,6 +19,13 @@ public interface ProductDao {
      * @return reference to a Size object
      */
     Size findSizeById(long id);
+
+    /**
+     * When admin change available sizes of product we don't need anymore
+     * to store this sizes and this method delete them from database.
+     * @param sizeSet that must be deleted.
+     */
+    void deleteSizesSet(Set<Size> sizeSet);
 
     /**
      * Method should find all products in the database.

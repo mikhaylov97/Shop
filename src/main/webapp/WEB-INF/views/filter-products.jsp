@@ -34,6 +34,16 @@
                     </c:if>
                 </select>
             </div>
+            <sec:authorize access="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER_ADMIN')">
+                <div class="filter-input">
+                    <h5>Product status</h5>
+                    <select name="status">
+                        <option value="No matter">No matter</option>
+                        <option value="hidden">Hidden</option>
+                        <option value="visible">Visible</option>
+                    </select>
+                </div>
+            </sec:authorize>
             <c:choose>
                 <c:when test="${not empty activeOptionId}">
                     <input type="hidden" name="category" value="${activeOptionId}">
