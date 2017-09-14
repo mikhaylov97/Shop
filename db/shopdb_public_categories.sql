@@ -1,0 +1,12 @@
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (1, '1', 'MENS', null, true);
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (2, '1', 'WOMENS', null, true);
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (7, '2', 'Bottoms', 1, true);
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (6, '2', 'Headwear', 1, true);
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (9, '2', 'Tops', 2, true);
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (10, '2', 'Bottoms', 2, true);
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (11, '2', 'Headwear', 2, true);
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (12, '2', 'Accessories', 2, true);
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (4, '2', 'Sweatshirts', 1, true);
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (8, '2', 'Accessories', 1, true);
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (5, '2', 'Tees', 1, true);
+INSERT INTO public.categories (category_id, hierarchy_number, name, parent_id, status) VALUES (3, '2', 'Shirts & Jackets', 1, true);

@@ -1,0 +1,15 @@
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (94, 'Paid', 'Cash', '22', '3822');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (98, 'Paid', 'Cash', '53', '1063');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (107, 'Paid', 'Cash', '53', '2220');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (153, 'Paid', 'Cash', '53', '181');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (165, 'Awaiting payment', 'Cash', '22', '1218');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (169, 'Awaiting payment', 'Cash', '53', '210');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (172, 'Awaiting payment', 'Cash', '22', '422');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (175, 'Awaiting payment', 'Cash', '22', '2002');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (178, 'Awaiting payment', 'Cash', '22', '144');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (181, 'Awaiting payment', 'Cash', '22', '30');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (184, 'Awaiting payment', 'Cash', '22', '30');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (136, 'Paid', 'Cash', '22', '219');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (148, 'Paid', 'Cash', '53', '2149');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (237, 'Paid', 'Cash', '22', '1128');
+INSERT INTO public.payments (payment_id, payment_status, payment_type, shipping_price, total_price) VALUES (298, 'AWAITING_PAYMENT', 'CASH', '22', '182');

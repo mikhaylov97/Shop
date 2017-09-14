@@ -1,0 +1,5 @@
+INSERT INTO public.addresses (address_id, apartment, city, country, house, postcode, street) VALUES (54, '271', 'Saint-Petersburg', 'Russia', '15', '197343', 'Torzhkovskaya');
+INSERT INTO public.addresses (address_id, apartment, city, country, house, postcode, street) VALUES (104, 'None', 'Brest', 'Belarus', '14', '100122', 'Zavodskaya');
+INSERT INTO public.addresses (address_id, apartment, city, country, house, postcode, street) VALUES (106, '', 'Brest', 'Belarus', '', '', '');
+INSERT INTO public.addresses (address_id, apartment, city, country, house, postcode, street) VALUES (164, '35', 'Brest', 'Belarus', '15', '102144', 'Torzhkovskaya');
+INSERT INTO public.addresses (address_id, apartment, city, country, house, postcode, street) VALUES (1, '271', 'Saint Petersburg', 'Russia', '15', '197343', 'Torzhkovskaya');
