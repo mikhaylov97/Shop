@@ -255,9 +255,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void updateTopIfItHaveChanged() {
-        if(!tops.containsAll(productDao.findTop10Products(false))) {
+        if (tops.isEmpty()) {
             tops = productDao.findTop10Products(false);
             sendMessage();
+        } else {
+            List<Product> foundProducts = productDao.findTop10Products(false);
+            for (int i = 0; i < 10; i++) {
+                if (tops.get(i).getId() != foundProducts.get(i).getId()) {
+                    tops = productDao.findTop10Products(false);
+                    sendMessage();
+                    break;
+                }
+            }
         }
     }
 

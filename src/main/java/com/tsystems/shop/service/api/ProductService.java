@@ -181,4 +181,6 @@ public interface ProductService {
      * @return list of found products.
      */
     List<Product> filterProductsByCostAndSize(boolean adminMode, String lowerCostBound, String upperCostBound, String size, String categoryId);
+
+    List<Product> getTops();
 }

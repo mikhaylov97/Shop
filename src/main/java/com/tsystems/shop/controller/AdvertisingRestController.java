@@ -1,5 +1,6 @@
 package com.tsystems.shop.controller;
 
+import com.tsystems.shop.model.Product;
 import com.tsystems.shop.model.dto.ProductDto;
 import com.tsystems.shop.service.api.ProductService;
 import org.apache.log4j.Logger;
@@ -53,7 +54,12 @@ public class AdvertisingRestController {
      */
     @RequestMapping(value = "/stand")
     public List<Map<String, String>> getStandInformation() {
-        List<ProductDto> list = productService.findTop10ProductsDto(false);
+        //List<ProductDto> list = productService.findTop10ProductsDto(false);
+        List<Product> top = productService.getTops();
+        List<ProductDto> list;
+        if (top.isEmpty()) list = productService.findTop10ProductsDto(false);
+        else list = productService.convertProductsToProductsDto(top);
+
         List<Map<String, String>> tops = new ArrayList<>();
         for (ProductDto product : list) {
             Map<String, String> item = new HashMap<>();

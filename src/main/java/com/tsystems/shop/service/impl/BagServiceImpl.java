@@ -130,6 +130,16 @@ public class BagServiceImpl implements BagService {
             }
         }
         Product originalProduct = productDao.findProductById(productId);
+        //for collisions
+//        if (Integer.parseInt(originalProduct
+//                .getAttributes()
+//                .getSizes()
+//                .stream()
+//                .filter(s -> s.getId() == sizeId)
+//                .findFirst()
+//                .get().getAvailableNumber()) < amount) {
+//            return;
+//        }
         if (!isFoundInBag) {
             BagProductDto bagProduct = new BagProductDto(productId, originalProduct.getName(),
                     originalProduct.getImage(), amount,

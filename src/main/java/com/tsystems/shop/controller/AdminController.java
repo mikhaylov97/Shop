@@ -147,7 +147,7 @@ public class AdminController {
             return modelAndView;
         } else {
             ImageUtil.createImagesDirectoryIfNeeded();
-            modelAndView.setViewName("redirect:/home");
+            modelAndView.setViewName("redirect:/account");
             Set<Size> sizeSet = new HashSet<>();
             if (sizes.getSizes() != null && !sizes.getSizes().isEmpty()) {
                 for (Size size : sizes.getSizes()) {

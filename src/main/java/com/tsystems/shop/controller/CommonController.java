@@ -121,6 +121,7 @@ public class CommonController {
                          @RequestParam(name = "surname") String surname,
                          @RequestParam(name = "password") String password,
                          HttpServletRequest request) {
+        if (!userService.isEmailFree(email)) return "redirect:/account";
         User user = new User(email, name, surname, password);
         userService.saveNewUser(user);
         authenticateUserAndSetSession(email, request);
