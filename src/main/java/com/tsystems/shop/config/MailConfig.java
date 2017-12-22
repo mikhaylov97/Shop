@@ -14,7 +14,7 @@ public class MailConfig {
 
     public static final String USERNAME = "blacklionru.store@gmail.com";
 
-    private static final String PASSWORD = "blacklion123456";
+    private static final String PASSWORD = "blacklion123";
 
     private static final int PORT = 587;
 
